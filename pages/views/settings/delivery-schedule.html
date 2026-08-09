@@ -1,0 +1,600 @@
+<section
+  class="delivery-settings"
+  id="delivery-settings"
+>
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="delivery-settings-header">
+
+    <div>
+
+      <p class="delivery-kicker">
+        Логистика
+      </p>
+
+      <h2>
+        График поставок
+      </h2>
+
+      <p>
+        Настройте отдельный график поставок
+        для основных товаров и Cola.
+        Для каждой поставки укажите,
+        каким днем заказа она формируется.
+      </p>
+
+    </div>
+
+
+    <div class="delivery-order-days">
+
+      <span>
+        Дни заказа
+      </span>
+
+      <div>
+        <strong>ПН</strong>
+        <strong>ЧТ</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       DELIVERY GROUPS
+  ====================================================== -->
+
+  <div class="delivery-group-section">
+
+    <div class="delivery-group-copy">
+
+      <span>
+        Группа поставки
+      </span>
+
+      <strong id="delivery-current-group-title">
+        Основные товары
+      </strong>
+
+      <small id="delivery-current-group-description">
+        Общий график для Fresh, Freezer, Cooler,
+        Сухой, Химии и Хоз. товаров
+      </small>
+
+    </div>
+
+
+    <div
+      class="delivery-group-tabs"
+      role="tablist"
+      aria-label="Группа поставки"
+    >
+
+      <button
+        class="delivery-group-tab is-active"
+        type="button"
+        data-delivery-group="general"
+      >
+
+        <span class="delivery-group-tab-icon">
+          G
+        </span>
+
+        <span>
+          <strong>
+            Основные товары
+          </strong>
+
+          <small>
+            ВТ · ЧТ · СБ
+          </small>
+        </span>
+
+      </button>
+
+
+      <button
+        class="delivery-group-tab"
+        type="button"
+        data-delivery-group="cola"
+      >
+
+        <span class="delivery-group-tab-icon">
+          C
+        </span>
+
+        <span>
+          <strong>
+            Cola
+          </strong>
+
+          <small>
+            ВТ · ПТ
+          </small>
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       DAYS
+  ====================================================== -->
+
+  <div class="delivery-days">
+
+    <!-- ПН -->
+
+    <div
+      class="delivery-day"
+      data-delivery-day="1"
+    >
+
+      <div class="delivery-day-name">
+
+        <strong>
+          Понедельник
+        </strong>
+
+        <span>
+          ПН
+        </span>
+
+      </div>
+
+
+      <label class="delivery-switch">
+
+        <input
+          type="checkbox"
+          data-delivery-active
+        >
+
+        <span class="delivery-switch-ui"></span>
+
+      </label>
+
+
+      <div class="delivery-source">
+
+        <span>
+          Формируется заказом
+        </span>
+
+        <select data-delivery-source>
+
+          <option value="monday">
+            Понедельник
+          </option>
+
+          <option value="thursday">
+            Четверг
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- ВТ -->
+
+    <div
+      class="delivery-day"
+      data-delivery-day="2"
+    >
+
+      <div class="delivery-day-name">
+
+        <strong>
+          Вторник
+        </strong>
+
+        <span>
+          ВТ
+        </span>
+
+      </div>
+
+
+      <label class="delivery-switch">
+
+        <input
+          type="checkbox"
+          data-delivery-active
+        >
+
+        <span class="delivery-switch-ui"></span>
+
+      </label>
+
+
+      <div class="delivery-source">
+
+        <span>
+          Формируется заказом
+        </span>
+
+        <select data-delivery-source>
+
+          <option value="monday">
+            Понедельник
+          </option>
+
+          <option value="thursday">
+            Четверг
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- СР -->
+
+    <div
+      class="delivery-day"
+      data-delivery-day="3"
+    >
+
+      <div class="delivery-day-name">
+
+        <strong>
+          Среда
+        </strong>
+
+        <span>
+          СР
+        </span>
+
+      </div>
+
+
+      <label class="delivery-switch">
+
+        <input
+          type="checkbox"
+          data-delivery-active
+        >
+
+        <span class="delivery-switch-ui"></span>
+
+      </label>
+
+
+      <div class="delivery-source">
+
+        <span>
+          Формируется заказом
+        </span>
+
+        <select data-delivery-source>
+
+          <option value="monday">
+            Понедельник
+          </option>
+
+          <option value="thursday">
+            Четверг
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- ЧТ -->
+
+    <div
+      class="delivery-day"
+      data-delivery-day="4"
+    >
+
+      <div class="delivery-day-name">
+
+        <strong>
+          Четверг
+        </strong>
+
+        <span>
+          ЧТ
+        </span>
+
+      </div>
+
+
+      <label class="delivery-switch">
+
+        <input
+          type="checkbox"
+          data-delivery-active
+        >
+
+        <span class="delivery-switch-ui"></span>
+
+      </label>
+
+
+      <div class="delivery-source">
+
+        <span>
+          Формируется заказом
+        </span>
+
+        <select data-delivery-source>
+
+          <option value="monday">
+            Понедельник
+          </option>
+
+          <option value="thursday">
+            Четверг
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- ПТ -->
+
+    <div
+      class="delivery-day"
+      data-delivery-day="5"
+    >
+
+      <div class="delivery-day-name">
+
+        <strong>
+          Пятница
+        </strong>
+
+        <span>
+          ПТ
+        </span>
+
+      </div>
+
+
+      <label class="delivery-switch">
+
+        <input
+          type="checkbox"
+          data-delivery-active
+        >
+
+        <span class="delivery-switch-ui"></span>
+
+      </label>
+
+
+      <div class="delivery-source">
+
+        <span>
+          Формируется заказом
+        </span>
+
+        <select data-delivery-source>
+
+          <option value="monday">
+            Понедельник
+          </option>
+
+          <option value="thursday">
+            Четверг
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- СБ -->
+
+    <div
+      class="delivery-day"
+      data-delivery-day="6"
+    >
+
+      <div class="delivery-day-name">
+
+        <strong>
+          Суббота
+        </strong>
+
+        <span>
+          СБ
+        </span>
+
+      </div>
+
+
+      <label class="delivery-switch">
+
+        <input
+          type="checkbox"
+          data-delivery-active
+        >
+
+        <span class="delivery-switch-ui"></span>
+
+      </label>
+
+
+      <div class="delivery-source">
+
+        <span>
+          Формируется заказом
+        </span>
+
+        <select data-delivery-source>
+
+          <option value="monday">
+            Понедельник
+          </option>
+
+          <option value="thursday">
+            Четверг
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- ВС -->
+
+    <div
+      class="delivery-day"
+      data-delivery-day="7"
+    >
+
+      <div class="delivery-day-name">
+
+        <strong>
+          Воскресенье
+        </strong>
+
+        <span>
+          ВС
+        </span>
+
+      </div>
+
+
+      <label class="delivery-switch">
+
+        <input
+          type="checkbox"
+          data-delivery-active
+        >
+
+        <span class="delivery-switch-ui"></span>
+
+      </label>
+
+
+      <div class="delivery-source">
+
+        <span>
+          Формируется заказом
+        </span>
+
+        <select data-delivery-source>
+
+          <option value="monday">
+            Понедельник
+          </option>
+
+          <option value="thursday">
+            Четверг
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
+  <div class="delivery-summary">
+
+    <div class="delivery-summary-title">
+
+      <span>
+        Схема заказов
+      </span>
+
+      <strong>
+        Результат настройки
+      </strong>
+
+      <small id="delivery-summary-group">
+        Основные товары
+      </small>
+
+    </div>
+
+
+    <div class="delivery-summary-grid">
+
+      <div class="delivery-summary-card">
+
+        <span>
+          Заказ в понедельник
+        </span>
+
+        <strong id="delivery-monday-summary">
+          Нет поставок
+        </strong>
+
+      </div>
+
+
+      <div class="delivery-summary-card">
+
+        <span>
+          Заказ в четверг
+        </span>
+
+        <strong id="delivery-thursday-summary">
+          Нет поставок
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+
+  <div class="delivery-footer">
+
+    <div
+      class="delivery-save-status"
+      id="delivery-save-status"
+    >
+      Настройки не изменены
+    </div>
+
+
+    <button
+      class="delivery-save-button"
+      id="delivery-save-button"
+      type="button"
+    >
+      Сохранить графики
+    </button>
+
+  </div>
+
+</section>

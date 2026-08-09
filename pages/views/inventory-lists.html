@@ -1,0 +1,787 @@
+<section
+  class="inventory-lists-page"
+  data-page="inventory-lists"
+>
+  <!-- Верхняя панель -->
+
+  <header class="lists-topbar">
+
+    <div class="lists-topbar-left">
+
+      <button
+        id="sidebar-open"
+        class="menu-button"
+        type="button"
+        aria-label="Открыть меню"
+      >
+        ☰
+      </button>
+
+      <div>
+        <p class="lists-page-label">
+          Управление бланками
+        </p>
+
+        <h1>
+          Списки инвентаризации
+        </h1>
+      </div>
+
+    </div>
+
+    <div class="lists-topbar-actions">
+
+      <button
+        id="open-category-modal"
+        class="lists-secondary-button"
+        type="button"
+      >
+        + Добавить раздел
+      </button>
+
+      <button
+        id="open-product-modal"
+        class="lists-primary-button"
+        type="button"
+      >
+        + Добавить позицию
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <div class="lists-content">
+
+    <!-- Описание -->
+
+    <section class="lists-intro-card">
+
+      <div>
+
+        <p class="lists-intro-label">
+          Настройка списков
+        </p>
+
+        <h2>
+          Выберите день недели
+        </h2>
+
+        <p>
+          Для каждого дня можно настроить отдельный список
+          товаров, которые будут отображаться в печатном
+          бланке инвентаризации.
+        </p>
+
+      </div>
+
+      <a
+        href="#inventory"
+        class="lists-preview-button"
+      >
+        Открыть бланк
+      </a>
+
+    </section>
+
+
+    <!-- Дни недели -->
+
+    <section class="weekday-card">
+
+      <div class="weekday-tabs">
+
+        <button
+          class="weekday-tab active"
+          type="button"
+          data-weekday="1"
+          data-weekday-name="Понедельник"
+        >
+          <span>Пн</span>
+          <small>Понедельник</small>
+        </button>
+
+        <button
+          class="weekday-tab"
+          type="button"
+          data-weekday="2"
+          data-weekday-name="Вторник"
+        >
+          <span>Вт</span>
+          <small>Вторник</small>
+        </button>
+
+        <button
+          class="weekday-tab"
+          type="button"
+          data-weekday="3"
+          data-weekday-name="Среда"
+        >
+          <span>Ср</span>
+          <small>Среда</small>
+        </button>
+
+        <button
+          class="weekday-tab"
+          type="button"
+          data-weekday="4"
+          data-weekday-name="Четверг"
+        >
+          <span>Чт</span>
+          <small>Четверг</small>
+        </button>
+
+        <button
+          class="weekday-tab"
+          type="button"
+          data-weekday="5"
+          data-weekday-name="Пятница"
+        >
+          <span>Пт</span>
+          <small>Пятница</small>
+        </button>
+
+        <button
+          class="weekday-tab"
+          type="button"
+          data-weekday="6"
+          data-weekday-name="Суббота"
+        >
+          <span>Сб</span>
+          <small>Суббота</small>
+        </button>
+
+        <button
+          class="weekday-tab"
+          type="button"
+          data-weekday="7"
+          data-weekday-name="Воскресенье"
+        >
+          <span>Вс</span>
+          <small>Воскресенье</small>
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- Статистика -->
+
+    <section class="lists-stats-grid">
+
+      <article class="lists-stat-card">
+
+        <span>
+          Выбранный день
+        </span>
+
+        <strong id="selected-weekday-name">
+          Понедельник
+        </strong>
+
+      </article>
+
+
+      <article class="lists-stat-card">
+
+        <span>
+          Количество разделов
+        </span>
+
+        <strong id="categories-count">
+          0
+        </strong>
+
+      </article>
+
+
+      <article class="lists-stat-card">
+
+        <span>
+          Количество позиций
+        </span>
+
+        <strong id="products-count">
+          0
+        </strong>
+
+      </article>
+
+    </section>
+
+
+    <!-- Панель управления -->
+
+    <section class="lists-toolbar">
+
+      <div class="lists-search">
+
+        <span class="lists-search-icon">
+          ⌕
+        </span>
+
+        <input
+          id="inventory-list-search"
+          type="search"
+          placeholder="Поиск по коду или наименованию"
+          autocomplete="off"
+        >
+
+      </div>
+
+
+      <div class="lists-toolbar-actions">
+
+        <button
+          id="copy-list-button"
+          class="lists-toolbar-button"
+          type="button"
+        >
+          Копировать список
+        </button>
+
+        <button
+          id="refresh-list-button"
+          class="lists-toolbar-button"
+          type="button"
+        >
+          Обновить
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- Список -->
+
+    <section class="lists-main-card">
+
+      <div class="lists-main-heading">
+
+        <div>
+
+          <p>
+            Список на день
+          </p>
+
+          <h2 id="list-title-weekday">
+            Понедельник
+          </h2>
+
+        </div>
+
+
+        <span
+          id="list-loading-status"
+          class="list-status-badge"
+        >
+          Загрузка
+        </span>
+
+      </div>
+
+
+      <div
+        id="inventory-categories-container"
+        class="inventory-categories-container"
+      >
+
+        <div class="lists-loading-state">
+
+          <div class="lists-loading-spinner"></div>
+
+          <span>
+            Загрузка списка...
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Пустой список -->
+
+      <div
+        id="inventory-list-empty"
+        class="lists-empty-state hidden"
+      >
+
+        <div class="lists-empty-icon">
+          ≡
+        </div>
+
+        <h3>
+          Список пока пуст
+        </h3>
+
+        <p>
+          Добавьте первый раздел, затем создайте
+          позиции для выбранного дня недели.
+        </p>
+
+        <div class="lists-empty-actions">
+
+          <button
+            class="lists-secondary-button"
+            type="button"
+            data-action="open-category-modal"
+          >
+            + Добавить раздел
+          </button>
+
+          <button
+            class="lists-primary-button"
+            type="button"
+            data-action="open-product-modal"
+          >
+            + Добавить позицию
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- =================================================
+       МОДАЛЬНОЕ ОКНО: КАТЕГОРИЯ
+  ================================================== -->
+
+  <div
+    id="category-modal"
+    class="lists-modal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="lists-modal-overlay"
+      data-close-modal="category-modal"
+    ></div>
+
+
+    <div
+      class="lists-modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="category-modal-title"
+    >
+
+      <div class="lists-modal-header">
+
+        <div>
+
+          <p>
+            Раздел инвентаризации
+          </p>
+
+          <h2 id="category-modal-title">
+            Добавить раздел
+          </h2>
+
+        </div>
+
+        <button
+          class="lists-modal-close"
+          type="button"
+          data-close-modal="category-modal"
+          aria-label="Закрыть"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form id="category-form">
+
+        <input
+          id="category-id"
+          type="hidden"
+        >
+
+
+        <label class="lists-form-field">
+
+          <span>
+            Название раздела
+          </span>
+
+          <input
+            id="category-name"
+            type="text"
+            placeholder="Например: Freezer"
+            maxlength="100"
+            required
+          >
+
+        </label>
+
+
+        <label class="lists-form-field">
+
+          <span>
+            Порядок отображения
+          </span>
+
+          <input
+            id="category-sort-order"
+            type="number"
+            min="0"
+            value="0"
+            required
+          >
+
+        </label>
+
+
+        <div class="lists-modal-actions">
+
+          <button
+            class="lists-cancel-button"
+            type="button"
+            data-close-modal="category-modal"
+          >
+            Отмена
+          </button>
+
+          <button
+            id="category-submit-button"
+            class="lists-primary-button"
+            type="submit"
+          >
+            Сохранить
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =================================================
+       МОДАЛЬНОЕ ОКНО: ТОВАР
+  ================================================== -->
+
+  <div
+    id="product-modal"
+    class="lists-modal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="lists-modal-overlay"
+      data-close-modal="product-modal"
+    ></div>
+
+
+    <div
+      class="lists-modal-dialog lists-product-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="product-modal-title"
+    >
+
+      <div class="lists-modal-header">
+
+        <div>
+
+          <p>
+            Позиция инвентаризации
+          </p>
+
+          <h2 id="product-modal-title">
+            Добавить позицию
+          </h2>
+
+        </div>
+
+        <button
+          class="lists-modal-close"
+          type="button"
+          data-close-modal="product-modal"
+          aria-label="Закрыть"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form id="product-form">
+
+        <input
+          id="product-id"
+          type="hidden"
+        >
+
+
+        <div class="lists-form-grid">
+
+          <label class="lists-form-field">
+
+            <span>
+              Код товара
+            </span>
+
+            <input
+              id="product-code"
+              type="text"
+              placeholder="0001"
+              maxlength="50"
+              required
+            >
+
+          </label>
+
+
+          <label class="lists-form-field">
+
+            <span>
+              Раздел
+            </span>
+
+            <select
+              id="product-category"
+              required
+            >
+              <option value="">
+                Выберите раздел
+              </option>
+            </select>
+
+          </label>
+
+
+          <label class="lists-form-field lists-form-field-full">
+
+            <span>
+              Наименование
+            </span>
+
+            <input
+              id="product-name"
+              type="text"
+              placeholder="БУЛОЧКА REG ФРИЗ"
+              maxlength="250"
+              required
+            >
+
+          </label>
+
+
+          <label class="lists-form-field lists-form-field-full">
+
+            <span>
+              Порядок в списке
+            </span>
+
+            <input
+              id="product-sort-order"
+              type="number"
+              min="0"
+              value="0"
+              required
+            >
+
+          </label>
+
+        </div>
+
+
+        <fieldset class="product-weekdays-fieldset">
+
+          <legend>
+            Дни инвентаризации
+          </legend>
+
+
+          <div class="product-weekdays-grid">
+
+            <label>
+              <input
+                type="checkbox"
+                name="product-weekday"
+                value="1"
+              >
+              <span>Пн</span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="product-weekday"
+                value="2"
+              >
+              <span>Вт</span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="product-weekday"
+                value="3"
+              >
+              <span>Ср</span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="product-weekday"
+                value="4"
+              >
+              <span>Чт</span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="product-weekday"
+                value="5"
+              >
+              <span>Пт</span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="product-weekday"
+                value="6"
+              >
+              <span>Сб</span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="product-weekday"
+                value="7"
+              >
+              <span>Вс</span>
+            </label>
+
+          </div>
+
+        </fieldset>
+
+
+        <div class="lists-modal-actions">
+
+          <button
+            class="lists-cancel-button"
+            type="button"
+            data-close-modal="product-modal"
+          >
+            Отмена
+          </button>
+
+          <button
+            id="product-submit-button"
+            class="lists-primary-button"
+            type="submit"
+          >
+            Сохранить
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- Модальное подтверждение удаления -->
+
+  <!-- =================================================
+     МОДАЛЬНОЕ ОКНО: ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ
+================================================== -->
+
+    <div
+      id="confirm-modal"
+      class="lists-modal"
+      aria-hidden="true"
+    >
+      <div
+        class="lists-modal-overlay"
+        data-confirm-cancel
+      ></div>
+
+      <div
+        class="lists-modal-dialog confirm-modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-modal-title"
+      >
+
+        <button
+          class="lists-modal-close"
+          type="button"
+          data-confirm-cancel
+          aria-label="Закрыть"
+        >
+          ×
+        </button>
+
+        <div class="confirm-modal-icon">
+          !
+        </div>
+
+        <div class="confirm-modal-content">
+
+          <p class="confirm-modal-label">
+            Подтверждение действия
+          </p>
+
+          <h2 id="confirm-modal-title">
+            Удалить позицию?
+          </h2>
+
+          <p id="confirm-modal-message">
+            Вы действительно хотите удалить выбранную позицию?
+          </p>
+
+        </div>
+
+        <div class="confirm-modal-actions">
+
+          <button
+            class="lists-cancel-button"
+            type="button"
+            data-confirm-cancel
+          >
+            Отмена
+          </button>
+
+          <button
+            id="confirm-modal-submit"
+            class="lists-danger-button"
+            type="button"
+            data-confirm-submit
+          >
+            Удалить
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+    
+  <!-- Уведомления -->
+
+  <div
+    id="lists-toast-container"
+    class="lists-toast-container"
+    aria-live="polite"
+  ></div>
+
+</section>

@@ -1,0 +1,527 @@
+/* =====================================================
+   I’M | ЗАКАЗ
+   STEP 3 — COLA
+===================================================== */
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.step3-cola-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 8px;
+
+  margin-bottom: 12px;
+}
+
+
+.step3-cola-summary-card {
+  min-height: 70px;
+
+  padding: 12px;
+
+  border: 1px solid #e0e1e3;
+  border-radius: 11px;
+
+  background: #ffffff;
+}
+
+
+.step3-cola-summary-card span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #92959a;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+
+.step3-cola-summary-card strong {
+  display: block;
+
+  color: #202124;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+
+.step3-cola-summary-card small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #9b9ea3;
+
+  font-size: 7px;
+}
+
+
+.step3-cola-summary-card.is-accent {
+  border-color: #f1c341;
+
+  background: #fff9e7;
+}
+
+
+.step3-cola-summary-card.is-danger {
+  border-color: #f1b6b0;
+
+  background: #fff3f2;
+}
+
+
+.step3-cola-summary-card.is-danger strong {
+  color: #b42318;
+}
+
+
+/* =====================================================
+   WARNING
+===================================================== */
+
+.step3-cola-warning {
+  margin-bottom: 12px;
+
+  padding: 11px 13px;
+
+  border: 1px solid #f0b8b3;
+  border-radius: 10px;
+
+  color: #a8281e;
+  background: #fff3f2;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   LIST
+===================================================== */
+
+.step3-cola-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+
+/* =====================================================
+   PRODUCT CARD
+===================================================== */
+
+.step3-cola-card {
+  padding: 15px;
+
+  border: 1px solid #e0e1e3;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+
+.step3-cola-card.has-shortage {
+  border-color: #efb5af;
+}
+
+
+.step3-cola-card.has-error {
+  border-color: #eeb9b4;
+
+  background: #fff6f5;
+}
+
+
+.step3-cola-card-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 12px;
+}
+
+
+.step3-cola-product {
+  min-width: 0;
+}
+
+
+.step3-cola-product h3 {
+  margin: 0 0 4px;
+
+  color: #222326;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+.step3-cola-product-meta {
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 5px;
+
+  color: #93969b;
+
+  font-size: 8px;
+}
+
+
+.step3-cola-product-code {
+  padding: 3px 6px;
+
+  border-radius: 5px;
+
+  background: #f2f3f4;
+
+  color: #696c71;
+}
+
+
+/* =====================================================
+   RECOMMENDATION
+===================================================== */
+
+.step3-cola-recommendation {
+  flex-shrink: 0;
+
+  text-align: right;
+}
+
+
+.step3-cola-recommendation span {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #94979c;
+
+  font-size: 7px;
+
+  text-transform: uppercase;
+}
+
+
+.step3-cola-recommendation strong {
+  display: block;
+
+  color: #1f2022;
+
+  font-size: 22px;
+  font-weight: 900;
+
+  line-height: 1;
+}
+
+
+.step3-cola-recommendation strong em {
+  color: #8b8e93;
+
+  font-size: 9px;
+  font-style: normal;
+}
+
+
+.step3-cola-recommendation small {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #94979c;
+
+  font-size: 7px;
+}
+
+
+/* =====================================================
+   METRICS
+===================================================== */
+
+.step3-cola-metrics {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 6px;
+
+  margin-bottom: 12px;
+}
+
+
+.step3-cola-metric {
+  padding: 8px 10px;
+
+  border-radius: 8px;
+
+  background: #f7f7f8;
+}
+
+
+.step3-cola-metric span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #96999e;
+
+  font-size: 7px;
+}
+
+
+.step3-cola-metric strong {
+  color: #343539;
+
+  font-size: 10px;
+}
+
+
+/* =====================================================
+   EXISTING DELIVERY
+===================================================== */
+
+.step3-cola-known {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin: -3px 0 10px;
+
+  padding: 7px 9px;
+
+  border-radius: 7px;
+
+  background: #f3f7ff;
+
+  color: #566273;
+
+  font-size: 8px;
+}
+
+
+/* =====================================================
+   FORECAST
+===================================================== */
+
+.step3-cola-forecast-label {
+  margin-bottom: 7px;
+
+  color: #777a7f;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+
+.step3-cola-forecast {
+  display: grid;
+
+  grid-auto-columns:
+    minmax(110px, 1fr);
+
+  grid-auto-flow: column;
+
+  gap: 6px;
+
+  overflow-x: auto;
+
+  padding-bottom: 4px;
+}
+
+
+.step3-day {
+  position: relative;
+
+  min-height: 97px;
+
+  padding: 9px;
+
+  border: 1px solid #e3e4e6;
+  border-radius: 9px;
+
+  background: #fafafa;
+}
+
+
+.step3-day.is-delivery {
+  border-color: #edc74e;
+
+  background: #fff9e8;
+}
+
+
+.step3-day.is-shortage {
+  border-color: #e66d64;
+
+  background: #fff0ef;
+}
+
+
+.step3-day.is-zero:not(.is-shortage) {
+  border-color: #e2c16d;
+
+  background: #fffaf0;
+}
+
+
+.step3-day-top {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 4px;
+
+  margin-bottom: 8px;
+}
+
+
+.step3-day-weekday {
+  color: #55585d;
+
+  font-size: 8px;
+  font-weight: 900;
+}
+
+
+.step3-day-date {
+  color: #9a9da2;
+
+  font-size: 7px;
+}
+
+
+.step3-day-stock-label {
+  margin-bottom: 2px;
+
+  color: #979a9f;
+
+  font-size: 7px;
+}
+
+
+.step3-day-stock {
+  color: #252629;
+
+  font-size: 15px;
+  font-weight: 900;
+}
+
+
+.step3-day-stock small {
+  color: #898c91;
+
+  font-size: 7px;
+}
+
+
+.step3-day.is-shortage
+.step3-day-stock {
+  color: #b42318;
+}
+
+
+.step3-day-extra {
+  margin-top: 7px;
+
+  color: #8d9095;
+
+  font-size: 7px;
+}
+
+
+.step3-day-delivery {
+  margin-top: 6px;
+
+  color: #806200;
+
+  font-size: 7px;
+  font-weight: 800;
+}
+
+
+.step3-day-shortage {
+  margin-top: 6px;
+
+  color: #b42318;
+
+  font-size: 7px;
+  font-weight: 900;
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.step3-cola-error {
+  padding: 13px;
+
+  color: #a92c22;
+
+  font-size: 9px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 900px) {
+
+  .step3-cola-summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+
+  .step3-cola-summary-card:last-child {
+    grid-column:
+      span 2;
+  }
+
+}
+
+
+@media (max-width: 620px) {
+
+  .step3-cola-card-header {
+    flex-direction: column;
+  }
+
+
+  .step3-cola-recommendation {
+    text-align: left;
+  }
+
+
+  .step3-cola-metrics {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}

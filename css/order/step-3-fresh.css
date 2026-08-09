@@ -1,0 +1,304 @@
+/* =====================================================
+   I’M | ЗАКАЗ
+   STEP 3 — FRESH
+===================================================== */
+
+
+/* =====================================================
+   SUMMARY / WARNINGS
+===================================================== */
+
+.step3-fresh-warning {
+  margin-bottom: 12px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #f0c47b;
+  border-radius: 9px;
+
+  color: #8a5700;
+  background: #fff8e9;
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   PRODUCT CARD
+===================================================== */
+
+.step3-fresh-card {
+  padding: 15px;
+
+  border: 1px solid #e0e1e3;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+
+.step3-fresh-card.has-expiry {
+  border-color: #e6bd73;
+}
+
+
+.step3-fresh-card.has-shortage {
+  border-color: #efaaa4;
+}
+
+
+.step3-fresh-card.has-error {
+  border-color: #efaaa4;
+
+  background: #fff6f5;
+}
+
+
+/* =====================================================
+   LOTS
+===================================================== */
+
+.step3-fresh-lots {
+  margin-bottom: 12px;
+}
+
+
+.step3-fresh-lots-title {
+  margin-bottom: 7px;
+
+  color: #777a7f;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+
+.step3-fresh-lots-list {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+
+.step3-fresh-lot {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 7px 9px;
+
+  border: 1px solid #dedfe2;
+  border-radius: 8px;
+
+  background: #fafafa;
+}
+
+
+.step3-fresh-lot-date {
+  color: #616469;
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+
+.step3-fresh-lot-qty {
+  color: #252629;
+
+  font-size: 9px;
+  font-weight: 900;
+}
+
+
+.step3-fresh-lot.is-near {
+  border-color: #e8c16d;
+
+  background: #fff9e9;
+}
+
+
+.step3-fresh-lot.is-expired {
+  border-color: #e7a29b;
+
+  background: #fff0ef;
+}
+
+
+/* =====================================================
+   EXPIRY BADGE
+===================================================== */
+
+.step3-fresh-expiry-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 3px 6px;
+
+  border-radius: 5px;
+
+  color: #8c5700;
+  background: #fff1cf;
+
+  font-size: 7px;
+  font-weight: 800;
+}
+
+
+/* =====================================================
+   FORECAST DAY
+===================================================== */
+
+.step3-day.is-expiry {
+  border-color: #e5ba6c;
+
+  background: #fff8e8;
+}
+
+
+.step3-day-expiry {
+  margin-top: 6px;
+
+  color: #9a6200;
+
+  font-size: 7px;
+  font-weight: 900;
+}
+
+
+.step3-day-fefo {
+  margin-top: 5px;
+
+  color: #85888d;
+
+  font-size: 7px;
+}
+
+
+/* =====================================================
+   DELIVERY
+===================================================== */
+
+.step3-fresh-delivery-split {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-bottom: 12px;
+}
+
+
+.step3-fresh-delivery {
+  display: flex;
+
+  min-width: 155px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 8px 10px;
+
+  border: 1px solid #efd266;
+  border-radius: 8px;
+
+  background: #fff9e8;
+}
+
+
+.step3-fresh-delivery-date strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #4e4938;
+
+  font-size: 9px;
+}
+
+
+.step3-fresh-delivery-date small {
+  color: #98906f;
+
+  font-size: 7px;
+}
+
+
+.step3-fresh-delivery-qty {
+  text-align: right;
+}
+
+
+.step3-fresh-delivery-qty strong {
+  display: block;
+
+  color: #29230e;
+
+  font-size: 12px;
+  font-weight: 900;
+}
+
+
+.step3-fresh-delivery-qty small {
+  color: #92886d;
+
+  font-size: 7px;
+}
+
+
+/* =====================================================
+   KNOWN DELIVERY
+===================================================== */
+
+.step3-fresh-known {
+  margin-bottom: 10px;
+
+  padding: 8px 10px;
+
+  border: 1px solid #c9dcfa;
+  border-radius: 8px;
+
+  color: #4c617e;
+  background: #f1f6ff;
+
+  font-size: 8px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 620px) {
+
+  .step3-fresh-delivery-split {
+    display: grid;
+
+    grid-template-columns: 1fr;
+  }
+
+
+  .step3-fresh-delivery {
+    width: 100%;
+  }
+
+
+  .step3-fresh-lot {
+    width: 100%;
+
+    justify-content: space-between;
+  }
+
+}

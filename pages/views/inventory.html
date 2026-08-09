@@ -1,0 +1,322 @@
+<section
+  class="inventory-page"
+  data-page="inventory"
+>
+  <!-- Верхняя панель -->
+
+  <header class="inventory-topbar">
+
+    <div class="inventory-topbar-left">
+
+      <button
+        id="sidebar-open"
+        class="menu-button"
+        type="button"
+        aria-label="Открыть меню"
+      >
+        ☰
+      </button>
+
+      <div>
+        <p class="inventory-page-label">
+          Учет остатков
+        </p>
+
+        <h1>
+          Инвентаризация
+        </h1>
+      </div>
+
+    </div>
+
+    <div class="inventory-topbar-info">
+      <span>
+        Выбранный день
+      </span>
+
+      <strong id="topbar-weekday">
+        —
+      </strong>
+    </div>
+
+  </header>
+
+
+  <div class="inventory-content">
+
+    <!-- Выбор даты и действия -->
+
+    <section class="inventory-controls no-print">
+
+      <div class="inventory-date-block">
+
+        <label for="inventory-date">
+          Дата инвентаризации
+        </label>
+
+        <input
+          id="inventory-date"
+          type="date"
+        >
+
+      </div>
+
+
+      <div class="inventory-day-card">
+
+        <span class="inventory-day-label">
+          День недели
+        </span>
+
+        <strong id="inventory-weekday">
+          —
+        </strong>
+
+        <small id="inventory-date-formatted">
+          Выберите дату
+        </small>
+
+      </div>
+
+
+      <div class="inventory-actions">
+
+        <a
+          id="inventory-open-lists"
+          href="#inventory-lists"
+          class="inventory-secondary-button"
+        >
+          Настроить список
+        </a>
+
+        <button
+          id="inventory-print-button"
+          class="inventory-primary-button"
+          type="button"
+        >
+          Печать / PDF
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- Информация -->
+
+    <section class="inventory-info-grid no-print">
+
+      <article class="inventory-info-card">
+
+        <span>
+          Ресторан
+        </span>
+
+        <strong id="inventory-info-restaurant">
+          Загрузка...
+        </strong>
+
+      </article>
+
+
+      <article class="inventory-info-card">
+
+        <span>
+          ID ресторана
+        </span>
+
+        <strong id="inventory-info-code">
+          —
+        </strong>
+
+      </article>
+
+
+      <article class="inventory-info-card">
+
+        <span>
+          Список на день
+        </span>
+
+        <strong id="inventory-info-list-day">
+          —
+        </strong>
+
+      </article>
+
+
+      <article class="inventory-info-card">
+
+        <span>
+          Количество позиций
+        </span>
+
+        <strong id="inventory-items-count">
+          0
+        </strong>
+
+      </article>
+
+    </section>
+
+
+    <!-- Печатный бланк -->
+
+    <section
+      id="inventory-print-area"
+      class="inventory-sheet"
+    >
+
+      <header class="inventory-sheet-header">
+
+        <div class="inventory-sheet-brand">
+          I’M
+        </div>
+
+        <div class="inventory-sheet-title">
+
+          <p>
+            Бланк инвентаризации
+          </p>
+
+          <h2 id="inventory-sheet-weekday">
+            —
+          </h2>
+
+        </div>
+
+        <div class="inventory-sheet-meta">
+
+          <div>
+            <span>
+              Дата
+            </span>
+
+            <strong id="inventory-sheet-date">
+              —
+            </strong>
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <div class="inventory-restaurant-line">
+
+        <div>
+          <span>
+            Ресторан:
+          </span>
+
+          <strong id="inventory-sheet-restaurant">
+            —
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            ID ресторана:
+          </span>
+
+          <strong id="inventory-sheet-code">
+            —
+          </strong>
+        </div>
+
+      </div>
+
+
+     <div class="inventory-table-wrap">
+
+     <table class="inventory-table">
+        <colgroup>
+          <col class="inventory-col-number">
+          <col class="inventory-col-name">
+          <col class="inventory-col-count">
+          <col class="inventory-col-count">
+          <col class="inventory-col-count">
+        </colgroup>
+
+        <thead>
+          <tr>
+            <th class="inventory-column-number">
+              №
+            </th>
+
+            <th class="inventory-column-name">
+              Наименование
+            </th>
+
+            <th class="inventory-column-count">
+              case
+            </th>
+
+            <th class="inventory-column-count">
+              slv
+            </th>
+
+            <th class="inventory-column-count">
+              pcs
+            </th>
+          </tr>
+        </thead>
+
+        <tbody id="inventory-table-body">
+
+          <tr class="inventory-empty-row">
+            <td colspan="5">
+
+              <div class="inventory-empty-state">
+                <div>
+                  <strong>
+                    Список пока не настроен
+                  </strong>
+
+                  <span>
+                    Добавьте товары для выбранного дня недели
+                    в разделе «Списки инвентаризации».
+                  </span>
+                </div>
+              </div>
+
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+      <footer class="inventory-sheet-footer">
+
+        <div class="inventory-signature">
+
+          <span>
+            Ответственный:
+          </span>
+
+          <div></div>
+
+        </div>
+
+
+        <div class="inventory-signature">
+
+          <span>
+            Время завершения:
+          </span>
+
+          <div></div>
+
+        </div>
+
+      </footer>
+
+    </section>
+
+  </div>
+
+</section>

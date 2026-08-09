@@ -1,0 +1,872 @@
+/* =====================================================
+   SETTINGS SHELL
+===================================================== */
+
+.settings-page {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto;
+  padding: 26px 32px 40px;
+}
+
+
+.settings-tabs {
+  display: inline-flex;
+
+  gap: 5px;
+
+  margin-bottom: 18px;
+  padding: 5px;
+
+  border: 1px solid #e3e5e8;
+  border-radius: 14px;
+
+  background: #f4f5f6;
+}
+
+
+.settings-tab {
+  min-height: 40px;
+
+  padding: 0 17px;
+
+  border: 0;
+  border-radius: 10px;
+
+  color: #686c73;
+  background: transparent;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.settings-tab.is-active {
+  color: #171719;
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 4px
+    rgba(0, 0, 0, 0.08);
+}
+
+
+.settings-loading,
+.settings-error {
+  display: grid;
+
+  min-height: 250px;
+
+  place-items: center;
+
+  border: 1px solid var(--line);
+  border-radius: 18px;
+
+  background: #fff;
+}
+
+
+/* =====================================================
+   DELIVERY PAGE
+===================================================== */
+
+.delivery-settings {
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  border-radius: 20px;
+
+  background: #fff;
+}
+
+
+.delivery-settings-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+
+  padding: 26px 28px;
+
+  border-bottom: 1px solid #eceef0;
+}
+
+
+.delivery-kicker {
+  margin: 0 0 5px;
+
+  color: #a47a00;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+
+.delivery-settings-header h2 {
+  margin: 0;
+
+  color: #1b1c1f;
+
+  font-size: 23px;
+  font-weight: 800;
+}
+
+
+.delivery-settings-header p:not(.delivery-kicker) {
+  max-width: 650px;
+
+  margin: 7px 0 0;
+
+  color: #858990;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   ORDER DAYS
+===================================================== */
+
+.delivery-order-days {
+  min-width: 145px;
+
+  padding: 11px 13px;
+
+  border: 1px solid #e7e9ec;
+  border-radius: 13px;
+
+  background: #fafafa;
+}
+
+
+.delivery-order-days > span {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #858990;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+
+.delivery-order-days > div {
+  display: flex;
+
+  gap: 6px;
+}
+
+
+.delivery-order-days strong {
+  display: grid;
+
+  width: 42px;
+  height: 30px;
+
+  place-items: center;
+
+  border-radius: 8px;
+
+  color: #18191b;
+  background: var(--accent);
+
+  font-size: 10px;
+}
+
+
+/* =====================================================
+   DELIVERY GROUP
+===================================================== */
+
+.delivery-group-section {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding: 20px 28px;
+
+  border-bottom: 1px solid #eceef0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #fbfbfc 100%
+    );
+}
+
+
+.delivery-group-copy {
+  min-width: 0;
+}
+
+
+.delivery-group-copy > span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #95999f;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+
+.delivery-group-copy > strong {
+  display: block;
+
+  color: #222428;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+
+.delivery-group-copy > small {
+  display: block;
+
+  max-width: 510px;
+
+  margin-top: 4px;
+
+  color: #8b8f96;
+
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+
+.delivery-group-tabs {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(155px, 1fr));
+
+  gap: 8px;
+
+  min-width: 340px;
+}
+
+
+.delivery-group-tab {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  min-height: 58px;
+
+  padding: 9px 12px;
+
+  border: 1px solid #e1e4e7;
+  border-radius: 13px;
+
+  outline: none;
+
+  color: #60646a;
+  background: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+
+.delivery-group-tab:hover {
+  border-color: #cfd3d8;
+
+  transform:
+    translateY(-1px);
+}
+
+
+.delivery-group-tab.is-active {
+  border-color: #252629;
+
+  color: #18191b;
+  background: #fff;
+
+  box-shadow:
+    0 3px 10px
+    rgba(0, 0, 0, 0.08);
+}
+
+
+.delivery-group-tab-icon {
+  display: grid;
+
+  flex: 0 0 auto;
+
+  width: 32px;
+  height: 32px;
+
+  place-items: center;
+
+  border-radius: 9px;
+
+  color: #72767d;
+  background: #f1f2f3;
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+
+.delivery-group-tab.is-active
+.delivery-group-tab-icon {
+  color: #171717;
+  background: var(--accent);
+}
+
+
+.delivery-group-tab > span:last-child {
+  display: block;
+
+  min-width: 0;
+}
+
+
+.delivery-group-tab strong,
+.delivery-group-tab small {
+  display: block;
+}
+
+
+.delivery-group-tab strong {
+  color: inherit;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+.delivery-group-tab small {
+  margin-top: 3px;
+
+  color: #92969c;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   DAYS
+===================================================== */
+
+.delivery-days {
+  padding: 10px 28px 4px;
+}
+
+
+.delivery-day {
+  display: grid;
+
+  grid-template-columns:
+    minmax(170px, 1fr)
+    80px
+    minmax(240px, 1fr);
+
+  align-items: center;
+
+  gap: 18px;
+
+  min-height: 70px;
+
+  border-bottom: 1px solid #eceef0;
+}
+
+
+.delivery-day:last-child {
+  border-bottom: 0;
+}
+
+
+.delivery-day-name {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.delivery-day-name strong {
+  color: #27292d;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.delivery-day-name span {
+  display: grid;
+
+  width: 32px;
+  height: 25px;
+
+  place-items: center;
+
+  border-radius: 7px;
+
+  color: #73777e;
+  background: #f2f3f4;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+.delivery-day.is-active
+.delivery-day-name span {
+  color: #171717;
+  background:
+    rgba(
+      255,
+      205,
+      40,
+      0.25
+    );
+}
+
+
+/* =====================================================
+   SWITCH
+===================================================== */
+
+.delivery-switch {
+  position: relative;
+
+  display: inline-flex;
+
+  width: 43px;
+  height: 25px;
+}
+
+
+.delivery-switch input {
+  position: absolute;
+
+  opacity: 0;
+}
+
+
+.delivery-switch-ui {
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 999px;
+
+  background: #d9dce0;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.delivery-switch-ui::after {
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 19px;
+  height: 19px;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  content: "";
+
+  transition: 0.2s ease;
+
+  box-shadow:
+    0 1px 3px
+    rgba(0, 0, 0, 0.2);
+}
+
+
+.delivery-switch input:checked
++ .delivery-switch-ui {
+  background: #252629;
+}
+
+
+.delivery-switch input:checked
++ .delivery-switch-ui::after {
+  transform:
+    translateX(18px);
+}
+
+
+/* =====================================================
+   SOURCE
+===================================================== */
+
+.delivery-source {
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 12px;
+}
+
+
+.delivery-source span {
+  color: #858990;
+
+  font-size: 9px;
+}
+
+
+.delivery-source select {
+  width: 150px;
+  height: 39px;
+
+  padding: 0 10px;
+
+  border: 1px solid #dfe2e5;
+  border-radius: 9px;
+
+  outline: none;
+
+  color: #222428;
+  background: #fff;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+.delivery-source select:focus {
+  border-color: #bfc3c8;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(0, 0, 0, 0.04);
+}
+
+
+.delivery-day:not(.is-active)
+.delivery-source {
+  opacity: 0.35;
+}
+
+
+.delivery-day:not(.is-active)
+.delivery-source select {
+  pointer-events: none;
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.delivery-summary {
+  padding: 22px 28px;
+
+  border-top: 1px solid #eceef0;
+
+  background: #fafbfb;
+}
+
+
+.delivery-summary-title {
+  margin-bottom: 14px;
+}
+
+
+.delivery-summary-title span,
+.delivery-summary-title strong,
+.delivery-summary-title small {
+  display: block;
+}
+
+
+.delivery-summary-title span {
+  margin-bottom: 4px;
+
+  color: #95999f;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+
+.delivery-summary-title strong {
+  color: #232529;
+
+  font-size: 13px;
+}
+
+
+.delivery-summary-title small {
+  margin-top: 4px;
+
+  color: #969aa0;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.delivery-summary-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+
+.delivery-summary-card {
+  padding: 15px;
+
+  border: 1px solid #e5e7e9;
+  border-radius: 13px;
+
+  background: #fff;
+}
+
+
+.delivery-summary-card span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #898d94;
+
+  font-size: 9px;
+}
+
+
+.delivery-summary-card strong {
+  color: #232529;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.delivery-footer {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 18px 28px;
+
+  border-top: 1px solid #eceef0;
+}
+
+
+.delivery-save-status {
+  color: #858990;
+
+  font-size: 10px;
+}
+
+
+.delivery-save-status.is-success {
+  color: #438149;
+}
+
+
+.delivery-save-status.is-error {
+  color: #b43b3b;
+}
+
+
+.delivery-save-button {
+  min-height: 42px;
+
+  padding: 0 18px;
+
+  border: 0;
+  border-radius: 11px;
+
+  color: #171717;
+  background: var(--accent);
+
+  font-size: 11px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+
+.delivery-save-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .settings-page {
+    padding: 16px 12px 30px;
+  }
+
+
+  .settings-tabs {
+    display: flex;
+
+    width: 100%;
+  }
+
+
+  .settings-tab {
+    flex: 1;
+
+    padding: 0 8px;
+  }
+
+
+  .delivery-settings {
+    border-radius: 16px;
+  }
+
+
+  .delivery-settings-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    padding: 19px 16px;
+  }
+
+
+  .delivery-order-days {
+    width: 100%;
+  }
+
+
+  .delivery-group-section {
+    align-items: stretch;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+    padding: 17px 16px;
+  }
+
+
+  .delivery-group-tabs {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    width: 100%;
+    min-width: 0;
+  }
+
+
+  .delivery-group-tab {
+    min-height: 60px;
+
+    padding: 8px;
+  }
+
+
+  .delivery-group-tab-icon {
+    width: 29px;
+    height: 29px;
+  }
+
+
+  .delivery-days {
+    padding: 7px 16px;
+  }
+
+
+  .delivery-day {
+    grid-template-columns:
+      1fr auto;
+
+    gap: 10px;
+
+    padding: 13px 0;
+  }
+
+
+  .delivery-source {
+    grid-column: 1 / -1;
+
+    justify-content: space-between;
+  }
+
+
+  .delivery-source select {
+    width: 155px;
+  }
+
+
+  .delivery-summary {
+    padding: 18px 16px;
+  }
+
+
+  .delivery-summary-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .delivery-footer {
+    align-items: stretch;
+
+    flex-direction: column;
+
+    padding: 16px;
+  }
+
+
+  .delivery-save-button {
+    width: 100%;
+
+    min-height: 46px;
+  }
+
+}

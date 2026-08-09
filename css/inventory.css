@@ -1,0 +1,1323 @@
+:root {
+  --inventory-surface: #ffffff;
+  --inventory-surface-soft: #f7f7f8;
+
+  --inventory-text: #18191b;
+  --inventory-muted: #747880;
+  --inventory-line: #e3e5e8;
+
+  --inventory-accent: #ffc400;
+  --inventory-accent-hover: #e8b200;
+
+  --inventory-dark: #17181a;
+
+  --inventory-shadow:
+    0 14px 40px rgba(18, 20, 23, 0.07);
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.inventory-page {
+  min-height: 100vh;
+
+  color: var(--inventory-text);
+  background: #f4f5f7;
+}
+
+
+/* =====================================================
+   TOPBAR
+===================================================== */
+
+.inventory-topbar {
+  position: sticky;
+  z-index: 40;
+  top: 0;
+
+  display: flex;
+  min-height: 86px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 18px 34px;
+
+  border-bottom: 1px solid var(--inventory-line);
+
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+}
+
+.inventory-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.inventory-page-label {
+  margin: 0 0 4px;
+
+  color: var(--inventory-muted);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+
+.inventory-topbar h1 {
+  margin: 0;
+
+  font-size: 25px;
+  letter-spacing: -0.8px;
+}
+
+.inventory-topbar-info {
+  text-align: right;
+}
+
+.inventory-topbar-info span,
+.inventory-topbar-info strong {
+  display: block;
+}
+
+.inventory-topbar-info span {
+  margin-bottom: 4px;
+
+  color: var(--inventory-muted);
+
+  font-size: 10px;
+}
+
+.inventory-topbar-info strong {
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.inventory-content {
+  width: min(100%, 1440px);
+
+  margin: 0 auto;
+  padding: 34px;
+}
+
+
+/* =====================================================
+   CONTROLS
+===================================================== */
+
+.inventory-controls {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    minmax(220px, 1fr)
+    auto;
+  align-items: end;
+  gap: 18px;
+
+  padding: 24px;
+
+  border: 1px solid var(--inventory-line);
+  border-radius: 20px;
+
+  background: var(--inventory-surface);
+  box-shadow: var(--inventory-shadow);
+}
+
+.inventory-date-block {
+  display: grid;
+  gap: 9px;
+}
+
+.inventory-date-block label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.inventory-date-block input {
+  width: 100%;
+  height: 50px;
+
+  padding: 0 15px;
+
+  border: 1px solid var(--inventory-line);
+  border-radius: 12px;
+  outline: none;
+
+  color: var(--inventory-text);
+  background: #ffffff;
+
+  font: inherit;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inventory-date-block input:focus {
+  border-color: #c69a00;
+
+  box-shadow:
+    0 0 0 4px rgba(255, 196, 0, 0.16);
+}
+
+
+/* День недели */
+
+.inventory-day-card {
+  min-height: 76px;
+
+  padding: 14px 16px;
+
+  border-radius: 13px;
+
+  background: var(--inventory-surface-soft);
+}
+
+.inventory-day-card span,
+.inventory-day-card strong,
+.inventory-day-card small {
+  display: block;
+}
+
+.inventory-day-label {
+  margin-bottom: 6px;
+
+  color: var(--inventory-muted);
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.inventory-day-card strong {
+  margin-bottom: 4px;
+
+  font-size: 18px;
+  letter-spacing: -0.5px;
+}
+
+.inventory-day-card small {
+  color: var(--inventory-muted);
+
+  font-size: 11px;
+}
+
+
+/* Кнопки */
+
+.inventory-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inventory-primary-button,
+.inventory-secondary-button {
+  display: inline-flex;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 18px;
+
+  border-radius: 12px;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  transition: 0.2s ease;
+}
+
+.inventory-primary-button {
+  border: 0;
+
+  color: #161616;
+  background: var(--inventory-accent);
+}
+
+.inventory-primary-button:hover {
+  background: var(--inventory-accent-hover);
+
+  transform: translateY(-1px);
+}
+
+.inventory-secondary-button {
+  border: 1px solid var(--inventory-line);
+
+  color: var(--inventory-text);
+  background: #ffffff;
+}
+
+.inventory-secondary-button:hover {
+  border-color: #d4a600;
+  background: #fffdf3;
+}
+
+
+/* =====================================================
+   INFO CARDS
+===================================================== */
+
+.inventory-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+
+  margin-top: 18px;
+}
+
+.inventory-info-card {
+  min-width: 0;
+
+  padding: 17px 18px;
+
+  border: 1px solid var(--inventory-line);
+  border-radius: 15px;
+
+  background: var(--inventory-surface);
+  box-shadow: var(--inventory-shadow);
+}
+
+.inventory-info-card span,
+.inventory-info-card strong {
+  display: block;
+}
+
+.inventory-info-card span {
+  margin-bottom: 7px;
+
+  color: var(--inventory-muted);
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.inventory-info-card strong {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   INVENTORY SHEET
+===================================================== */
+
+.inventory-sheet {
+  margin-top: 22px;
+  padding: 30px;
+
+  border: 1px solid var(--inventory-line);
+  border-radius: 20px;
+
+  background: var(--inventory-surface);
+  box-shadow: var(--inventory-shadow);
+}
+
+.inventory-sheet-header {
+  display: grid;
+  grid-template-columns: 76px 1fr auto;
+  align-items: center;
+  gap: 20px;
+
+  padding-bottom: 22px;
+
+  border-bottom: 2px solid var(--inventory-dark);
+}
+
+.inventory-sheet-brand {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+
+  border-radius: 17px;
+
+  color: #151515;
+  background: var(--inventory-accent);
+
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.inventory-sheet-title p {
+  margin: 0 0 5px;
+
+  color: var(--inventory-muted);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.inventory-sheet-title h2 {
+  margin: 0;
+
+  font-size: 27px;
+  letter-spacing: -1px;
+}
+
+.inventory-sheet-meta {
+  min-width: 150px;
+  text-align: right;
+}
+
+.inventory-sheet-meta span,
+.inventory-sheet-meta strong {
+  display: block;
+}
+
+.inventory-sheet-meta span {
+  margin-bottom: 5px;
+
+  color: var(--inventory-muted);
+
+  font-size: 10px;
+}
+
+.inventory-sheet-meta strong {
+  font-size: 14px;
+}
+
+
+/* Restaurant */
+
+.inventory-restaurant-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 16px 0;
+
+  border-bottom: 1px solid var(--inventory-line);
+}
+
+.inventory-restaurant-line span {
+  color: var(--inventory-muted);
+
+  font-size: 11px;
+}
+
+.inventory-restaurant-line strong {
+  margin-left: 6px;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.inventory-table-wrap {
+  overflow-x: auto;
+
+  margin-top: 20px;
+}
+
+.inventory-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
+}
+
+.inventory-table th,
+.inventory-table td {
+  border: 1px solid #bfc2c7;
+
+  text-align: left;
+  vertical-align: middle;
+}
+
+.inventory-table th {
+  padding: 11px 10px;
+
+  color: #222222;
+  background: #f0f1f2;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.inventory-table td {
+  min-height: 44px;
+  padding: 10px;
+
+  font-size: 12px;
+}
+
+.inventory-column-number {
+  width: 52px;
+
+  text-align: center !important;
+}
+
+.inventory-column-unit {
+  width: 120px;
+}
+
+.inventory-column-quantity {
+  width: 140px;
+}
+
+.inventory-column-comment {
+  width: 230px;
+}
+
+.inventory-table tbody tr:not(.inventory-empty-row) {
+  height: 46px;
+}
+
+.inventory-table tbody tr:not(.inventory-empty-row) td:first-child {
+  text-align: center;
+
+  font-weight: 700;
+}
+
+
+/* Empty */
+
+.inventory-empty-row td {
+  padding: 0;
+}
+
+.inventory-empty-state {
+  display: grid;
+  min-height: 190px;
+  place-items: center;
+
+  padding: 30px;
+
+  text-align: center;
+}
+
+.inventory-empty-state strong,
+.inventory-empty-state span {
+  display: block;
+}
+
+.inventory-empty-state strong {
+  margin-bottom: 8px;
+
+  font-size: 15px;
+}
+
+.inventory-empty-state span {
+  max-width: 480px;
+
+  color: var(--inventory-muted);
+
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.inventory-sheet-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+
+  margin-top: 36px;
+}
+
+.inventory-signature {
+  display: grid;
+  gap: 16px;
+}
+
+.inventory-signature span {
+  color: var(--inventory-muted);
+
+  font-size: 11px;
+}
+
+.inventory-signature div {
+  height: 1px;
+
+  background: #555555;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+  .inventory-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .inventory-actions {
+    grid-column: 1 / -1;
+  }
+
+  .inventory-info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+@media (max-width: 820px) {
+  .inventory-topbar {
+    padding: 16px 22px;
+  }
+
+  .inventory-content {
+    padding: 22px;
+  }
+
+  .inventory-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-actions {
+    grid-column: auto;
+  }
+}
+
+
+@media (max-width: 650px) {
+  .inventory-topbar-info {
+    display: none;
+  }
+
+  .inventory-content {
+    padding: 16px;
+  }
+
+  .inventory-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .inventory-primary-button,
+  .inventory-secondary-button {
+    width: 100%;
+  }
+
+  .inventory-sheet {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .inventory-sheet-header {
+    grid-template-columns: 54px 1fr;
+  }
+
+  .inventory-sheet-brand {
+    width: 50px;
+    height: 50px;
+
+    border-radius: 14px;
+
+    font-size: 17px;
+  }
+
+  .inventory-sheet-meta {
+    grid-column: 1 / -1;
+
+    text-align: left;
+  }
+
+  .inventory-restaurant-line {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .inventory-sheet-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =====================================================
+   КОМПАКТНАЯ ПЕЧАТЬ ИНВЕНТАРИЗАЦИИ
+===================================================== */
+
+@page {
+  size: A4 portrait;
+  margin: 5mm;
+}
+
+
+@media print {
+  html,
+  body {
+    width: 210mm;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #ffffff !important;
+  }
+
+
+  /* Скрываем интерфейс сайта */
+
+  body * {
+    visibility: hidden;
+  }
+
+
+  #inventory-print-area,
+  #inventory-print-area * {
+    visibility: visible;
+  }
+
+
+  #inventory-print-area {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background: #ffffff !important;
+    box-shadow: none !important;
+
+    font-size: 8pt;
+    line-height: 1.08;
+  }
+
+
+  /* ===================================================
+     ШАПКА БЛАНКА
+  =================================================== */
+
+  .inventory-sheet-header {
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    align-items: center;
+    gap: 8px;
+
+    padding-bottom: 3mm;
+
+    border-bottom: 1.5px solid #111111;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+
+  .inventory-sheet-brand {
+    width: 32px;
+    height: 32px;
+
+    border-radius: 7px;
+
+    font-size: 11pt;
+
+    background: #d7d7d7 !important;
+
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+
+  .inventory-sheet-title p {
+    margin: 0 0 1mm;
+
+    font-size: 6.5pt;
+    letter-spacing: 0.6px;
+  }
+
+
+  .inventory-sheet-title h2 {
+    margin: 0;
+
+    font-size: 14pt;
+    line-height: 1;
+    letter-spacing: -0.3px;
+  }
+
+
+  .inventory-sheet-meta {
+    min-width: 38mm;
+
+    font-size: 7pt;
+    text-align: right;
+  }
+
+
+  .inventory-sheet-meta span {
+    margin-bottom: 1mm;
+
+    font-size: 6.5pt;
+  }
+
+
+  .inventory-sheet-meta strong {
+    font-size: 8pt;
+  }
+
+
+  /* ===================================================
+     ДАННЫЕ РЕСТОРАНА
+  =================================================== */
+
+  .inventory-restaurant-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 2.5mm 0;
+
+    border-bottom: 1px solid #cccccc;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+
+  .inventory-restaurant-line span {
+    font-size: 6.5pt;
+  }
+
+
+  .inventory-restaurant-line strong {
+    margin-left: 2mm;
+
+    font-size: 7.5pt;
+  }
+
+
+  /* ===================================================
+     ТАБЛИЦА
+  =================================================== */
+
+  .inventory-table-wrap {
+    overflow: visible;
+
+    margin-top: 3mm;
+  }
+
+
+  .inventory-table {
+    width: 100%;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    font-size: 7.5pt;
+    line-height: 1.08;
+  }
+
+
+  /*
+    Повторяем заголовок таблицы
+    на каждой печатной странице.
+  */
+
+  .inventory-table thead {
+    display: table-header-group;
+  }
+
+
+  .inventory-table tbody {
+    display: table-row-group;
+  }
+
+
+  .inventory-table th,
+  .inventory-table td {
+    border: 0.6px solid #555555;
+  }
+
+
+  .inventory-table th {
+    height: 6mm;
+
+    padding: 1mm 1.3mm;
+
+    color: #111111 !important;
+    background: #eeeeee !important;
+
+    font-size: 6.5pt;
+    line-height: 1;
+    text-transform: uppercase;
+
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+
+  /*
+    Главное изменение:
+    больше места отдаем наименованию,
+    а пустые колонки делаем уже.
+  */
+
+  .inventory-column-number {
+    width: 9mm !important;
+  }
+
+
+  .inventory-column-name {
+    width: auto !important;
+  }
+
+
+  .inventory-column-count {
+    width: 14mm !important;
+  }
+
+
+  .inventory-product-row {
+    height: 5.6mm !important;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+
+  .inventory-product-row td {
+    height: 5.6mm !important;
+
+    padding: 0.8mm 1.3mm !important;
+
+    font-size: 7.5pt;
+    line-height: 1.08;
+    vertical-align: middle;
+  }
+
+
+  .inventory-number-cell {
+    padding-right: 0.5mm !important;
+    padding-left: 0.5mm !important;
+
+    font-size: 7pt !important;
+    text-align: center !important;
+  }
+
+
+  .inventory-name-cell {
+    font-size: 7.5pt !important;
+    font-weight: 500;
+
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+
+  .inventory-value-cell {
+    min-width: 0 !important;
+    height: 5.6mm !important;
+
+    padding: 0 !important;
+  }
+
+
+  /* ===================================================
+     НАЗВАНИЯ РАЗДЕЛОВ
+  =================================================== */
+
+  .inventory-category-row {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+
+  .inventory-category-row td {
+    height: 6mm;
+
+    padding: 1mm !important;
+
+    background: #ffffff !important;
+
+    font-size: 8pt;
+    line-height: 1;
+    font-weight: 700;
+    text-align: center;
+
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+
+  /* Чередование строк */
+
+  .inventory-row-blue {
+    background: #e6f0f8 !important;
+
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+
+  .inventory-row-white {
+    background: #ffffff !important;
+  }
+
+
+  /* ===================================================
+     ПОДПИСИ В КОНЦЕ
+  =================================================== */
+
+  .inventory-sheet-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15mm;
+
+    margin-top: 5mm;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+
+  .inventory-signature {
+    gap: 3mm;
+  }
+
+
+  .inventory-signature span {
+    font-size: 7pt;
+  }
+
+
+  /* Не разрываем строки между страницами */
+
+  .inventory-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* =====================================================
+   ШИРИНА КОЛОНОК ИНВЕНТАРИЗАЦИИ
+===================================================== */
+
+/*
+  Экран:
+  № — 5%
+  Наименование — 71%
+  CASE / SLV / PCS — по 8%
+*/
+
+.inventory-col-number {
+  width: 5%;
+}
+
+.inventory-col-name {
+  width: 71%;
+}
+
+.inventory-col-count {
+  width: 8%;
+}
+
+.inventory-column-number {
+  width: auto !important;
+  text-align: center !important;
+}
+
+.inventory-column-name {
+  width: auto !important;
+}
+
+.inventory-column-count {
+  width: auto !important;
+  text-align: center !important;
+}
+
+.inventory-name-cell {
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+
+/* =====================================================
+   ШИРИНА КОЛОНОК ПРИ ПЕЧАТИ
+===================================================== */
+
+@media print {
+
+  /*
+    № — 8 мм
+    CASE / SLV / PCS — по 14 мм
+    Все оставшееся место получает наименование
+  */
+
+  .inventory-col-number {
+    width: 8mm !important;
+  }
+
+  .inventory-col-name {
+    width: auto !important;
+  }
+
+  .inventory-col-count {
+    width: 14mm !important;
+  }
+
+  .inventory-column-number {
+    width: 8mm !important;
+  }
+
+  .inventory-column-name {
+    width: auto !important;
+  }
+
+  .inventory-column-count {
+    width: 14mm !important;
+    padding-right: 1mm !important;
+    padding-left: 1mm !important;
+    text-align: center !important;
+  }
+
+  .inventory-number-cell {
+    width: 8mm !important;
+  }
+
+  .inventory-name-cell {
+    width: auto !important;
+
+    padding-right: 1.5mm !important;
+    padding-left: 1.5mm !important;
+
+    font-size: 7.5pt !important;
+    line-height: 1.05 !important;
+
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .inventory-value-cell {
+    width: 14mm !important;
+    min-width: 14mm !important;
+    max-width: 14mm !important;
+
+    padding: 0 !important;
+  }
+}
+
+/* =====================================================
+   ФИНАЛЬНЫЕ РАЗМЕРЫ ТАБЛИЦЫ ИНВЕНТАРИЗАЦИИ
+===================================================== */
+
+.inventory-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+
+/* =====================================================
+   ШИРИНА КОЛОНОК НА ЭКРАНЕ
+===================================================== */
+
+.inventory-table col.inventory-col-number {
+  width: 4% !important;
+}
+
+.inventory-table col.inventory-col-name {
+  width: 42% !important;
+}
+
+.inventory-table col.inventory-col-count {
+  width: 18% !important;
+}
+
+
+.inventory-table th:nth-child(1),
+.inventory-table td:nth-child(1) {
+  width: 4% !important;
+}
+
+.inventory-table th:nth-child(2),
+.inventory-table td:nth-child(2) {
+  width: 42% !important;
+}
+
+.inventory-table th:nth-child(3),
+.inventory-table th:nth-child(4),
+.inventory-table th:nth-child(5),
+.inventory-table td:nth-child(3),
+.inventory-table td:nth-child(4),
+.inventory-table td:nth-child(5) {
+  width: 18% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+
+/* Строки на экране */
+
+.inventory-product-row {
+  height: 34px !important;
+}
+
+.inventory-product-row td {
+  height: 34px !important;
+  padding: 6px 8px !important;
+
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.inventory-name-cell {
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+.inventory-value-cell {
+  padding: 0 !important;
+}
+
+
+/* =====================================================
+   ПЕЧАТЬ / PDF
+===================================================== */
+
+@media print {
+
+  /*
+    № — 4%
+    Наименование — 48%
+    CASE / SLV / PCS — по 16%
+  */
+
+  .inventory-table col.inventory-col-number {
+    width: 4% !important;
+  }
+
+  .inventory-table col.inventory-col-name {
+    width: 42% !important;
+  }
+
+  .inventory-table col.inventory-col-count {
+    width: 18% !important;
+  }
+
+
+  .inventory-table th:nth-child(1),
+  .inventory-table td:nth-child(1) {
+    width: 4% !important;
+    min-width: 4% !important;
+    max-width: 4% !important;
+  }
+
+  .inventory-table th:nth-child(2),
+  .inventory-table td:nth-child(2) {
+    width: 42% !important;
+    min-width: 42% !important;
+    max-width: 42% !important;
+  }
+
+  .inventory-table th:nth-child(3),
+  .inventory-table th:nth-child(4),
+  .inventory-table th:nth-child(5),
+  .inventory-table td:nth-child(3),
+  .inventory-table td:nth-child(4),
+  .inventory-table td:nth-child(5) {
+    width: 18% !important;
+    min-width: 18% !important;
+    max-width: 18% !important;
+  }
+
+
+  /* Заголовок таблицы */
+
+  .inventory-table th {
+    height: 7mm !important;
+
+    padding: 1.2mm 1.3mm !important;
+
+    font-size: 7.5pt !important;
+    line-height: 1.1 !important;
+    vertical-align: middle;
+  }
+
+
+  /* Строки товаров — больше воздуха */
+
+  .inventory-product-row {
+    height: 7mm !important;
+  }
+
+  .inventory-product-row td {
+    height: 7mm !important;
+
+    padding: 1.1mm 1.4mm !important;
+
+    font-size: 8.2pt !important;
+    line-height: 1.15 !important;
+    vertical-align: middle;
+  }
+
+
+  .inventory-number-cell {
+    padding-right: 0.5mm !important;
+    padding-left: 0.5mm !important;
+
+    font-size: 7.5pt !important;
+    text-align: center !important;
+  }
+
+
+  .inventory-name-cell {
+    padding-right: 1.5mm !important;
+    padding-left: 1.5mm !important;
+
+    font-size: 8.2pt !important;
+    line-height: 1.15 !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+
+
+  .inventory-value-cell {
+    padding: 0 !important;
+  }
+
+
+  /* Название раздела: Freezer, Cooler */
+
+  .inventory-category-row td {
+    height: 8mm !important;
+
+    padding: 1.5mm !important;
+
+    font-size: 8.5pt !important;
+    line-height: 1 !important;
+    vertical-align: middle;
+  }
+}

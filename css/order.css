@@ -1,0 +1,353 @@
+/* =====================================================
+   I’M | ЗАКАЗ
+   ОБЩАЯ ОБОЛОЧКА ЕЖЕНЕДЕЛЬНОГО ЗАКАЗА
+===================================================== */
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.order-page {
+  width: 100%;
+  max-width: 1500px;
+
+  margin: 0 auto;
+  padding: 26px 32px 42px;
+}
+
+
+/* =====================================================
+   STEPPER
+===================================================== */
+
+.order-stepper {
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 24px;
+  padding: 18px 22px;
+
+  border: 1px solid var(--line);
+  border-radius: 18px;
+
+  background: var(--surface);
+}
+
+
+/* STEP BUTTON */
+
+.order-step {
+  display: flex;
+  min-width: 145px;
+
+  align-items: center;
+  gap: 10px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: #92969e;
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+
+/* NUMBER */
+
+.order-step-number {
+  display: grid;
+
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  place-items: center;
+
+  border: 1px solid #d9dce1;
+  border-radius: 50%;
+
+  background: #f7f8f9;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  transition: 0.2s ease;
+}
+
+
+/* TEXT */
+
+.order-step-text {
+  display: block;
+}
+
+
+.order-step-text strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #656971;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.order-step-text small {
+  display: block;
+
+  color: #92969e;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   ACTIVE STEP
+===================================================== */
+
+.order-step.is-active
+.order-step-number {
+  border-color: var(--accent);
+
+  color: #171717;
+
+  background: var(--accent);
+}
+
+
+.order-step.is-active
+.order-step-text strong {
+  color: #171717;
+}
+
+
+.order-step.is-active
+.order-step-text small {
+  color: #747880;
+}
+
+
+/* =====================================================
+   COMPLETE STEP
+===================================================== */
+
+.order-step.is-complete
+.order-step-number {
+  border-color: #242527;
+
+  color: #ffffff;
+
+  background: #242527;
+}
+
+
+.order-step.is-complete
+.order-step-text strong {
+  color: #44474c;
+}
+
+
+/* =====================================================
+   HOVER
+===================================================== */
+
+.order-step:hover
+.order-step-number {
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   LINE
+===================================================== */
+
+.order-step-line {
+  height: 1px;
+
+  flex: 1;
+
+  min-width: 25px;
+
+  margin: 0 14px;
+
+  background: #e4e6e9;
+}
+
+
+/* =====================================================
+   STEP CONTAINER
+===================================================== */
+
+.order-step-container {
+  width: 100%;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.order-step-loading {
+  display: grid;
+
+  min-height: 300px;
+
+  place-items: center;
+
+  border: 1px solid var(--line);
+  border-radius: 18px;
+
+  color: var(--muted);
+
+  background: var(--surface);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.order-step-error {
+  display: flex;
+
+  min-height: 300px;
+
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  gap: 10px;
+
+  padding: 30px;
+
+  border: 1px solid #ead9d9;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  text-align: center;
+}
+
+
+.order-step-error strong {
+  color: #b33232;
+
+  font-size: 14px;
+}
+
+
+.order-step-error span {
+  max-width: 600px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+
+.order-step-error button {
+  min-height: 40px;
+
+  margin-top: 6px;
+  padding: 0 18px;
+
+  border: 0;
+  border-radius: 10px;
+
+  color: #171717;
+  background: var(--accent);
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 980px) {
+
+  .order-stepper {
+    overflow-x: auto;
+  }
+
+
+  .order-step {
+    min-width: 135px;
+  }
+
+
+  .order-step-line {
+    min-width: 30px;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .order-page {
+    padding: 16px 12px 28px;
+  }
+
+
+  .order-stepper {
+    margin-bottom: 14px;
+    padding: 14px;
+
+    border-radius: 15px;
+  }
+
+
+  .order-step {
+    min-width: auto;
+  }
+
+
+  .order-step-text {
+    display: none;
+  }
+
+
+  .order-step-number {
+    width: 32px;
+    height: 32px;
+
+    flex-basis: 32px;
+  }
+
+
+  .order-step-line {
+    min-width: 20px;
+
+    margin: 0 8px;
+  }
+
+
+  .order-step-loading,
+  .order-step-error {
+    min-height: 220px;
+
+    border-radius: 15px;
+  }
+
+}

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+  <meta charset="UTF-8">
+
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+
+  <meta
+    name="description"
+    content="Система заказа и инвентаризации"
+  >
+
+
+  <title>
+    I’M | Заказ
+  </title>
+
+
+  <!-- GOOGLE FONT -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+
+
+  <!-- =====================================================
+       CSS
+  ====================================================== -->
+
+  <link
+    rel="stylesheet"
+    href="../css/sidebar.css"
+  >
+
+
+  <link
+    rel="stylesheet"
+    href="../css/dashboard.css"
+  >
+
+
+  <link
+    rel="stylesheet"
+    href="../css/temporary-page.css"
+  >
+
+
+  <link
+    rel="stylesheet"
+    href="../css/inventory.css"
+  >
+
+
+  <link
+    rel="stylesheet"
+    href="../css/inventory-lists.css"
+  >
+
+
+  <link
+    rel="stylesheet"
+    href="../css/order.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../css/deliveries.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="../css/delivery-sheet.css"
+  >
+
+</head>
+
+
+
+<body>
+
+
+  <div class="app-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         Создается через sidebar.js
+    ====================================================== -->
+
+    <div id="sidebar-container"></div>
+
+
+
+    <!-- =====================================================
+         ОСНОВНОЙ КОНТЕНТ
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+      <!--
+        Через page-loader.js сюда
+        загружаются страницы SPA
+      -->
+
+      <div
+        id="page-container"
+        class="dynamic-page-container"
+      >
+
+        <div class="page-loading">
+          Загрузка страницы...
+        </div>
+
+      </div>
+
+
+    </main>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       SUPABASE
+  ====================================================== -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+
+  <script
+    src="../js/supabase-config.js"
+  ></script>
+
+
+
+  <!-- =====================================================
+       APP JS
+  ====================================================== -->
+
+  <script
+    src="../js/sidebar.js"
+  ></script>
+
+
+  <script
+    src="../js/inventory.js"
+  ></script>
+
+
+  <script
+    src="../js/inventory-lists.js"
+  ></script>
+
+
+  <script
+    src="../js/order.js"
+  ></script>
+
+  <script src="../js/order/step-3-core.js"></script>
+  <script src="../js/order/step-3-cola.js"></script>
+
+  <script
+    src="../js/deliveries.js"
+  ></script>
+
+  <script
+    src="../js/delivery-sheet.js"
+  ></script>
+
+  <script 
+    src="../js/settings.js">
+  </script>
+
+
+  <script
+    src="../js/page-loader.js"
+  ></script>
+
+
+</body>
+
+</html>

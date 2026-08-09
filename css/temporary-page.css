@@ -1,0 +1,148 @@
+/* Временные страницы для проверки навигации */
+
+.page-topbar {
+  position: sticky;
+  z-index: 40;
+  top: 0;
+
+  display: flex;
+  min-height: 86px;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 34px;
+
+  border-bottom: 1px solid #e3e5e8;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+}
+
+.page-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.page-label {
+  margin: 0 0 4px;
+
+  color: #747880;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+
+.page-topbar h1 {
+  margin: 0;
+
+  font-size: 25px;
+  letter-spacing: -0.8px;
+}
+
+.menu-button {
+  display: none;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid #e3e5e8;
+  border-radius: 11px;
+
+  color: #18191b;
+  background: #ffffff;
+
+  font-size: 19px;
+}
+
+.temporary-content {
+  width: min(100% - 48px, 1200px);
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.temporary-card {
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+
+  padding: 40px;
+
+  border: 1px solid #e3e5e8;
+  border-radius: 24px;
+
+  background: #ffffff;
+  box-shadow: 0 14px 40px rgba(18, 20, 23, 0.07);
+
+  text-align: center;
+}
+
+.temporary-icon {
+  display: grid;
+  width: 70px;
+  height: 70px;
+  place-items: center;
+
+  margin: 0 auto 22px;
+
+  border-radius: 20px;
+
+  color: #171717;
+  background: #ffc400;
+
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.temporary-card h2 {
+  margin: 0 0 12px;
+
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+
+.temporary-card p {
+  max-width: 520px;
+  margin: 0;
+
+  color: #747880;
+
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.temporary-status {
+  display: inline-block;
+
+  margin-top: 22px;
+  padding: 8px 13px;
+
+  border-radius: 999px;
+
+  color: #087443;
+  background: #ecfdf3;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 820px) {
+  .menu-button {
+    display: block;
+  }
+
+  .page-topbar {
+    padding: 16px 22px;
+  }
+
+  .temporary-content {
+    width: min(100% - 32px, 1200px);
+    padding: 24px 0;
+  }
+
+  .temporary-card {
+    min-height: 300px;
+    padding: 28px 20px;
+  }
+}

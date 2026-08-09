@@ -1,0 +1,811 @@
+<section
+  class="stock-step"
+  id="order-stock-step"
+>
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="stock-header">
+
+  <div>
+
+    <p class="stock-kicker">
+      Шаг 1 из 4
+    </p>
+
+    <h2>
+      Подсчет остатков
+    </h2>
+
+    <p class="stock-description">
+      Внесите фактическое количество товара,
+      которое находится в ресторане сейчас.
+    </p>
+
+  </div>
+
+
+  <div class="stock-header-info">
+
+    <!-- DAY -->
+
+    <div class="stock-order-selector">
+
+      <span class="stock-order-selector-label">
+        День заказа
+      </span>
+
+
+      <div class="stock-order-day-buttons">
+
+        <button
+          class="stock-order-day-button"
+          type="button"
+          data-stock-order-day="monday"
+        >
+          ПН
+        </button>
+
+
+        <button
+          class="stock-order-day-button"
+          type="button"
+          data-stock-order-day="thursday"
+        >
+          ЧТ
+        </button>
+
+      </div>
+
+
+      <strong id="stock-order-date">
+        —
+      </strong>
+
+      <small id="stock-order-date-day">
+        —
+      </small>
+
+    </div>
+
+
+    <!-- PROGRESS -->
+
+    <div class="stock-progress">
+
+      <span>
+        Заполнено
+      </span>
+
+      <strong id="stock-progress-value">
+        0 / 0
+      </strong>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     ПОСТАВКА В ДЕНЬ ЗАКАЗА
+===================================================== -->
+
+<div
+    class="stock-same-day-delivery"
+    id="stock-same-day-delivery"
+    hidden>
+
+    <div class="stock-same-day-delivery-info">
+
+      <span>
+        Поставка в день заказа
+      </span>
+
+      <strong id="stock-same-day-delivery-title">
+        По графику сегодня есть поставка
+      </strong>
+
+      <small>
+        Укажите, приехала ли машина до начала подсчета.
+      </small>
+
+    </div>
+
+
+    <div class="stock-delivery-status-buttons">
+
+      <button
+        class="stock-delivery-status-button"
+        type="button"
+        data-stock-delivery-status="arrived"
+      >
+
+        <strong>
+          Уже приехала
+        </strong>
+
+        <span>
+          Остаток уже с учетом машины
+        </span>
+
+      </button>
+
+
+      <button
+        class="stock-delivery-status-button"
+        type="button"
+        data-stock-delivery-status="pending"
+      >
+
+        <strong>
+          Ещё не приехала
+        </strong>
+
+        <span>
+          Учтем поставку позже
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="stock-no-same-day-delivery"
+    id="stock-no-same-day-delivery"
+    hidden>
+    <span>
+      ✓
+    </span>
+
+    <div>
+      <strong>
+        В день заказа поставки нет
+      </strong>
+
+      <small>
+        Дополнительный учет машины не требуется.
+      </small>
+    </div>
+ </div>
+
+
+  <!-- =====================================================
+       CATEGORIES
+  ====================================================== -->
+
+  <div
+    class="stock-categories"
+    id="stock-categories"
+  >
+
+    <button
+      class="stock-category is-active"
+      type="button"
+      data-category="cola"
+    >
+      Cola
+    </button>
+
+    <button
+      class="stock-category"
+      type="button"
+      data-category="fresh"
+    >
+      Fresh
+    </button>
+
+    <button
+      class="stock-category"
+      type="button"
+      data-category="freezer"
+    >
+      Freezer
+    </button>
+
+    <button
+      class="stock-category"
+      type="button"
+      data-category="cooler"
+    >
+      Cooler
+    </button>
+
+    <button
+      class="stock-category"
+      type="button"
+      data-category="dry"
+    >
+      Сухой
+    </button>
+
+    <button
+      class="stock-category"
+      type="button"
+      data-category="chemistry"
+    >
+      Химия
+    </button>
+
+    <button
+      class="stock-category"
+      type="button"
+      data-category="household"
+    >
+      Хоз. товары
+    </button>
+
+    <button
+      class="stock-category"
+      type="button"
+      data-category="other"
+    >
+      Другое
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       CATEGORY HEADER
+  ====================================================== -->
+
+  <div class="stock-category-header">
+
+    <div>
+
+      <span class="stock-category-label">
+        Категория
+      </span>
+
+      <h3 id="stock-current-category">
+        Cola
+      </h3>
+
+    </div>
+
+
+    <div class="stock-category-actions">
+
+      <span
+        class="stock-product-count"
+        id="stock-product-count"
+      >
+        0 товаров
+      </span>
+
+
+      <button
+        id="stock-add-product-button"
+        class="stock-add-button"
+        type="button"
+      >
+        ＋ Добавить товар
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       TABLE
+  ====================================================== -->
+
+  <div class="stock-table-wrapper">
+
+    <div class="stock-table-scroll">
+
+      <table class="stock-table">
+
+        <colgroup>
+
+          <col class="stock-col-number">
+
+          <col class="stock-col-name">
+
+          <col class="stock-col-case">
+
+          <col class="stock-col-slv">
+
+          <col class="stock-col-unit">
+
+          <col class="stock-col-total">
+
+        </colgroup>
+
+
+        <thead>
+
+          <tr>
+
+            <th>
+              №
+            </th>
+
+            <th>
+              Наименование
+            </th>
+
+            <th>
+              case
+            </th>
+
+            <th>
+              slv
+            </th>
+
+            <th>
+              ед.
+            </th>
+
+            <th>
+              Итого
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="stock-products-body">
+
+          <tr class="stock-loading-row">
+
+            <td colspan="6">
+              Загрузка товаров...
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+
+  <div class="stock-footer">
+
+    <div
+      class="stock-save-status"
+      id="stock-save-status"
+    >
+
+      <span class="stock-save-dot"></span>
+
+      <span id="stock-save-status-text">
+        Автосохранение включено
+      </span>
+
+    </div>
+
+
+    <button
+      id="stock-next-button"
+      class="stock-next-button"
+      type="button"
+      disabled
+    >
+      Далее
+
+      <span>
+        →
+      </span>
+    </button>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       PRODUCT MODAL
+  ====================================================== -->
+
+  <div
+    class="stock-modal"
+    id="stock-product-modal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="stock-modal-backdrop"
+      data-stock-modal-close
+    ></div>
+
+
+    <div
+      class="stock-modal-dialog"
+      role="dialog"
+      aria-modal="true"
+    >
+
+      <div class="stock-modal-header">
+
+        <div>
+
+          <p class="stock-modal-kicker">
+            Настройка позиции
+          </p>
+
+          <h2 id="stock-product-modal-title">
+            Добавить товар
+          </h2>
+
+        </div>
+
+
+        <button
+          class="stock-modal-close"
+          type="button"
+          data-stock-modal-close
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form
+        class="stock-product-form"
+        id="stock-product-form"
+      >
+
+        <input
+          id="stock-product-id"
+          type="hidden"
+        >
+
+
+        <!-- MAIN -->
+
+        <div class="stock-form-section">
+
+          <div class="stock-form-section-title">
+            <strong>
+              Основное
+            </strong>
+          </div>
+
+
+          <div class="stock-form-grid">
+
+            <label class="stock-field">
+
+              <span>
+                Категория
+              </span>
+
+              <select
+                id="stock-product-category"
+                required
+              >
+
+                <option value="cola">Cola</option>
+                <option value="fresh">Fresh</option>
+                <option value="freezer">Freezer</option>
+                <option value="cooler">Cooler</option>
+                <option value="dry">Сухой</option>
+                <option value="chemistry">Химия</option>
+                <option value="household">Хоз. товары</option>
+                <option value="other">Другое</option>
+
+              </select>
+
+            </label>
+
+
+            <label
+              class="stock-field stock-field-wide"
+            >
+
+              <span>
+                Название
+              </span>
+
+              <input
+                id="stock-product-name"
+                type="text"
+                autocomplete="off"
+                required
+              >
+
+            </label>
+
+          </div>
+
+        </div>
+
+
+        <!-- IIKO -->
+
+        <div class="stock-form-section">
+
+          <div class="stock-form-section-title">
+
+            <div>
+
+              <strong>
+                Связь с IIKO
+              </strong>
+
+              <p>
+                Код используется для сопоставления
+                с файлом реализации.
+              </p>
+
+            </div>
+
+            <span class="stock-iiko-label">
+              IIKO
+            </span>
+
+          </div>
+
+
+          <div class="stock-form-grid">
+
+            <label class="stock-field">
+
+              <span>
+                Код IIKO
+              </span>
+
+              <input
+                id="stock-product-iiko-code"
+                type="text"
+                autocomplete="off"
+                required
+              >
+
+            </label>
+
+
+            <label class="stock-field">
+
+              <span>
+                Ед. изм.
+              </span>
+
+              <select
+                id="stock-product-iiko-unit"
+                required
+              >
+
+                <option value="шт">
+                  шт
+                </option>
+
+                <option value="кг">
+                  кг
+                </option>
+
+                <option value="л">
+                  л
+                </option>
+
+              </select>
+
+            </label>
+
+
+            <label
+              class="stock-field stock-field-wide"
+            >
+
+              <span>
+                Название в IIKO
+              </span>
+
+              <input
+                id="stock-product-iiko-name"
+                type="text"
+                autocomplete="off"
+              >
+
+            </label>
+
+          </div>
+
+        </div>
+
+
+        <!-- PACKAGING -->
+
+        <div class="stock-form-section">
+
+          <div class="stock-form-section-title">
+
+            <div>
+
+              <strong>
+                Упаковка
+              </strong>
+
+              <p>
+                Количество базовой единицы IIKO
+                в упаковке.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="stock-package-grid">
+
+            <label class="stock-field">
+
+              <span>
+                1 case =
+              </span>
+
+              <div class="stock-unit-input">
+
+                <input
+                  id="stock-product-case"
+                  type="number"
+                  min="0"
+                  step="0.0001"
+                  inputmode="decimal"
+                >
+
+                <span data-stock-unit>
+                  шт
+                </span>
+
+              </div>
+
+            </label>
+
+
+            <label class="stock-field">
+
+              <span>
+                1 slv =
+              </span>
+
+              <div class="stock-unit-input">
+
+                <input
+                  id="stock-product-slv"
+                  type="number"
+                  min="0"
+                  step="0.0001"
+                  inputmode="decimal"
+                >
+
+                <span data-stock-unit>
+                  шт
+                </span>
+
+              </div>
+
+            </label>
+
+
+            <label class="stock-field">
+
+              <span>
+                1 ед. =
+              </span>
+
+              <div class="stock-unit-input">
+
+                <input
+                  id="stock-product-pcs"
+                  type="number"
+                  min="0"
+                  step="0.0001"
+                  inputmode="decimal"
+                >
+
+                <span data-stock-unit>
+                  шт
+                </span>
+
+              </div>
+
+            </label>
+
+          </div>
+
+        </div>
+
+
+        <!-- SAFETY -->
+
+        <div class="stock-form-section">
+
+          <div class="stock-form-section-title">
+
+            <div>
+
+              <strong>
+                Дополнительный запас
+              </strong>
+
+              <p>
+                Будет использован позже
+                при расчете заказа.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <label class="stock-field stock-safety-field">
+
+            <span>
+              Запас
+            </span>
+
+            <div class="stock-unit-input">
+
+              <input
+                id="stock-product-safety-stock"
+                type="number"
+                min="0"
+                step="0.0001"
+                inputmode="decimal"
+                value="0"
+              >
+
+              <span data-stock-unit>
+                шт
+              </span>
+
+            </div>
+
+          </label>
+
+        </div>
+
+
+        <div
+          class="stock-form-message"
+          id="stock-form-message"
+        ></div>
+
+
+        <div class="stock-modal-footer">
+
+          <button
+            class="stock-cancel-button"
+            type="button"
+            data-stock-modal-close
+          >
+            Отмена
+          </button>
+
+
+          <button
+            class="stock-save-button"
+            id="stock-product-save-button"
+            type="submit"
+          >
+            Добавить товар
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</section>

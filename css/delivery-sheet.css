@@ -1,0 +1,820 @@
+/* =====================================================
+   I’M | ЗАКАЗ
+   ЛИСТ ПОСТАВКИ
+===================================================== */
+
+.delivery-sheet-page {
+  min-height: 100vh;
+}
+
+
+/* =====================================================
+   SCREEN TOPBAR
+===================================================== */
+
+.delivery-sheet-topbar {
+  display: flex;
+
+  min-height: 86px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 18px 34px;
+
+  border-bottom: 1px solid var(--line);
+
+  background: #ffffff;
+}
+
+
+.delivery-sheet-topbar-left {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+.delivery-sheet-topbar h1 {
+  margin: 0;
+
+  font-size: 25px;
+
+  letter-spacing: -0.8px;
+}
+
+
+.delivery-sheet-actions {
+  display: flex;
+
+  gap: 8px;
+}
+
+
+.delivery-sheet-primary-button,
+.delivery-sheet-secondary-button {
+  min-height: 42px;
+
+  padding: 0 16px;
+
+  border-radius: 11px;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+.delivery-sheet-primary-button {
+  border: 0;
+
+  color: #171717;
+  background: var(--accent);
+}
+
+
+.delivery-sheet-primary-button:hover {
+  background: var(--accent-hover);
+}
+
+
+.delivery-sheet-secondary-button {
+  border: 1px solid var(--line);
+
+  color: #252629;
+  background: #ffffff;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.delivery-sheet-content {
+  width: min(100%, 1180px);
+
+  margin: 0 auto;
+
+  padding: 32px;
+}
+
+
+.delivery-sheet-loading,
+.delivery-sheet-error {
+  padding: 50px 20px;
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+
+.delivery-sheet-error {
+  color: #a34848;
+}
+
+
+/* =====================================================
+   PAPER
+===================================================== */
+
+.delivery-sheet-paper {
+  padding: 34px;
+
+  border: 1px solid #dedfe2;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 36px
+    rgba(20, 22, 25, 0.07);
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.delivery-sheet-document-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  padding-bottom: 22px;
+
+  border-bottom: 2px solid #202124;
+}
+
+
+.delivery-sheet-logo {
+  margin-bottom: 17px;
+
+  font-size: 22px;
+  font-weight: 800;
+
+  letter-spacing: -1px;
+}
+
+
+.delivery-sheet-logo span {
+  color: #d99f00;
+}
+
+
+.delivery-sheet-document-label {
+  margin: 0;
+
+  color: #70747b;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+
+.delivery-sheet-document-number {
+  text-align: right;
+}
+
+
+.delivery-sheet-document-number span,
+.delivery-sheet-document-number strong,
+.delivery-sheet-document-number small {
+  display: block;
+}
+
+
+.delivery-sheet-document-number span {
+  margin-bottom: 5px;
+
+  color: #74777d;
+
+  font-size: 9px;
+}
+
+
+.delivery-sheet-document-number strong {
+  margin-bottom: 4px;
+
+  font-size: 20px;
+}
+
+
+.delivery-sheet-document-number small {
+  color: #777a80;
+
+  font-size: 10px;
+
+  text-transform: capitalize;
+}
+
+
+/* =====================================================
+   INFO
+===================================================== */
+
+.delivery-sheet-info-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 10px;
+
+  margin: 20px 0;
+}
+
+
+.delivery-sheet-info {
+  padding: 13px;
+
+  border: 1px solid #e1e2e5;
+  border-radius: 10px;
+
+  background: #fafafa;
+}
+
+
+.delivery-sheet-info span,
+.delivery-sheet-info strong,
+.delivery-sheet-info small {
+  display: block;
+}
+
+
+.delivery-sheet-info span {
+  margin-bottom: 7px;
+
+  color: #7e8187;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+
+.delivery-sheet-info strong {
+  margin-bottom: 3px;
+
+  font-size: 11px;
+}
+
+
+.delivery-sheet-info small {
+  color: #93969b;
+
+  font-size: 8px;
+}
+
+
+.delivery-sheet-note {
+  display: flex;
+
+  gap: 7px;
+
+  margin-bottom: 17px;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  background: #fff8db;
+
+  font-size: 9px;
+}
+
+
+.delivery-sheet-note span {
+  color: #8b711b;
+}
+
+
+.delivery-sheet-note strong {
+  color: #544513;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.delivery-sheet-table-wrap {
+  overflow-x: auto;
+}
+
+
+.delivery-sheet-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
+}
+
+
+.delivery-sheet-table th {
+  padding: 9px 7px;
+
+  border-top: 1px solid #bfc1c4;
+  border-bottom: 1px solid #bfc1c4;
+
+  color: #55585d;
+  background: #f4f4f5;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  text-align: left;
+
+  text-transform: uppercase;
+}
+
+
+.delivery-sheet-table td {
+  padding: 8px 7px;
+
+  border-bottom: 1px solid #e5e6e8;
+
+  color: #242529;
+
+  font-size: 9px;
+
+  vertical-align: middle;
+}
+
+
+.delivery-sheet-table tbody tr:nth-child(even) {
+  background: #fbfbfb;
+}
+
+
+.sheet-col-number {
+  width: 38px;
+
+  text-align: center !important;
+}
+
+
+.sheet-col-code {
+  width: 105px;
+}
+
+
+.sheet-col-qty {
+  width: 68px;
+
+  text-align: center !important;
+}
+
+
+.sheet-col-total {
+  width: 105px;
+
+  text-align: right !important;
+}
+
+
+.delivery-sheet-item-number,
+.delivery-sheet-item-qty {
+  text-align: center;
+}
+
+
+.delivery-sheet-item-total {
+  text-align: right;
+
+  font-weight: 700;
+}
+
+
+.delivery-sheet-product strong,
+.delivery-sheet-product span {
+  display: block;
+}
+
+
+.delivery-sheet-product strong {
+  margin-bottom: 3px;
+
+  font-size: 9px;
+}
+
+
+.delivery-sheet-product span {
+  color: #8a8d93;
+
+  font-size: 7px;
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.delivery-sheet-summary {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+
+.delivery-sheet-summary > div {
+  min-width: 105px;
+
+  padding: 11px;
+
+  border: 1px solid #dedfe1;
+  border-radius: 9px;
+
+  text-align: right;
+}
+
+
+.delivery-sheet-summary span,
+.delivery-sheet-summary strong {
+  display: block;
+}
+
+
+.delivery-sheet-summary span {
+  margin-bottom: 5px;
+
+  color: #85888d;
+
+  font-size: 7px;
+
+  text-transform: uppercase;
+}
+
+
+.delivery-sheet-summary strong {
+  font-size: 15px;
+}
+
+
+/* =====================================================
+   SIGNATURE
+===================================================== */
+
+.delivery-sheet-signatures {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 28px;
+
+  margin-top: 42px;
+}
+
+
+.delivery-sheet-signatures span {
+  display: block;
+
+  margin-bottom: 22px;
+
+  color: #74777c;
+
+  font-size: 8px;
+}
+
+
+.delivery-sheet-signatures div > div {
+  height: 1px;
+
+  background: #8c8f94;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+
+  .delivery-sheet-topbar {
+    align-items: stretch;
+
+    flex-direction: column;
+
+    padding: 16px 20px;
+  }
+
+
+  .delivery-sheet-actions {
+    width: 100%;
+  }
+
+
+  .delivery-sheet-actions button {
+    flex: 1;
+  }
+
+
+  .delivery-sheet-content {
+    padding: 20px;
+  }
+
+
+  .delivery-sheet-paper {
+    padding: 20px;
+  }
+
+
+  .delivery-sheet-info-grid {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+
+  .delivery-sheet-table {
+    min-width: 760px;
+  }
+
+}
+/* =====================================================
+   COMPACT INFO CARDS
+===================================================== */
+
+.delivery-sheet-info-grid {
+  gap: 7px;
+  margin: 12px 0 14px;
+}
+
+.delivery-sheet-info {
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.delivery-sheet-info span {
+  margin-bottom: 4px;
+
+  font-size: 7px;
+}
+
+.delivery-sheet-info strong {
+  margin-bottom: 2px;
+
+  font-size: 9px;
+}
+
+.delivery-sheet-info small {
+  font-size: 7px;
+}
+
+/* =====================================================
+   PRINT / PDF
+===================================================== */
+
+@media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+
+
+  html,
+  body {
+    width: 100% !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #ffffff !important;
+
+    overflow: visible !important;
+  }
+
+
+  /*
+    SPA layout міндетті түрде көрініп тұруы керек.
+    Әйтпесе оның ішіндегі накладной да жоғалады.
+  */
+
+  .app-layout,
+  .main-content,
+  .dynamic-page-container,
+  #page-container,
+  .delivery-sheet-page,
+  .delivery-sheet-content {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: visible !important;
+
+    background: #ffffff !important;
+  }
+
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+
+  /*
+    Экранға арналған элементтерді өшіреміз
+  */
+
+  .sidebar,
+  #sidebar,
+  #sidebar-container,
+  .sidebar-overlay,
+  .sheet-screen-only,
+  .delivery-sheet-topbar {
+    display: none !important;
+  }
+
+
+  /*
+    Бүкіл беттегі элементтерді жасырамыз
+  */
+
+  body * {
+    visibility: hidden !important;
+  }
+
+
+  /*
+    ТЕК НАКЛАДНОЙДЫ КӨРСЕТЕМІЗ
+  */
+
+  #delivery-sheet-paper,
+  #delivery-sheet-paper * {
+    visibility: visible !important;
+  }
+
+
+  #delivery-sheet-paper {
+    display: block !important;
+
+    position: absolute !important;
+
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    background: #ffffff !important;
+
+    box-shadow: none !important;
+
+    overflow: visible !important;
+  }
+
+
+  /*
+    TABLE
+  */
+
+  .delivery-sheet-table-wrap {
+    width: 100% !important;
+
+    overflow: visible !important;
+  }
+
+
+  .delivery-sheet-table {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    table-layout: fixed !important;
+
+    border-collapse: collapse !important;
+  }
+
+
+  /*
+    Әр жаңа бетте header қайта шығады
+  */
+
+  .delivery-sheet-table thead {
+    display: table-header-group !important;
+  }
+
+
+  .delivery-sheet-table tbody {
+    display: table-row-group !important;
+  }
+
+
+  .delivery-sheet-table tr {
+    break-inside: avoid !important;
+
+    page-break-inside: avoid !important;
+  }
+
+
+  .delivery-sheet-table th,
+  .delivery-sheet-table td {
+    padding: 5px 5px !important;
+
+    font-size: 7.5pt !important;
+  }
+
+
+  .delivery-sheet-table th {
+    background: #eeeeee !important;
+
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+
+  /*
+    HEADER
+  */
+
+  .delivery-sheet-document-header {
+    margin: 0 0 12px !important;
+
+    padding-bottom: 12px !important;
+
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+
+  .delivery-sheet-info-grid {
+    margin: 10px 0 12px !important;
+
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+
+  .delivery-sheet-info {
+    padding: 8px !important;
+
+    background: #f7f7f7 !important;
+
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+
+  /*
+    SUMMARY
+  */
+
+  .delivery-sheet-summary {
+    margin-top: 12px !important;
+
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+
+  /*
+    SIGNATURE
+  */
+
+  .delivery-sheet-signatures {
+    margin-top: 25px !important;
+
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+}
+
+/* Нижние итоговые карточки в печати не показываем */
+.delivery-sheet-summary {
+  display: none !important;
+}
+
+.delivery-sheet-summary,
+.delivery-sheet-signatures {
+  display: none !important;
+}
+

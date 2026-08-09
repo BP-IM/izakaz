@@ -1,0 +1,35 @@
+.order-products-placeholder {
+  padding: 40px;
+
+  border: 1px solid var(--line);
+  border-radius: 20px;
+
+  background: #fff;
+}
+
+
+.order-products-placeholder span {
+  color: #9a7a00;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+
+.order-products-placeholder h2 {
+  margin: 7px 0;
+}
+
+
+.order-products-placeholder p {
+  max-width: 600px;
+
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 12px;
+  line-height: 1.6;
+}

@@ -1,0 +1,479 @@
+/* =====================================================
+   I’M | ЗАКАЗ
+   STEP 3 — GENERAL
+===================================================== */
+
+
+/* =====================================================
+   CATEGORY
+===================================================== */
+
+.step3-general-category {
+  margin-bottom: 20px;
+}
+
+
+.step3-general-category:last-child {
+  margin-bottom: 0;
+}
+
+
+.step3-general-category-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 8px;
+
+  padding: 0 3px;
+}
+
+
+.step3-general-category-header h3 {
+  margin: 0;
+
+  color: #292a2d;
+
+  font-size: 12px;
+  font-weight: 900;
+}
+
+
+.step3-general-category-header span {
+  color: #979a9f;
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   RECOMMENDATION SPLIT
+===================================================== */
+
+.step3-general-split {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin: 0 0 12px;
+}
+
+
+.step3-general-split-item {
+  display: flex;
+
+  min-width: 145px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 8px 10px;
+
+  border: 1px solid #efd266;
+  border-radius: 8px;
+
+  background: #fff9e8;
+}
+
+
+.step3-general-split-date {
+  min-width: 0;
+}
+
+
+.step3-general-split-date strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #4e4a38;
+
+  font-size: 9px;
+}
+
+
+.step3-general-split-date small {
+  display: block;
+
+  color: #999071;
+
+  font-size: 7px;
+}
+
+
+.step3-general-split-qty {
+  flex-shrink: 0;
+
+  text-align: right;
+}
+
+
+.step3-general-split-qty strong {
+  display: block;
+
+  color: #29230e;
+
+  font-size: 12px;
+  font-weight: 900;
+}
+
+
+.step3-general-split-qty small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #92886d;
+
+  font-size: 7px;
+}
+
+
+/* =====================================================
+   KNOWN DELIVERY
+===================================================== */
+
+.step3-general-known {
+  margin: -3px 0 10px;
+
+  padding: 8px 10px;
+
+  border: 1px solid #c9dcfa;
+  border-radius: 8px;
+
+  background: #f1f6ff;
+
+  color: #4c617e;
+
+  font-size: 8px;
+}
+
+
+.step3-general-known strong {
+  color: #304969;
+}
+
+
+/* =====================================================
+   FORECAST DAY TYPES
+===================================================== */
+
+.step3-day.is-known-delivery {
+  border-color: #9fc0ef;
+
+  background: #f2f7ff;
+}
+
+
+.step3-day.is-new-order {
+  border-color: #edc74e;
+
+  background: #fff9e8;
+}
+
+
+.step3-day-known-delivery {
+  margin-top: 6px;
+
+  color: #356399;
+
+  font-size: 7px;
+  font-weight: 800;
+}
+
+
+.step3-day-new-order {
+  margin-top: 6px;
+
+  color: #806200;
+
+  font-size: 7px;
+  font-weight: 900;
+}
+
+
+/* =====================================================
+   CATEGORY BADGE
+===================================================== */
+
+.step3-general-category-badge {
+  padding: 3px 6px;
+
+  border-radius: 5px;
+
+  background: #f1f1f2;
+
+  color: #73767b;
+
+  font-size: 7px;
+  font-weight: 800;
+}
+
+/* =====================================================
+   CATEGORY ACCORDION
+===================================================== */
+
+.step3-general-category {
+  overflow: hidden;
+
+  margin-bottom: 10px;
+
+  border: 1px solid #dedfe2;
+  border-radius: 13px;
+
+  background: #ffffff;
+}
+
+
+.step3-general-category.has-risk {
+  border-color: #efb4ae;
+}
+
+
+.step3-general-category-summary {
+  display: flex;
+
+  min-height: 62px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 11px 14px;
+
+  cursor: pointer;
+
+  list-style: none;
+
+  user-select: none;
+}
+
+
+.step3-general-category-summary::-webkit-details-marker {
+  display: none;
+}
+
+
+.step3-general-category-summary:hover {
+  background: #fafafa;
+}
+
+
+.step3-general-category[open]
+.step3-general-category-summary {
+  border-bottom: 1px solid #e8e9eb;
+
+  background: #fafafa;
+}
+
+
+/* LEFT */
+
+.step3-general-category-main {
+  display: flex;
+
+  min-width: 0;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.step3-general-category-main h3 {
+  margin: 0 0 3px;
+
+  color: #242529;
+
+  font-size: 12px;
+  font-weight: 900;
+}
+
+
+.step3-general-category-main span {
+  color: #96999e;
+
+  font-size: 8px;
+}
+
+
+/* CHEVRON */
+
+.step3-general-category-chevron {
+  display: grid;
+
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  place-items: center;
+
+  border-radius: 8px;
+
+  background: #f1f2f3;
+
+  color: #64676c;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+
+.step3-general-category[open]
+.step3-general-category-chevron {
+  transform: rotate(90deg);
+
+  background: #ffc400;
+
+  color: #191919;
+}
+
+
+/* RIGHT STATS */
+
+.step3-general-category-stats {
+  display: flex;
+
+  flex-shrink: 0;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.step3-general-category-ok,
+.step3-general-category-risk,
+.step3-general-category-error {
+  padding: 5px 7px;
+
+  border-radius: 6px;
+
+  font-size: 7px;
+  font-weight: 800;
+}
+
+
+.step3-general-category-ok {
+  color: #39724e;
+
+  background: #edf7f0;
+}
+
+
+.step3-general-category-risk {
+  color: #b42318;
+
+  background: #fff0ef;
+}
+
+
+.step3-general-category-error {
+  color: #9a3412;
+
+  background: #fff3e8;
+}
+
+
+/* TOTAL CASE */
+
+.step3-general-category-order {
+  min-width: 72px;
+
+  text-align: right;
+}
+
+
+.step3-general-category-order small {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #999ca1;
+
+  font-size: 7px;
+}
+
+
+.step3-general-category-order strong {
+  display: block;
+
+  color: #252629;
+
+  font-size: 11px;
+  font-weight: 900;
+}
+
+
+/* CONTENT */
+
+.step3-general-category-content {
+  padding: 10px;
+}
+
+
+/* =====================================================
+   ACCORDION MOBILE
+===================================================== */
+
+@media (max-width: 620px) {
+
+  .step3-general-category-summary {
+    align-items: flex-start;
+  }
+
+
+  .step3-general-category-stats {
+    align-items: flex-end;
+
+    flex-direction: column;
+
+    gap: 4px;
+  }
+
+
+  .step3-general-category-ok,
+  .step3-general-category-risk,
+  .step3-general-category-error {
+    display: none;
+  }
+
+
+  .step3-general-category-order {
+    min-width: auto;
+  }
+
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 620px) {
+
+  .step3-general-split {
+    display: grid;
+
+    grid-template-columns: 1fr;
+  }
+
+
+  .step3-general-split-item {
+    width: 100%;
+  }
+
+}

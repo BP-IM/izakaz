@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Система еженедельного заказа и инвентаризации"
+  >
+
+  <title>I’M | Заказ — Вход</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body>
+
+  <main class="auth-page">
+
+    <!-- Левая часть -->
+
+    <section class="brand-panel">
+
+      <div class="brand-content">
+
+        <div class="logo">
+          I’M <span>Заказ</span>
+        </div>
+
+        <p class="eyebrow">
+          Управление запасами
+        </p>
+
+        <h1>
+          Заказ и инвентаризация без лишних таблиц
+        </h1>
+
+        <p class="brand-description">
+          Еженедельный учет остатков,
+          автоматический расчет заказа
+          и единая история для ресторана.
+        </p>
+
+        <div class="feature-list">
+
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Еженедельная инвентаризация</span>
+          </div>
+
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Автоматический расчет заказа</span>
+          </div>
+
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Данные каждого ресторана защищены</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Правая часть -->
+
+    <section class="form-panel">
+
+      <div class="auth-card">
+
+        <div class="mobile-logo">
+          I’M <span>Заказ</span>
+        </div>
+
+
+        <!-- Вкладки -->
+
+        <div
+          class="tabs"
+          role="tablist"
+          aria-label="Авторизация"
+        >
+
+          <button
+            class="tab active"
+            id="login-tab"
+            type="button"
+            role="tab"
+            aria-selected="true"
+          >
+            Вход
+          </button>
+
+          <button
+            class="tab"
+            id="register-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+          >
+            Регистрация
+          </button>
+
+        </div>
+
+
+        <!-- Сообщения -->
+
+        <div
+          id="message"
+          class="message"
+          role="alert"
+          aria-live="polite"
+        ></div>
+
+
+        <!-- Форма входа -->
+
+        <form
+          id="login-form"
+          class="auth-form active"
+          novalidate
+        >
+
+          <div class="form-heading">
+
+            <h2>Добро пожаловать</h2>
+
+            <p>
+              Войдите в аккаунт своего ресторана
+            </p>
+
+          </div>
+
+
+          <label class="field">
+
+            <span>Электронная почта</span>
+
+            <input
+              id="login-email"
+              type="email"
+              autocomplete="email"
+              placeholder="name@example.com"
+              required
+            >
+
+          </label>
+
+
+          <label class="field">
+
+            <span>Пароль</span>
+
+            <div class="password-wrap">
+
+              <input
+                id="login-password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Введите пароль"
+                minlength="6"
+                required
+              >
+
+              <button
+                class="password-toggle"
+                type="button"
+                data-target="login-password"
+                aria-label="Показать пароль"
+              >
+                Показать
+              </button>
+
+            </div>
+
+          </label>
+
+
+          <button
+            class="primary-button"
+            type="submit"
+          >
+
+            <span class="button-text">
+              Войти
+            </span>
+
+            <span
+              class="spinner"
+              aria-hidden="true"
+            ></span>
+
+          </button>
+
+        </form>
+
+
+        <!-- Форма регистрации -->
+
+        <form
+          id="register-form"
+          class="auth-form"
+          novalidate
+        >
+
+          <div class="form-heading">
+
+            <h2>Создание аккаунта</h2>
+
+            <p>
+              Зарегистрируйте администратора ресторана
+            </p>
+
+          </div>
+
+
+          <div class="form-grid">
+
+
+            <label class="field field-full">
+
+              <span>ФИО</span>
+
+              <input
+                id="full-name"
+                type="text"
+                autocomplete="name"
+                placeholder="Иван Иванов"
+                maxlength="120"
+                required
+              >
+
+            </label>
+
+
+            <label class="field">
+
+              <span>Название ресторана</span>
+
+              <input
+                id="restaurant-name"
+                type="text"
+                placeholder="Парк Сейфуллина"
+                maxlength="120"
+                required
+              >
+
+            </label>
+
+
+            <label class="field">
+
+              <span>Код ресторана</span>
+
+              <input
+                id="restaurant-code"
+                type="text"
+                placeholder="02-014"
+                maxlength="30"
+                required
+              >
+
+            </label>
+
+
+            <label class="field field-full">
+
+              <span>Электронная почта</span>
+
+              <input
+                id="register-email"
+                type="email"
+                autocomplete="email"
+                placeholder="name@example.com"
+                required
+              >
+
+            </label>
+
+
+            <label class="field">
+
+              <span>Пароль</span>
+
+              <div class="password-wrap">
+
+                <input
+                  id="register-password"
+                  type="password"
+                  autocomplete="new-password"
+                  placeholder="Минимум 6 символов"
+                  minlength="6"
+                  required
+                >
+
+                <button
+                  class="password-toggle"
+                  type="button"
+                  data-target="register-password"
+                  aria-label="Показать пароль"
+                >
+                  Показать
+                </button>
+
+              </div>
+
+            </label>
+
+
+            <label class="field">
+
+              <span>Повторите пароль</span>
+
+              <div class="password-wrap">
+
+                <input
+                  id="confirm-password"
+                  type="password"
+                  autocomplete="new-password"
+                  placeholder="Повторите пароль"
+                  minlength="6"
+                  required
+                >
+
+                <button
+                  class="password-toggle"
+                  type="button"
+                  data-target="confirm-password"
+                  aria-label="Показать пароль"
+                >
+                  Показать
+                </button>
+
+              </div>
+
+            </label>
+
+          </div>
+
+
+          <label class="agreement">
+
+            <input
+              id="agreement"
+              type="checkbox"
+              required
+            >
+
+            <span>
+              Я подтверждаю правильность введенных данных
+            </span>
+
+          </label>
+
+
+          <button
+            class="primary-button"
+            type="submit"
+          >
+
+            <span class="button-text">
+              Создать аккаунт
+            </span>
+
+            <span
+              class="spinner"
+              aria-hidden="true"
+            ></span>
+
+          </button>
+
+        </form>
+
+
+        <p class="footer-note">
+          I’M | Система заказа и инвентаризации
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- Supabase -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="js/supabase-config.js"></script>
+
+  <script src="js/auth.js"></script>
+
+</body>
+</html>

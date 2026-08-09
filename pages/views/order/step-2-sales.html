@@ -1,0 +1,181 @@
+<section class="sales-step" id="order-sales-step">
+  <header class="sales-header">
+    <div class="sales-header-copy">
+      <p class="order-kicker">Шаг 2 из 4</p>
+      <h2>Реализация</h2>
+      <p class="order-description">
+        Загрузите расширенную оборотно-сальдовую ведомость IIKO.
+        Нужные товары будут найдены автоматически по коду IIKO.
+      </p>
+    </div>
+
+    <div class="sales-order-card">
+      <span>Заказ</span>
+      <strong id="sales-order-day">—</strong>
+      <small id="sales-order-date">—</small>
+    </div>
+  </header>
+
+  <div class="sales-body">
+    <section class="sales-upload-card">
+      <div class="sales-upload-copy">
+        <span class="sales-upload-icon" aria-hidden="true">↥</span>
+        <div>
+          <strong>Файл IIKO</strong>
+          <p>
+            XLSX / XLS. Файл целиком остается в браузере — в Supabase сохраняются
+            только найденные позиции и значения расхода.
+          </p>
+        </div>
+      </div>
+
+      <label class="sales-file-button" for="sales-file-input">
+        Выбрать Excel
+      </label>
+
+      <input
+        id="sales-file-input"
+        class="sales-file-input"
+        type="file"
+        accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+      >
+    </section>
+
+    <div
+      id="sales-file-status"
+      class="sales-message"
+      data-status="idle"
+      role="status"
+    >
+      Загрузите файл из IIKO.
+    </div>
+
+    <section id="sales-mapping-card" class="sales-mapping-card" hidden>
+      <div class="sales-section-title">
+        <div>
+          <strong>Колонки Excel</strong>
+          <p>
+            Мы выбрали их автоматически. Если IIKO выгрузил другой формат —
+            укажите нужные колонки вручную.
+          </p>
+        </div>
+        <span class="sales-auto-badge">AUTO</span>
+      </div>
+
+      <div class="sales-mapping-grid">
+        <label>
+          <span>Лист</span>
+          <select id="sales-sheet-select"></select>
+        </label>
+
+        <label>
+          <span>Строка заголовков</span>
+          <input id="sales-header-row" type="number" min="1" step="1" value="1">
+        </label>
+
+        <label>
+          <span>Код IIKO</span>
+          <select id="sales-code-column"></select>
+        </label>
+
+        <label>
+          <span>Наименование</span>
+          <select id="sales-name-column"></select>
+        </label>
+
+        <label>
+          <span>Реализация</span>
+          <select id="sales-realization-column"></select>
+        </label>
+
+        <label>
+          <span>Списание</span>
+          <select id="sales-writeoff-column"></select>
+        </label>
+      </div>
+
+      <button id="sales-process-button" class="sales-secondary-action" type="button">
+        Пересчитать по этим колонкам
+      </button>
+    </section>
+
+    <section class="sales-summary" id="sales-summary">
+      <article class="sales-summary-card">
+        <span>Товаров заказа</span>
+        <strong id="sales-total-count">0</strong>
+      </article>
+
+      <article class="sales-summary-card is-success">
+        <span>Найдено в Excel</span>
+        <strong id="sales-matched-count">0</strong>
+      </article>
+
+      <article class="sales-summary-card" id="sales-missing-card">
+        <span>Не найдено</span>
+        <strong id="sales-missing-count">0</strong>
+      </article>
+
+      <article class="sales-summary-card">
+        <span>Источник</span>
+        <strong id="sales-source-state">—</strong>
+      </article>
+    </section>
+
+    <div class="sales-category-tabs" id="sales-category-tabs"></div>
+
+    <section class="sales-table-card">
+      <div class="sales-table-head">
+        <div>
+          <span>Позиции</span>
+          <strong id="sales-current-category">Все товары</strong>
+        </div>
+        <small id="sales-category-count">0 товаров</small>
+      </div>
+
+      <div class="sales-table-scroll">
+        <table class="sales-table">
+          <thead>
+            <tr>
+              <th class="sales-col-number">№</th>
+              <th class="sales-col-product">Товар</th>
+              <th>Реализация</th>
+              <th>Списание</th>
+              <th>Расход</th>
+              <th class="sales-col-status">Статус</th>
+            </tr>
+          </thead>
+
+          <tbody id="sales-products-body">
+            <tr>
+              <td colspan="6" class="sales-empty-cell">
+                Загрузка данных...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <footer class="sales-footer">
+    <button id="sales-back-button" class="sales-back-button" type="button">
+      ← Назад
+    </button>
+
+    <div class="sales-footer-state">
+      <span id="sales-save-dot" class="sales-save-dot"></span>
+      <span id="sales-save-status">Данные еще не сохранены</span>
+    </div>
+
+    <div class="sales-footer-actions">
+      <button id="sales-save-button" class="sales-save-button" type="button" disabled>
+        Сохранить данные
+      </button>
+
+      <button id="sales-next-button" class="sales-next-button" type="button" disabled>
+        Далее
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  </footer>
+</section>

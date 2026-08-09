@@ -1,0 +1,96 @@
+<header class="page-topbar order-topbar">
+  <div class="page-topbar-left">
+    <button
+      id="sidebar-open"
+      class="menu-button"
+      type="button"
+      aria-label="Открыть меню"
+    >
+      ☰
+    </button>
+
+    <div>
+      <p class="page-label">Расчет поставки</p>
+      <h1>Еженедельный заказ</h1>
+    </div>
+  </div>
+</header>
+
+<div class="order-page" id="weekly-order-page">
+
+  <section
+    class="order-stepper"
+    aria-label="Этапы еженедельного заказа"
+  >
+
+    <button
+      class="order-step is-active"
+      type="button"
+      data-order-step="1"
+    >
+      <span class="order-step-number">1</span>
+
+      <span class="order-step-text">
+        <strong>Остатки</strong>
+        <small>Подсчет товара</small>
+      </span>
+    </button>
+
+    <div class="order-step-line"></div>
+
+    <button
+      class="order-step"
+      type="button"
+      data-order-step="2"
+    >
+      <span class="order-step-number">2</span>
+
+      <span class="order-step-text">
+        <strong>Реализация</strong>
+        <small>Загрузка файла</small>
+      </span>
+    </button>
+
+    <div class="order-step-line"></div>
+
+    <button
+      class="order-step"
+      type="button"
+      data-order-step="3"
+    >
+      <span class="order-step-number">3</span>
+
+      <span class="order-step-text">
+        <strong>Расчет</strong>
+        <small>Рекомендация</small>
+      </span>
+    </button>
+
+    <div class="order-step-line"></div>
+
+    <button
+      class="order-step"
+      type="button"
+      data-order-step="4"
+    >
+      <span class="order-step-number">4</span>
+
+      <span class="order-step-text">
+        <strong>Итог</strong>
+        <small>Готовый заказ</small>
+      </span>
+    </button>
+
+  </section>
+
+
+  <div
+    id="order-step-container"
+    class="order-step-container"
+  >
+    <div class="order-step-loading">
+      Загрузка шага...
+    </div>
+  </div>
+
+</div>

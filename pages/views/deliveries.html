@@ -1,0 +1,504 @@
+<section
+  id="deliveries-page"
+  class="deliveries-page"
+>
+
+  <!-- =====================================================
+       TOPBAR
+  ====================================================== -->
+
+  <header class="deliveries-topbar">
+
+    <div class="deliveries-topbar-left">
+
+      <button
+        id="sidebar-open"
+        class="menu-button"
+        type="button"
+        aria-label="Открыть меню"
+      >
+        ☰
+      </button>
+
+
+      <div>
+
+        <p class="page-label">
+          УЧЕТ ПОСТАВОК
+        </p>
+
+        <h1>
+          Поставки
+        </h1>
+
+      </div>
+
+    </div>
+
+
+    <button
+      id="delivery-add-button"
+      class="deliveries-primary-button"
+      type="button"
+    >
+      + Добавить поставку
+    </button>
+
+  </header>
+
+
+  <!-- =====================================================
+       CONTENT
+  ====================================================== -->
+
+  <div class="deliveries-content">
+
+
+    <!-- SUMMARY -->
+
+    <section class="deliveries-summary">
+
+      <div class="deliveries-summary-card">
+
+        <span>
+          Ближайшая поставка
+        </span>
+
+        <strong id="delivery-next-date">
+          —
+        </strong>
+
+        <small id="delivery-next-description">
+          Загрузка...
+        </small>
+
+      </div>
+
+
+      <div class="deliveries-summary-card">
+
+        <span>
+          Ожидается
+        </span>
+
+        <strong id="delivery-expected-count">
+          0
+        </strong>
+
+        <small>
+          активных поставок
+        </small>
+
+      </div>
+
+
+      <div class="deliveries-summary-card">
+
+        <span>
+          Источник
+        </span>
+
+        <strong>
+          Авто + вручную
+        </strong>
+
+        <small>
+          по графику ресторана
+        </small>
+
+      </div>
+
+    </section>
+
+
+    <!-- LIST -->
+
+    <section class="deliveries-panel">
+
+      <div class="deliveries-panel-header">
+
+        <div>
+
+          <span class="deliveries-section-label">
+            ПОСТАВКИ
+          </span>
+
+          <h2>
+            Список поставок
+          </h2>
+
+        </div>
+
+
+        <div class="deliveries-filters">
+
+          <button
+            class="delivery-filter is-active"
+            type="button"
+            data-delivery-filter="all"
+          >
+            Все
+          </button>
+
+
+          <button
+            class="delivery-filter"
+            type="button"
+            data-delivery-filter="expected"
+          >
+            Ожидаются
+          </button>
+
+
+          <button
+            class="delivery-filter"
+            type="button"
+            data-delivery-filter="arrived"
+          >
+            Получены
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="deliveries-list"
+        class="deliveries-list"
+      >
+
+        <div class="deliveries-loading">
+          Загрузка поставок...
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- =====================================================
+       CREATE DELIVERY MODAL
+  ====================================================== -->
+
+  <div
+    id="delivery-modal"
+    class="delivery-modal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="delivery-modal-backdrop"
+      data-delivery-modal-close
+    ></div>
+
+
+    <div class="delivery-modal-dialog">
+
+      <div class="delivery-modal-header">
+
+        <div>
+
+          <span>
+            НОВАЯ ПОСТАВКА
+          </span>
+
+          <h2>
+            Добавить поставку
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="delivery-modal-close"
+          data-delivery-modal-close
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form id="delivery-form">
+
+        <label class="delivery-form-field">
+
+          <span>
+            Дата поставки
+          </span>
+
+          <input
+            id="delivery-date"
+            type="date"
+            required
+          >
+
+        </label>
+
+
+        <label class="delivery-form-field">
+
+          <span>
+            Группа поставки
+          </span>
+
+          <select
+            id="delivery-group"
+            required
+          >
+
+            <option value="general">
+              Основные товары
+            </option>
+
+            <option value="cola">
+              Cola
+            </option>
+
+          </select>
+
+        </label>
+
+
+        <label class="delivery-form-field">
+
+          <span>
+            Примечание
+          </span>
+
+          <textarea
+            id="delivery-note"
+            rows="3"
+            placeholder="Например: поставка 11.08"
+          ></textarea>
+
+        </label>
+
+
+        <div
+          id="delivery-form-message"
+          class="delivery-form-message"
+        ></div>
+
+
+        <div class="delivery-modal-actions">
+
+          <button
+            type="button"
+            class="delivery-secondary-button"
+            data-delivery-modal-close
+          >
+            Отмена
+          </button>
+
+
+          <button
+            id="delivery-save-button"
+            type="submit"
+            class="deliveries-primary-button"
+          >
+            Создать поставку
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       DELIVERY DETAIL MODAL
+  ====================================================== -->
+
+  <div
+    id="delivery-detail-modal"
+    class="
+      delivery-modal
+      delivery-detail-modal
+    "
+    aria-hidden="true"
+  >
+
+    <div
+      class="delivery-modal-backdrop"
+      data-delivery-detail-close
+    ></div>
+
+
+    <div class="delivery-detail-dialog">
+
+
+      <!-- HEADER -->
+
+      <div class="delivery-detail-header">
+
+        <div>
+
+          <span class="deliveries-section-label">
+            СОСТАВ ПОСТАВКИ
+          </span>
+
+          <h2 id="delivery-detail-title">
+            Поставка
+          </h2>
+
+
+          <div class="delivery-detail-meta">
+
+            <span id="delivery-detail-group">
+              —
+            </span>
+
+            <span id="delivery-detail-source">
+              —
+            </span>
+
+            <span id="delivery-detail-status">
+              —
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="delivery-modal-close"
+          data-delivery-detail-close
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- TOOLBAR -->
+
+      <div class="delivery-detail-toolbar">
+
+        <div class="delivery-search-wrap">
+
+          <input
+            id="delivery-product-search"
+            type="search"
+            placeholder="Поиск товара или кода IIKO..."
+          >
+
+        </div>
+
+
+        <div class="delivery-detail-stat">
+
+          <span>
+            В поставке
+          </span>
+
+          <strong id="delivery-detail-filled-count">
+            0
+          </strong>
+
+        </div>
+
+
+        <div
+          id="delivery-detail-save-status"
+          class="delivery-detail-save-status is-saved"
+        >
+          Все изменения сохранены
+        </div>
+
+      </div>
+
+
+      <!-- TABLE -->
+
+      <div class="delivery-items-table-wrap">
+
+        <table class="delivery-items-table">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                №
+              </th>
+
+              <th>
+                Товар
+              </th>
+
+              <th>
+                case
+              </th>
+
+              <th>
+                slv
+              </th>
+
+              <th>
+                ед.
+              </th>
+
+              <th>
+                Итого
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="delivery-items-body">
+
+            <tr>
+
+              <td colspan="6">
+
+                <div class="deliveries-loading">
+                  Загрузка товаров...
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- FOOTER -->
+
+      <div class="delivery-detail-footer">
+
+        <span>
+          Пустые товары не сохраняются в поставку.
+        </span>
+
+
+        <button
+          type="button"
+          class="deliveries-primary-button"
+          data-delivery-detail-close
+        >
+          Готово
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
