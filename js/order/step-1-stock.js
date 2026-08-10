@@ -633,10 +633,13 @@
     }
 
 
-    if (!order.count_date) {
+    if (
+      order.count_date !==
+      order.order_date
+    ) {
 
       patch.count_date =
-        getTodayString();
+        order.order_date;
 
     }
 
@@ -762,7 +765,7 @@
         selectedOrderDay,
 
       count_date:
-        getTodayString(),
+        orderDate,
 
       same_day_delivery_status:
         sameDayDelivery
