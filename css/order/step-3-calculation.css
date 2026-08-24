@@ -370,3 +370,466 @@
   }
 
 }
+
+/* =====================================================
+   STEP 3 — FIXED CALCULATION AREA
+   Скроллится только содержимое активной вкладки
+===================================================== */
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.step3-page {
+  display: flex;
+
+  min-height: 0;
+
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.step3-header {
+  flex: 0 0 auto;
+
+  margin-bottom: 14px;
+}
+
+
+/* =====================================================
+   TABS
+===================================================== */
+
+.step3-tabs {
+  flex: 0 0 auto;
+
+  margin-bottom: 12px;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.step3-status {
+  flex: 0 0 auto;
+
+  margin-bottom: 10px;
+}
+
+
+/* =====================================================
+   PANELS
+===================================================== */
+
+.step3-panel {
+  min-height: 0;
+
+  flex: 1 1 auto;
+}
+
+
+/*
+  Только активный panel
+  получает внутренний scroll.
+*/
+
+.step3-panel.is-active {
+  height: clamp(
+    430px,
+    58vh,
+    680px
+  );
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  padding-right: 4px;
+
+  overscroll-behavior: contain;
+
+  scrollbar-gutter: stable;
+}
+
+
+/* hidden panel не должен занимать место */
+
+.step3-panel[hidden] {
+  display: none !important;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.step3-footer {
+  flex: 0 0 auto;
+
+  margin-top: 14px;
+
+  padding-top: 14px;
+
+  background: #ffffff;
+}
+
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+.step3-panel.is-active::-webkit-scrollbar {
+  width: 8px;
+}
+
+
+.step3-panel.is-active::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.step3-panel.is-active::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background: #d7d9dd;
+}
+
+
+.step3-panel.is-active::-webkit-scrollbar-thumb:hover {
+  background: #bfc3c8;
+}
+
+
+/* =====================================================
+   DESKTOP
+===================================================== */
+
+@media (min-width: 761px) {
+
+  .step3-panel.is-active {
+    height: clamp(
+      450px,
+      60vh,
+      720px
+    );
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 760px) {
+
+  .step3-page {
+    overflow: hidden;
+  }
+
+
+  .step3-header {
+    margin-bottom: 12px;
+  }
+
+
+  .step3-tabs {
+    margin-bottom: 10px;
+  }
+
+
+  .step3-panel.is-active {
+    height: 58vh;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    padding-right: 0;
+  }
+
+
+  .step3-footer {
+    margin-top: 10px;
+
+    padding-top: 12px;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 430px) {
+
+  .step3-panel.is-active {
+    height: 55vh;
+  }
+
+}
+
+/* =====================================================
+   STEP 3 — STRONG VISUAL STATES
+===================================================== */
+
+
+/* =====================================================
+   PRODUCT CARDS
+===================================================== */
+
+.step3-cola-card,
+.step3-fresh-card {
+  position: relative;
+
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+/* =====================================================
+   ORDER REQUIRED
+===================================================== */
+
+.step3-cola-card.has-order,
+.step3-fresh-card.has-order {
+  border-color: #e5d08a;
+}
+
+
+/* =====================================================
+   SHORTAGE / RISK
+===================================================== */
+
+.step3-cola-card.has-shortage,
+.step3-fresh-card.has-shortage {
+  border: 2px solid #dc6259;
+
+  background: #fff8f7;
+
+  box-shadow:
+    0 0 0 2px
+    rgba(220, 98, 89, 0.05);
+}
+
+
+.step3-cola-card.has-shortage::before,
+.step3-fresh-card.has-shortage::before {
+  position: absolute;
+
+  top: 14px;
+  bottom: 14px;
+  left: 0;
+
+  width: 4px;
+
+  border-radius:
+    0 4px 4px 0;
+
+  background: #d94841;
+
+  content: "";
+}
+
+
+/* =====================================================
+   RISK BADGE
+===================================================== */
+
+.step3-risk-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  min-height: 22px;
+
+  padding: 0 7px;
+
+  border-radius: 6px;
+
+  color: #a72d27;
+  background: #ffe4e1;
+
+  font-size: 7px;
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+
+/* =====================================================
+   SAFETY STOCK
+===================================================== */
+
+.step3-stock-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  min-height: 22px;
+
+  padding: 0 7px;
+
+  border-radius: 6px;
+
+  color: #745900;
+  background: #fff0b8;
+
+  font-size: 7px;
+  font-weight: 900;
+}
+
+
+/* =====================================================
+   RECOMMENDATION
+===================================================== */
+
+.step3-cola-recommendation {
+  min-width: 125px;
+
+  padding: 10px 12px;
+
+  border-radius: 11px;
+}
+
+
+/* ORDER > 0 */
+
+.step3-cola-recommendation.is-order {
+  border: 1px solid #e2b72f;
+
+  background: #fff4c7;
+
+  box-shadow:
+    0 3px 10px
+    rgba(210, 160, 0, 0.08);
+}
+
+
+.step3-cola-recommendation.is-order span {
+  color: #745c00;
+}
+
+
+.step3-cola-recommendation.is-order strong {
+  color: #201b08;
+
+  font-size: 25px;
+}
+
+
+.step3-cola-recommendation.is-order strong em {
+  color: #796000;
+
+  font-weight: 900;
+}
+
+
+/* ORDER = 0 */
+
+.step3-cola-recommendation.is-zero {
+  border: 1px solid #dfe5e0;
+
+  background: #f6faf6;
+}
+
+
+.step3-cola-recommendation.is-zero strong {
+  color: #3c7146;
+}
+
+
+/* =====================================================
+   SAFETY METRIC
+===================================================== */
+
+.step3-cola-card.has-safety
+.step3-cola-metric:last-child,
+
+.step3-fresh-card.has-safety
+.step3-cola-metric:last-child {
+  border: 1px solid #eed27c;
+
+  background: #fff8df;
+}
+
+
+.step3-cola-card.has-safety
+.step3-cola-metric:last-child strong,
+
+.step3-fresh-card.has-safety
+.step3-cola-metric:last-child strong {
+  color: #775900;
+}
+
+
+/* =====================================================
+   SHORTAGE DAY
+===================================================== */
+
+.step3-day.is-shortage {
+  border: 2px solid #d95b52;
+
+  background: #ffeceb;
+
+  box-shadow:
+    0 0 0 2px
+    rgba(217, 91, 82, 0.05);
+}
+
+
+.step3-day.is-shortage
+.step3-day-stock {
+  color: #ad271f;
+}
+
+
+.step3-day-shortage {
+  padding: 4px 5px;
+
+  border-radius: 5px;
+
+  background: #ffdcd8;
+
+  color: #a51f18;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 620px) {
+
+  .step3-cola-recommendation {
+    box-sizing: border-box;
+
+    width: 100%;
+    min-width: 0;
+
+    text-align: left;
+  }
+
+
+  .step3-cola-recommendation.is-order strong {
+    font-size: 23px;
+  }
+
+
+  .step3-risk-badge,
+  .step3-stock-badge {
+    min-height: 24px;
+
+    font-size: 8px;
+  }
+
+}

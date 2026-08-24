@@ -138,6 +138,128 @@
 
 
 /* =====================================================
+   MANUAL CASE EDITOR
+===================================================== */
+
+.step3-general-case-editor {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+}
+
+
+.step3-general-case-editor > span {
+  color: #29230e;
+
+  font-size: 8px;
+  font-weight: 900;
+}
+
+
+.step3-general-case-input {
+  box-sizing: border-box;
+
+  width: 46px;
+  height: 28px;
+
+  padding: 0 4px;
+
+  border: 1px solid #d7b32f;
+  border-radius: 6px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #1f1b0d;
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+
+  text-align: center;
+}
+
+
+.step3-general-case-input:focus {
+  border-color: #b78900;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 193, 7, 0.2);
+}
+
+
+.step3-general-case-input::-webkit-inner-spin-button,
+.step3-general-case-input::-webkit-outer-spin-button {
+  margin: 0;
+
+  appearance: none;
+}
+
+
+.step3-general-case-button {
+  display: inline-flex;
+
+  width: 28px;
+  height: 28px;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid #e2c14e;
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  background: #fff3bd;
+
+  color: #654e00;
+
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+
+.step3-general-case-button:hover {
+  border-color: #c69b08;
+
+  background: #ffe894;
+}
+
+
+.step3-general-case-auto {
+  display: block;
+
+  margin: 4px 0 0 auto;
+  padding: 0;
+
+  border: 0;
+
+  cursor: pointer;
+
+  background: transparent;
+
+  color: #866a13;
+
+  font-size: 7px;
+  font-weight: 800;
+}
+
+
+.step3-general-case-auto:hover {
+  color: #513e00;
+
+  text-decoration: underline;
+}
+
+
+/* =====================================================
    KNOWN DELIVERY
 ===================================================== */
 

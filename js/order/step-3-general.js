@@ -15,11 +15,17 @@
 
    ВАЖНО:
    - заказ только CASE
-   - одна дата расхода не дублируется
-     между двумя поставками
+   - сначала расход дня,
+     затем поставка этого дня
+   - минусовой расчетный остаток
+     переносится на следующий день
+   - поставка покрывает расход
+     до дня следующей поставки включительно
    - safety_stock остается после
      последнего дня покрытия
    - учитываются уже ожидаемые поставки
+   - CASE округляется вверх только если
+     дробная часть больше 0.7
 ===================================================== */
 
 (function () {
@@ -310,24 +316,35 @@
 
 
     /*
-      Мы НЕ дублируем день следующей машины.
+      Поставка приходит ПОСЛЕ расхода дня.
+
+      Поэтому текущая поставка должна
+      покрыть также расход в день
+      следующей поставки.
 
       Например:
 
-      СБ машина
-      покрывает СБ + ВС + ПН.
+      СБ машина покрывает
+      СБ + ВС + ПН + ВТ.
 
-      Во ВТ уже приходит следующая машина.
-
-      Поэтому:
-      coverageEnd = день ДО следующей машины.
+      Во ВТ сначала учитываем расход,
+      затем приходит следующая машина.
     */
 
+    const coverageIncludesNextDeliveryDay =
+      options.coverageIncludesNextDeliveryDay !==
+      false;
+
+
     const coverageEndDate =
-      Core.addDays(
-        nextDeliveryDate,
-        -1
-      );
+      coverageIncludesNextDeliveryDay
+
+        ? nextDeliveryDate
+
+        : Core.addDays(
+            nextDeliveryDate,
+            -1
+          );
 
 
     /*
@@ -336,8 +353,8 @@
 
       ПН:
 
-      ЧТ → ЧТ-ПТ
-      СБ → СБ-ВС-ПН
+      ЧТ → ЧТ-ПТ-СБ
+      СБ → СБ-ВС-ПН-ВТ
     */
 
     const deliveries =
@@ -356,9 +373,15 @@
           const segmentEndDate =
             nextCurrent
 
-              ? Core.addDays(
-                  nextCurrent.date,
-                  -1
+              ? (
+                  coverageIncludesNextDeliveryDay
+
+                    ? nextCurrent.date
+
+                    : Core.addDays(
+                        nextCurrent.date,
+                        -1
+                      )
                 )
 
               : coverageEndDate;
@@ -411,6 +434,149 @@
 
 
   /* =====================================================
+     GENERAL DAILY STOCK
+
+     Бизнес-порядок дня:
+
+     openingStock
+     - usage
+     + delivery
+     = closingStock
+
+     Минусовой расчетный остаток
+     НЕ обнуляется и переносится дальше.
+  ===================================================== */
+
+  function simulateGeneralDailyStock(
+    options
+  ) {
+
+    const Core =
+      getCore();
+
+
+    let stock =
+      Core.requireNumber(
+        options.startStock,
+        "startStock"
+      );
+
+
+    const dailyUsage =
+      Core.requireNumber(
+        options.dailyUsage,
+        "dailyUsage",
+        {
+          min: 0
+        }
+      );
+
+
+    const deliveryMap =
+      options.deliveryMap instanceof Map
+
+        ? options.deliveryMap
+
+        : new Map();
+
+
+    const dates =
+      Core.getDateRange(
+        options.startDate,
+        options.endDate
+      );
+
+
+    return dates.map(
+      function (date) {
+
+        const openingStock =
+          Core.roundNumber(
+            stock
+          );
+
+
+        const stockAfterUsage =
+          Core.roundNumber(
+
+            openingStock -
+            dailyUsage
+
+          );
+
+
+        const deliveryQty =
+          Core.roundNumber(
+            deliveryMap.get(date) || 0
+          );
+
+
+        const closingStock =
+          Core.roundNumber(
+
+            stockAfterUsage +
+            deliveryQty
+
+          );
+
+
+        const isShortage =
+          stockAfterUsage <
+          -Core.EPSILON;
+
+
+        const shortageQty =
+          isShortage
+
+            ? Core.roundNumber(
+                Math.abs(
+                  stockAfterUsage
+                )
+              )
+
+            : 0;
+
+
+        stock =
+          closingStock;
+
+
+        return {
+
+          date,
+
+          openingStock,
+
+          availableQty:
+            openingStock,
+
+          usageQty:
+            dailyUsage,
+
+          stockAfterUsage,
+
+          deliveryQty,
+
+          closingStock,
+
+          shortageQty,
+
+          isShortage,
+
+          status:
+            isShortage
+              ? "shortage"
+              : "ok"
+
+        };
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
      GET STOCK BEFORE DATE
   ===================================================== */
 
@@ -448,7 +614,7 @@
 
 
     const forecast =
-      Core.simulateDailyStock({
+      simulateGeneralDailyStock({
 
         startDate:
           options.startDate,
@@ -507,35 +673,24 @@
       );
 
 
-    let cumulativeUsage =
-      0;
+    let stock =
+      Core.roundNumber(
+        options.stockBeforeDelivery
+      );
 
 
-    let cumulativeKnownDelivery =
-      0;
-
-
-    let requiredToAvoidShortage =
-      0;
+    let minimumStock =
+      stock;
 
 
     dates.forEach(
       function (date) {
 
-        cumulativeUsage =
+        stock =
           Core.roundNumber(
 
-            cumulativeUsage +
-            options.dailyUsage
-
-          );
-
-
-        cumulativeKnownDelivery =
-          Core.roundNumber(
-
-            cumulativeKnownDelivery +
-
+            stock -
+            options.dailyUsage +
             (
               options.deliveryMap
                 .get(date) || 0
@@ -544,22 +699,10 @@
           );
 
 
-        const requiredForDay =
-          Core.roundNumber(
-
-            cumulativeUsage -
-
-            options.stockBeforeDelivery -
-
-            cumulativeKnownDelivery
-
-          );
-
-
-        requiredToAvoidShortage =
-          Math.max(
-            requiredToAvoidShortage,
-            requiredForDay
+        minimumStock =
+          Math.min(
+            minimumStock,
+            stock
           );
 
       }
@@ -582,13 +725,8 @@
       requiredForSafety =
         Core.roundNumber(
 
-          cumulativeUsage +
-
           options.safetyStock -
-
-          options.stockBeforeDelivery -
-
-          cumulativeKnownDelivery
+          stock
 
         );
 
@@ -598,10 +736,190 @@
     return Core.roundNumber(
       Math.max(
         0,
-        requiredToAvoidShortage,
+        Math.abs(
+          Math.min(
+            0,
+            minimumStock
+          )
+        ),
         requiredForSafety
       )
     );
+
+  }
+
+
+  /* =====================================================
+     GENERAL CASE ROUNDING
+
+     Дробная часть > 0.7  → вверх.
+     Дробная часть <= 0.7 → вниз.
+
+     Примеры:
+     7.50 → 7 CASE
+     7.70 → 7 CASE
+     7.71 → 8 CASE
+  ===================================================== */
+
+  function roundGeneralToCases(
+    requiredBaseQty,
+    caseToBase
+  ) {
+
+    const Core =
+      getCore();
+
+
+    const required =
+      Core.requireNumber(
+        requiredBaseQty,
+        "requiredBaseQty",
+        {
+          min: 0
+        }
+      );
+
+
+    const caseSize =
+      Core.requireNumber(
+        caseToBase,
+        "caseToBase"
+      );
+
+
+    if (
+      caseSize <=
+      Core.EPSILON
+    ) {
+
+      throw new Error(
+        "У товара отсутствует корректный case_to_base"
+      );
+
+    }
+
+
+    if (
+      required <=
+      Core.EPSILON
+    ) {
+
+      return {
+        cases: 0,
+        baseQty: 0
+      };
+
+    }
+
+
+    const exactCases =
+      required /
+      caseSize;
+
+
+    const wholeCases =
+      Math.floor(
+        exactCases +
+        Core.EPSILON
+      );
+
+
+    const fraction =
+      Core.roundNumber(
+        exactCases -
+        wholeCases
+      );
+
+
+    const cases =
+      fraction >
+      0.7 + Core.EPSILON
+
+        ? wholeCases + 1
+
+        : wholeCases;
+
+
+    return {
+
+      cases,
+
+      baseQty:
+        Core.roundNumber(
+          cases *
+          caseSize
+        )
+
+    };
+
+  }
+
+
+  function getDeliveryCaseOverride(
+    overrides,
+    deliveryDate
+  ) {
+
+    let exists =
+      false;
+
+
+    let value;
+
+
+    if (
+      overrides instanceof Map
+    ) {
+
+      exists =
+        overrides.has(
+          deliveryDate
+        );
+
+
+      value =
+        overrides.get(
+          deliveryDate
+        );
+
+    } else if (
+      overrides &&
+      typeof overrides === "object"
+    ) {
+
+      exists =
+        Object.prototype
+          .hasOwnProperty.call(
+            overrides,
+            deliveryDate
+          );
+
+
+      value =
+        overrides[
+          deliveryDate
+        ];
+
+    }
+
+
+    if (!exists) {
+
+      return null;
+
+    }
+
+
+    const cases =
+      Math.max(
+        0,
+        Math.round(
+          Number(value) || 0
+        )
+      );
+
+
+    return cases;
 
   }
 
@@ -818,11 +1136,44 @@
           Только полный CASE.
         */
 
-        const rounded =
-          Core.roundToCases(
+        const automaticRounded =
+          roundGeneralToCases(
             rawRequiredBaseQty,
             caseToBase
           );
+
+
+        const overriddenCases =
+          getDeliveryCaseOverride(
+            options.deliveryCaseOverrides,
+            plannedDelivery.date
+          );
+
+
+        const isManualOverride =
+          overriddenCases !==
+          null;
+
+
+        const rounded =
+          isManualOverride
+
+            ? {
+
+                cases:
+                  overriddenCases,
+
+                baseQty:
+                  Core.roundNumber(
+
+                    overriddenCases *
+                    caseToBase
+
+                  )
+
+              }
+
+            : automaticRounded;
 
 
         /*
@@ -874,6 +1225,14 @@
           rawRecommendedBaseQty:
             rawRequiredBaseQty,
 
+          automaticRecommendedCases:
+            automaticRounded.cases,
+
+          automaticRecommendedBaseQty:
+            automaticRounded.baseQty,
+
+          isManualOverride,
+
           recommendedCases:
             rounded.cases,
 
@@ -891,7 +1250,7 @@
     ================================================= */
 
     const rawForecast =
-      Core.simulateDailyStock({
+      simulateGeneralDailyStock({
 
         startDate:
           countDate,
@@ -1272,18 +1631,18 @@
       mondayPlan
         .deliveries[0]
         .coverageEndDate ===
-        "2026-08-14",
+        "2026-08-15",
 
-      "TEST 1: ЧТ покрывает до ПТ"
+      "TEST 1: ЧТ покрывает до СБ включительно"
     );
 
 
     assert(
       mondayPlan
         .coverageEndDate ===
-        "2026-08-17",
+        "2026-08-18",
 
-      "TEST 1: СБ покрывает до ПН"
+      "TEST 1: СБ покрывает до ВТ включительно"
     );
 
 
@@ -1310,19 +1669,20 @@
        ПН-СР:
        70 - 60 = 10
 
-       ЧТ-ПТ:
-       нужно 40
+       ЧТ-СБ:
+       нужно 60
        есть 10
-       → 30 = 3 case
+       → 50 = 5 case
 
-       после ПТ = 0
+       после ПТ = 20
 
-       СБ-ПН:
-       60 расход
+       СБ-ВТ:
+       80 расход
        +20 safety
+       -20 остаток перед СБ
        → 80 = 8 case
 
-       итого = 11 case
+       итого = 13 case
     ================================================= */
 
     const monday =
@@ -1358,7 +1718,7 @@
     assert(
       monday.deliveries[0]
         .recommendedCases ===
-        3,
+        5,
 
       `TEST 2: ЧТ cases = ${monday.deliveries[0].recommendedCases}`
     );
@@ -1376,7 +1736,7 @@
     assert(
       monday
         .totalRecommendedCases ===
-        11,
+        13,
 
       `TEST 2: total = ${monday.totalRecommendedCases}`
     );
@@ -1409,7 +1769,7 @@
        TEST 3
        ЧТ → ВТ
 
-       ВТ покрывает ВТ + СР.
+       ВТ покрывает ВТ + СР + ЧТ.
     ================================================= */
 
     const thursday =
@@ -1464,9 +1824,9 @@
     assert(
       thursday
         .coverageEndDate ===
-        "2026-08-19",
+        "2026-08-20",
 
-      "TEST 3: покрытие должно быть до СР"
+      "TEST 3: покрытие должно быть до ЧТ включительно"
     );
 
 
@@ -1632,6 +1992,125 @@
 
 
     /* =================================================
+       TEST 6
+       БИЗНЕС-ПРИМЕР САЛАТА
+
+       ПН остаток 24, расход 15.
+       ВТ ожидается 24.
+       CASE = 6.
+
+       ЧТ:
+       дефицит до СБ = 42
+       42 / 6 = 7 CASE.
+
+       СБ:
+       дефицит до ВТ = 45
+       45 / 6 = 7.5
+       дробная часть <= 0.7
+       → 7 CASE.
+    ================================================= */
+
+    const salad =
+      calculateProduct({
+
+        countDate:
+          "2026-08-10",
+
+        orderDate:
+          "2026-08-10",
+
+        orderDay:
+          "monday",
+
+        startStock:
+          24,
+
+        dailyUsage:
+          15,
+
+        safetyStock:
+          0,
+
+        caseToBase:
+          6,
+
+        deliverySchedule:
+          schedule,
+
+        knownDeliveries: [
+
+          {
+            date:
+              "2026-08-11",
+
+            qty:
+              24
+          }
+
+        ]
+
+      });
+
+
+    assert(
+      salad.deliveries[0]
+        .rawRecommendedBaseQty ===
+        42,
+
+      `TEST 6: ЧТ raw = ${salad.deliveries[0].rawRecommendedBaseQty}`
+    );
+
+
+    assert(
+      salad.deliveries[0]
+        .recommendedCases ===
+        7,
+
+      `TEST 6: ЧТ cases = ${salad.deliveries[0].recommendedCases}`
+    );
+
+
+    assert(
+      salad.deliveries[1]
+        .rawRecommendedBaseQty ===
+        45,
+
+      `TEST 6: СБ raw = ${salad.deliveries[1].rawRecommendedBaseQty}`
+    );
+
+
+    assert(
+      salad.deliveries[1]
+        .recommendedCases ===
+        7,
+
+      `TEST 6: СБ cases = ${salad.deliveries[1].recommendedCases}`
+    );
+
+
+    tests.push({
+
+      test:
+        "Салат 24 / 15 / 24 / case 6",
+
+      status:
+        "✅",
+
+      thursday:
+        salad.deliveries[0]
+          .recommendedCases,
+
+      saturday:
+        salad.deliveries[1]
+          .recommendedCases,
+
+      total:
+        salad.totalRecommendedCases
+
+    });
+
+
+    /* =================================================
        CONSOLE
     ================================================= */
 
@@ -1733,7 +2212,7 @@
 
 
     console.log(
-      "✅ GENERAL: 5/5 tests passed"
+      "✅ GENERAL: 6/6 tests passed"
     );
 
 
@@ -1753,7 +2232,9 @@
 
       withIncoming,
 
-      earlyCount
+      earlyCount,
+
+      salad
 
     };
 

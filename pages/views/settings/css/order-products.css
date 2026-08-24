@@ -1,5 +1,24 @@
-.order-products-placeholder {
-  padding: 40px;
+/* =====================================================
+   I’M | ЗАКАЗ
+   SETTINGS — ORDER PRODUCTS
+===================================================== */
+
+.order-products-settings {
+  width: 100%;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.order-products-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 32px;
 
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -8,23 +27,28 @@
 }
 
 
-.order-products-placeholder span {
+.order-products-kicker {
+  display: block;
+
+  margin-bottom: 6px;
+
   color: #9a7a00;
 
   font-size: 10px;
   font-weight: 800;
-
   text-transform: uppercase;
 }
 
 
-.order-products-placeholder h2 {
-  margin: 7px 0;
+.order-products-header h2 {
+  margin: 0 0 7px;
+
+  font-size: 24px;
 }
 
 
-.order-products-placeholder p {
-  max-width: 600px;
+.order-products-header p {
+  max-width: 650px;
 
   margin: 0;
 
@@ -32,4 +56,988 @@
 
   font-size: 12px;
   line-height: 1.6;
+}
+
+
+.order-products-add-button {
+  flex-shrink: 0;
+
+  min-height: 42px;
+
+  padding: 0 18px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: #ffc400;
+  color: #111;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+
+.order-products-add-button:hover {
+  background: #ffcf33;
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.order-products-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+
+  margin-top: 16px;
+}
+
+
+.order-products-stat {
+  padding: 18px 20px;
+
+  border: 1px solid var(--line);
+  border-radius: 16px;
+
+  background: #fff;
+}
+
+
+.order-products-stat span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+.order-products-stat strong {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+
+.order-products-stat.is-active strong {
+  color: #16803c;
+}
+
+
+.order-products-stat.is-inactive strong {
+  color: #b42318;
+}
+
+
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.order-products-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 190px;
+  gap: 12px;
+
+  margin-top: 16px;
+}
+
+
+.order-products-search {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+}
+
+
+.order-products-search-icon {
+  position: absolute;
+  left: 15px;
+
+  color: #777;
+
+  font-size: 18px;
+
+  pointer-events: none;
+}
+
+
+.order-products-search input,
+.order-products-status-filter {
+  width: 100%;
+  height: 44px;
+
+  border: 1px solid #dfe2e6;
+  border-radius: 12px;
+
+  background: #fff;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+.order-products-search input {
+  padding: 0 14px 0 42px;
+}
+
+
+.order-products-status-filter {
+  padding: 0 12px;
+
+  cursor: pointer;
+}
+
+
+.order-products-search input:focus,
+.order-products-status-filter:focus {
+  border-color: #e5ae00;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 196, 0, 0.14);
+}
+
+
+/* =====================================================
+   CATEGORIES
+===================================================== */
+
+.order-products-categories {
+  display: flex;
+  gap: 8px;
+
+  margin-top: 12px;
+  padding-bottom: 4px;
+
+  overflow-x: auto;
+}
+
+
+.order-products-category {
+  flex-shrink: 0;
+
+  min-height: 34px;
+
+  padding: 0 14px;
+
+  border: 1px solid #dfe2e6;
+  border-radius: 999px;
+
+  background: #fff;
+  color: #555;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.order-products-category:hover {
+  border-color: #c9cdd2;
+}
+
+
+.order-products-category.is-active {
+  border-color: #111;
+
+  background: #111;
+  color: #fff;
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.order-products-message {
+  margin-top: 14px;
+  padding: 12px 14px;
+
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+.order-products-message.is-success {
+  background: #eaf8ef;
+  color: #176b36;
+}
+
+
+.order-products-message.is-error {
+  background: #fff0ef;
+  color: #b42318;
+}
+
+
+/* =====================================================
+   CARD / TABLE
+===================================================== */
+
+.order-products-card {
+  margin-top: 16px;
+
+  border: 1px solid var(--line);
+  border-radius: 18px;
+
+  background: #fff;
+
+  overflow: hidden;
+}
+
+
+.order-products-loading,
+.order-products-empty {
+  padding: 50px 24px;
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+
+.order-products-empty strong {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #222;
+
+  font-size: 14px;
+}
+
+
+.order-products-empty span {
+  font-size: 12px;
+}
+
+
+.order-products-table-wrap {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+
+.order-products-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 1000px;
+}
+
+
+.order-products-table th {
+  padding: 12px;
+
+  border-bottom: 1px solid #e8eaed;
+
+  background: #f7f8f9;
+
+  color: #777;
+
+  font-size: 10px;
+  font-weight: 800;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+
+.order-products-table td {
+  padding: 13px 12px;
+
+  border-bottom: 1px solid #eef0f2;
+
+  vertical-align: middle;
+
+  font-size: 11px;
+}
+
+
+.order-products-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+.order-products-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+
+.order-products-table tbody tr:hover {
+  background: #fafafa;
+}
+
+
+.order-products-table tbody tr.is-inactive {
+  background: #fafafa;
+}
+
+
+.order-products-table tbody tr.is-inactive td {
+  opacity: 0.68;
+}
+
+
+.order-products-number-column {
+  width: 46px;
+}
+
+
+.order-products-actions-column {
+  width: 250px;
+}
+
+
+/* =====================================================
+   PRODUCT INFO
+===================================================== */
+
+.order-products-product-name {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #111;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+
+.order-products-product-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  color: #777;
+
+  font-size: 10px;
+}
+
+
+.order-products-category-badge {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 24px;
+
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  background: #f0f1f3;
+  color: #444;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+.order-products-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  min-height: 26px;
+
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+.order-products-status::before {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  content: "";
+}
+
+
+.order-products-status.is-active {
+  background: #eaf8ef;
+  color: #176b36;
+}
+
+
+.order-products-status.is-active::before {
+  background: #24a148;
+}
+
+
+.order-products-status.is-inactive {
+  background: #fff0ef;
+  color: #b42318;
+}
+
+
+.order-products-status.is-inactive::before {
+  background: #d92d20;
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.order-products-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+
+.order-products-action-button {
+  min-height: 30px;
+
+  padding: 0 10px;
+
+  border: 1px solid #dfe2e6;
+  border-radius: 8px;
+
+  background: #fff;
+  color: #333;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.order-products-action-button:hover {
+  background: #f5f6f7;
+}
+
+
+.order-products-action-button.is-toggle {
+  color: #8a6800;
+}
+
+
+.order-products-action-button.is-activate {
+  border-color: #bfe6cc;
+
+  color: #176b36;
+}
+
+
+.order-products-action-button.is-delete {
+  border-color: #ffd0cc;
+
+  color: #b42318;
+}
+
+
+.order-products-action-button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.order-products-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+}
+
+
+.order-products-modal.is-open {
+  display: flex;
+}
+
+
+.order-products-modal-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(10, 12, 14, 0.58);
+
+  backdrop-filter: blur(3px);
+}
+
+
+.order-products-modal-card {
+  position: relative;
+  z-index: 1;
+
+  width: min(680px, 100%);
+  max-height: calc(100vh - 40px);
+
+  padding: 24px;
+
+  border-radius: 18px;
+
+  background: #fff;
+
+  overflow-y: auto;
+
+  box-shadow:
+    0 20px 60px
+    rgba(0, 0, 0, 0.2);
+}
+
+
+.order-products-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+
+.order-products-modal-header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #9a7a00;
+
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+
+.order-products-modal-header h3 {
+  margin: 0;
+
+  font-size: 20px;
+}
+
+
+.order-products-modal-close {
+  width: 34px;
+  height: 34px;
+
+  border: 1px solid #e1e4e8;
+  border-radius: 9px;
+
+  background: #fff;
+
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+.order-products-modal-close:hover {
+  background: #f5f6f7;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.order-products-form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 14px;
+}
+
+
+.order-products-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+.order-products-field.is-wide {
+  grid-column: 1 / -1;
+}
+
+
+.order-products-field span {
+  color: #555;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+.order-products-field input,
+.order-products-field select {
+  width: 100%;
+  height: 42px;
+
+  box-sizing: border-box;
+
+  padding: 0 11px;
+
+  border: 1px solid #dfe2e6;
+  border-radius: 10px;
+
+  background: #fff;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  outline: none;
+}
+
+
+.order-products-field input:focus,
+.order-products-field select:focus {
+  border-color: #e5ae00;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 196, 0, 0.13);
+}
+
+
+.order-products-form-message {
+  min-height: 18px;
+
+  margin-top: 14px;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+.order-products-form-message.is-error {
+  color: #b42318;
+}
+
+
+.order-products-form-message.is-loading {
+  color: #8a6800;
+}
+
+
+.order-products-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+
+.order-products-primary-button,
+.order-products-secondary-button,
+.order-products-delete-confirm {
+  min-height: 40px;
+
+  padding: 0 16px;
+
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+
+.order-products-primary-button {
+  border: 0;
+
+  background: #ffc400;
+  color: #111;
+}
+
+
+.order-products-secondary-button {
+  border: 1px solid #dfe2e6;
+
+  background: #fff;
+  color: #444;
+}
+
+
+.order-products-delete-confirm {
+  border: 0;
+
+  background: #d92d20;
+  color: #fff;
+}
+
+
+.order-products-primary-button:disabled,
+.order-products-delete-confirm:disabled {
+  opacity: 0.6;
+
+  cursor: wait;
+}
+
+
+/* =====================================================
+   DELETE
+===================================================== */
+
+.order-products-delete-card {
+  width: min(440px, 100%);
+
+  text-align: center;
+}
+
+
+.order-products-delete-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  margin: 0 auto 14px;
+
+  border-radius: 50%;
+
+  background: #fff0ef;
+  color: #b42318;
+
+  font-size: 22px;
+  font-weight: 900;
+}
+
+
+.order-products-delete-card h3 {
+  margin: 0 0 8px;
+
+  font-size: 20px;
+}
+
+
+.order-products-delete-card p {
+  margin: 0;
+
+  color: #555;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+.order-products-delete-warning {
+  margin-top: 14px;
+  padding: 11px;
+
+  border-radius: 10px;
+
+  background: #fff8df;
+  color: #745800;
+
+  font-size: 10px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+
+/* =====================================================
+   BODY MODAL
+===================================================== */
+
+body.order-products-modal-open {
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+
+  .order-products-header {
+    flex-direction: column;
+
+    padding: 22px;
+  }
+
+
+  .order-products-add-button {
+    width: 100%;
+  }
+
+
+  .order-products-stats {
+    grid-template-columns: 1fr;
+  }
+
+
+  .order-products-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+
+  .order-products-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .order-products-field.is-wide {
+    grid-column: auto;
+  }
+
+
+  .order-products-modal {
+    padding: 10px;
+  }
+
+
+  .order-products-modal-card {
+    max-height: calc(100vh - 20px);
+
+    padding: 18px;
+  }
+
+}
+
+/* =====================================================
+   FIXED PRODUCTS AREA
+   Верхняя часть стоит на месте,
+   скроллится только список товаров
+===================================================== */
+
+.order-products-settings {
+  display: flex;
+  flex-direction: column;
+
+  height: calc(100vh - 90px);
+  min-height: 0;
+}
+
+
+/* Верхние блоки не сжимаются */
+
+.order-products-header,
+.order-products-stats,
+.order-products-toolbar,
+.order-products-categories,
+.order-products-message {
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   PRODUCTS CARD
+===================================================== */
+
+.order-products-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  min-height: 0;
+
+  margin-top: 16px;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   SCROLL ТОЛЬКО ВНУТРИ ТАБЛИЦЫ
+===================================================== */
+
+.order-products-table-wrap {
+  flex: 1;
+
+  min-height: 0;
+
+  overflow-x: auto;
+  overflow-y: auto;
+
+  scrollbar-gutter: stable;
+}
+
+
+/* =====================================================
+   ЗАГОЛОВОК ТАБЛИЦЫ STICKY
+===================================================== */
+
+.order-products-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+
+.order-products-table th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+
+  background: #f7f8f9;
+
+  box-shadow:
+    0 1px 0
+    #e8eaed;
+}
+
+
+/* Чтобы строки нормально прокручивались */
+
+.order-products-table tbody {
+  position: relative;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+
+  .order-products-settings {
+    height: calc(100vh - 145px);
+  }
+
 }

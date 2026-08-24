@@ -72,6 +72,8 @@
 
   let currentCategory = "cola";
 
+  let productSearch = "";
+
   let products = [];
 
   let deliverySchedule = new Map();
@@ -1606,17 +1608,55 @@
     }
 
 
-    const categoryProducts =
-      products.filter(
-        function (product) {
+    const search =
+  productSearch
+    .trim()
+    .toLowerCase();
 
-          return (
-            product.category ===
-            currentCategory
-          );
 
-        }
+const categoryProducts =
+  products.filter(
+    function (product) {
+
+      if (
+        product.category !==
+        currentCategory
+      ) {
+        return false;
+      }
+
+
+      if (!search) {
+        return true;
+      }
+
+
+      const name =
+        String(
+          product.name || ""
+        ).toLowerCase();
+
+
+      const iikoCode =
+        String(
+          product.iiko_code || ""
+        ).toLowerCase();
+
+
+      const iikoName =
+        String(
+          product.iiko_name || ""
+        ).toLowerCase();
+
+
+      return (
+        name.includes(search) ||
+        iikoCode.includes(search) ||
+        iikoName.includes(search)
       );
+
+    }
+  );
 
 
     const categoryTitle =
@@ -1654,28 +1694,35 @@
 
     if (!categoryProducts.length) {
 
-      tbody.innerHTML = `
-        <tr class="stock-empty-row">
+  tbody.innerHTML = `
+    <tr class="stock-empty-row">
 
-          <td colspan="6">
+      <td colspan="6">
 
-            <div class="stock-empty">
+        <div class="stock-empty">
 
-              <strong>
-                В этой категории пока нет товаров
-              </strong>
+          <strong>
+            ${
+              productSearch
+                ? "Товар не найден"
+                : "В этой категории пока нет товаров"
+            }
+          </strong>
 
-              <p>
-                Используйте кнопку
-                «Добавить товар».
-              </p>
+          <p>
+            ${
+              productSearch
+                ? "Попробуйте изменить поисковый запрос."
+                : "Используйте кнопку «Добавить товар»."
+            }
+          </p>
 
-            </div>
+        </div>
 
-          </td>
+      </td>
 
-        </tr>
-      `;
+    </tr>
+  `;
 
 
       updateProgress();
@@ -2014,11 +2061,17 @@
 
     if (nextButton) {
 
+      /*
+        Теперь неполный подсчет
+        не блокирует кнопку "Далее".
+
+        Проверка непросчитанных товаров
+        выполняется после нажатия.
+      */
+
       nextButton.disabled = !(
         total > 0 &&
-        counted === total &&
-        deliveryStatusIsReady() &&
-        freshLotsIsReady()
+        deliveryStatusIsReady()
       );
 
     }
@@ -3416,20 +3469,190 @@
 
   }
 
+  /* =====================================================
+   UNCOUNTED PRODUCTS WARNING
+===================================================== */
+
+  function getUncountedProducts() {
+
+    return products.filter(
+      function (product) {
+
+        return !isCountedRecord(
+          getStockRecord(
+            product.id
+          )
+        );
+
+      }
+    );
+
+  }
+
+
+function openUncountedModal(
+  uncountedProducts
+) {
+
+  const modal =
+    root.querySelector(
+      "#stock-uncounted-modal"
+    );
+
+
+  const list =
+    root.querySelector(
+      "#stock-uncounted-list"
+    );
+
+
+  if (
+    !modal ||
+    !list
+  ) {
+    return;
+  }
+
+
+  list.innerHTML =
+    uncountedProducts
+      .map(
+        function (product) {
+
+          return `
+            <div class="stock-warning-item">
+
+              <strong>
+                ${escapeHTML(
+                  product.name
+                )}
+              </strong>
+
+              <span>
+                ${escapeHTML(
+                  CATEGORY_NAMES[
+                    product.category
+                  ] ||
+                  product.category
+                )}
+              </span>
+
+            </div>
+          `;
+
+        }
+      )
+      .join("");
+
+
+  modal.classList.add(
+    "is-open"
+  );
+
+
+  modal.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+
+  document.body.classList.add(
+    "stock-modal-open"
+  );
+
+}
+
+
+function closeUncountedModal() {
+
+  const modal =
+    root.querySelector(
+      "#stock-uncounted-modal"
+    );
+
+
+  if (!modal) {
+    return;
+  }
+
+
+  modal.classList.remove(
+    "is-open"
+  );
+
+
+  modal.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
+
+  document.body.classList.remove(
+    "stock-modal-open"
+  );
+
+}
+
 
   /* =====================================================
      NEXT STEP
   ===================================================== */
 
-  async function goNext() {
+  async function goNext(
+  forceContinue = false
+) {
+
+  if (
+    !deliveryStatusIsReady()
+  ) {
+
+    setSaveStatus(
+      "error",
+      "Укажите, приехала ли поставка"
+    );
+
+
+    return;
+
+  }
+
+
+  /*
+    Fresh сроктары бөлек validation.
+    Оны өткізіп жіберуге болмайды.
+  */
+
+  if (
+    !freshLotsIsReady()
+  ) {
+
+    setSaveStatus(
+      "error",
+      "Распределите остатки Fresh по срокам"
+    );
+
+
+    return;
+
+  }
+
+
+  /*
+    Проверяем непросчитанные товары.
+  */
+
+  if (!forceContinue) {
+
+    const uncountedProducts =
+      getUncountedProducts();
+
 
     if (
-      !deliveryStatusIsReady()
+      uncountedProducts.length
     ) {
 
-      setSaveStatus(
-        "error",
-        "Укажите, приехала ли поставка"
+      openUncountedModal(
+        uncountedProducts
       );
 
 
@@ -3437,156 +3660,104 @@
 
     }
 
-
-    /*
-      Позже, когда включим
-      реальную Fresh validation,
-      это не даст перейти дальше,
-      если факт и сроки не совпадают.
-    */
-
-    if (
-      !freshLotsIsReady()
-    ) {
-
-      setSaveStatus(
-        "error",
-        "Распределите остатки Fresh по срокам"
-      );
+  }
 
 
-      return;
+  const button =
+    root.querySelector(
+      "#stock-next-button"
+    );
 
+
+  if (button) {
+
+    button.disabled =
+      true;
+
+  }
+
+
+  try {
+
+    closeUncountedModal();
+
+
+    await flushAllSaves();
+
+    await flushFreshLots();
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+
+        .from(
+          "weekly_orders"
+        )
+
+        .update({
+          status:
+            "sales"
+        })
+
+        .eq(
+          "id",
+          weeklyOrder.id
+        )
+
+        .select()
+
+        .single();
+
+
+    if (error) {
+      throw error;
     }
 
 
-    const total =
-      products.length;
-
-
-    const counted =
-      products.filter(
-        function (product) {
-
-          return isCountedRecord(
-            getStockRecord(
-              product.id
-            )
-          );
-
-        }
-      ).length;
+    weeklyOrder = {
+      ...weeklyOrder,
+      ...data
+    };
 
 
     if (
-      !total ||
-      counted !== total
+      appContext &&
+      typeof appContext.goToStep ===
+        "function"
     ) {
 
-      setSaveStatus(
-        "error",
-        `Подсчитано ${counted} из ${total} товаров`
+      await appContext.goToStep(
+        2
       );
-
-
-      return;
 
     }
 
+  } catch (error) {
 
-    const button =
-      root.querySelector(
-        "#stock-next-button"
-      );
+    console.error(
+      "Next step:",
+      error
+    );
+
+
+    setSaveStatus(
+      "error",
+      error.message ||
+      "Не удалось перейти дальше"
+    );
 
 
     if (button) {
 
       button.disabled =
-        true;
+        false;
 
     }
 
-
-    try {
-
-      await flushAllSaves();
-
-      await flushFreshLots();
-
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-
-          .from(
-            "weekly_orders"
-          )
-
-          .update({
-            status:
-              "sales"
-          })
-
-          .eq(
-            "id",
-            weeklyOrder.id
-          )
-
-          .select()
-
-          .single();
-
-
-      if (error) {
-        throw error;
-      }
-
-
-      weeklyOrder =
-        {
-          ...weeklyOrder,
-          ...data
-        };
-
-
-      if (
-        appContext &&
-        typeof appContext.goToStep ===
-          "function"
-      ) {
-
-        await appContext.goToStep(
-          2
-        );
-
-      }
-
-    } catch (error) {
-
-      console.error(
-        "Next step:",
-        error
-      );
-
-
-      setSaveStatus(
-        "error",
-        error.message ||
-        "Не удалось перейти дальше"
-      );
-
-
-      if (button) {
-
-        button.disabled =
-          false;
-
-      }
-
-    }
+  }
 
   }
 
@@ -3768,6 +3939,43 @@
 
         }
 
+        /*
+          UNCOUNTED MODAL CLOSE
+        */
+
+        if (
+          event.target.closest(
+            "[data-stock-uncounted-close]"
+          )
+        ) {
+
+          closeUncountedModal();
+
+
+          return;
+
+        }
+
+
+        /*
+          CONTINUE WITHOUT UNCOUNTED
+        */
+
+        if (
+          event.target.closest(
+            "#stock-uncounted-continue"
+          )
+        ) {
+
+          goNext(
+            true
+          );
+
+
+          return;
+
+        }
+
 
         /*
           NEXT
@@ -3785,6 +3993,69 @@
 
       }
     );
+
+    /*
+  PRODUCT SEARCH
+*/
+
+const searchInput =
+  root.querySelector(
+    "#stock-product-search"
+  );
+
+
+const searchClear =
+  root.querySelector(
+    "#stock-search-clear"
+  );
+
+
+searchInput?.addEventListener(
+  "input",
+  function () {
+
+    productSearch =
+      searchInput.value;
+
+
+    if (searchClear) {
+
+      searchClear.hidden =
+        !productSearch;
+
+    }
+
+
+    renderProducts();
+
+  }
+);
+
+
+searchClear?.addEventListener(
+  "click",
+  function () {
+
+    productSearch = "";
+
+
+    if (searchInput) {
+
+      searchInput.value = "";
+
+      searchInput.focus();
+
+    }
+
+
+    searchClear.hidden =
+      true;
+
+
+    renderProducts();
+
+  }
+);
 
 
     /*

@@ -478,6 +478,17 @@
         delivery_index:
           deliveryIndex,
 
+        manual_override:
+          Boolean(
+            delivery.isManualOverride
+          ),
+
+        automatic_recommended_cases:
+          integer(
+            delivery.automaticRecommendedCases ??
+            delivery.recommendedCases
+          ),
+
         total_recommended_cases:
           section === "cola"
 

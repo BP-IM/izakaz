@@ -653,10 +653,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .sales-table-scroll {
-    overflow: visible;
-  }
-
   .sales-table {
     min-width: 0;
   }
@@ -761,4 +757,221 @@
   .sales-footer-actions {
     grid-template-columns: 1fr;
   }
+}
+
+/* =====================================================
+   STEP 2 — FIXED PRODUCTS AREA
+   Скроллится только список товаров
+===================================================== */
+
+
+/* Карточка таблицы */
+.sales-table-card {
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   TABLE SCROLL AREA
+===================================================== */
+
+.sales-table-scroll {
+  width: 100%;
+
+  height: clamp(
+    420px,
+    57vh,
+    650px
+  );
+
+  overflow-x: auto;
+  overflow-y: auto;
+
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+
+/* =====================================================
+   STICKY TABLE HEADER
+===================================================== */
+
+.sales-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+
+.sales-table thead th {
+  position: sticky;
+
+  top: 0;
+  z-index: 10;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 0 #e7e9ec;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.sales-footer {
+  position: static;
+
+  background: #fbfbfc;
+}
+
+
+/* =====================================================
+   DESKTOP
+===================================================== */
+
+@media (min-width: 761px) {
+
+  .sales-table-scroll {
+    height: clamp(
+      430px,
+      58vh,
+      680px
+    );
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 760px) {
+
+  /*
+    Бұрын:
+    .sales-table-scroll {
+      overflow: visible;
+    }
+
+    Енді карточкалардың өзі осы жерде скролл болады.
+  */
+
+  .sales-table-scroll {
+    height: 58vh;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+  }
+
+
+  .sales-table tbody {
+    padding: 10px;
+  }
+
+
+  .sales-footer {
+    position: static;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 430px) {
+
+  .sales-table-scroll {
+    height: 55vh;
+  }
+
+}
+
+
+/* =====================================================
+   STEP 2 — MANUAL REALIZATION
+===================================================== */
+
+.sales-manual-input-wrap {
+  display: flex;
+
+  width: 130px;
+
+  align-items: center;
+
+  margin: 0 auto;
+
+  overflow: hidden;
+
+  border: 1px solid #e0b44c;
+  border-radius: 10px;
+
+  background: #fffaf0;
+}
+
+
+.sales-manual-input {
+  min-width: 0;
+  width: 100%;
+  height: 40px;
+
+  padding: 0 8px;
+
+  border: 0;
+  outline: 0;
+
+  color: #25282c;
+  background: transparent;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  text-align: center;
+}
+
+
+.sales-manual-input-wrap > span {
+  margin-right: 6px;
+
+  padding: 4px 6px;
+
+  border-radius: 6px;
+
+  color: #856500;
+  background: #fff0bd;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+.sales-manual-input-wrap:focus-within {
+  border-color: #c18b00;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(193, 139, 0, 0.12);
+}
+
+
+.sales-manual-hint {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #a57600;
+
+  font-size: 8px;
+}
+
+
+.sales-status-badge.is-manual {
+  color: #805f00;
+
+  background: #fff0bd;
 }

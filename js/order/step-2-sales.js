@@ -1,30 +1,74 @@
 /* =====================================================
    I’M | ЗАКАЗ
    STEP 2 — РЕАЛИЗАЦИЯ + СПИСАНИЯ
+
+   - Excel IIKO
+   - автоматическое сопоставление по IIKO коду
+   - реализация
+   - списания
+   - расход
+   - средний расход за 7 дней
+   - ручной ввод для товаров "Не найден"
+   - сохранение в Supabase
 ===================================================== */
 
 (function () {
   "use strict";
 
+
+  /* =====================================================
+     CONFIG
+  ===================================================== */
+
   const XLSX_CDN =
     "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
 
-  // Step 2 работает с недельной выгрузкой IIKO.
+
   const AVERAGE_DAYS = 7;
 
+
   const CATEGORY_CONFIG = [
-    { key: "all", label: "Все" },
-    { key: "cola", label: "Cola" },
-    { key: "fresh", label: "Fresh" },
-    { key: "freezer", label: "Freezer" },
-    { key: "cooler", label: "Cooler" },
-    { key: "dry", label: "Сухой" },
-    { key: "chemistry", label: "Химия" },
-    { key: "household", label: "Хоз. товары" },
-    { key: "other", label: "Другое" }
+    {
+      key: "all",
+      label: "Все"
+    },
+    {
+      key: "cola",
+      label: "Cola"
+    },
+    {
+      key: "fresh",
+      label: "Fresh"
+    },
+    {
+      key: "freezer",
+      label: "Freezer"
+    },
+    {
+      key: "cooler",
+      label: "Cooler"
+    },
+    {
+      key: "dry",
+      label: "Сухой"
+    },
+    {
+      key: "chemistry",
+      label: "Химия"
+    },
+    {
+      key: "household",
+      label: "Хоз. товары"
+    },
+    {
+      key: "other",
+      label: "Другое"
+    }
   ];
 
+
   const HEADER_ALIASES = {
+
     code: [
       "код",
       "код товара",
@@ -32,6 +76,7 @@
       "код позиции",
       "артикул"
     ],
+
     name: [
       "наименование",
       "наименование товара",
@@ -39,6 +84,7 @@
       "товар",
       "позиция"
     ],
+
     realization: [
       "реализация",
       "реализовано",
@@ -47,6 +93,7 @@
       "расход по реализации",
       "расход реализация"
     ],
+
     writeoff: [
       "списание",
       "списания",
@@ -54,31 +101,63 @@
       "расход по списанию",
       "расход списание"
     ]
+
   };
 
+
+  /* =====================================================
+     STATE
+  ===================================================== */
+
   let root = null;
+
   let appContext = null;
 
   let userId = null;
+
   let restaurantId = null;
+
   let weeklyOrder = null;
 
+
   let products = [];
-  let savedItems = new Map();
+
+  let savedItems =
+    new Map();
+
   let previewRows = [];
 
-  let currentCategory = "all";
+
+  let currentCategory =
+    "all";
+
 
   let workbook = null;
-  let workbookFileName = "";
-  let workbookMatrices = new Map();
-  let currentSheetName = "";
-  let currentHeaderRowIndex = 0;
-  let currentHeaderDepth = 1;
 
-  let previewIsReady = false;
-  let savedIsReady = false;
-  let isSaving = false;
+  let workbookFileName =
+    "";
+
+  let workbookMatrices =
+    new Map();
+
+  let currentSheetName =
+    "";
+
+  let currentHeaderRowIndex =
+    0;
+
+  let currentHeaderDepth =
+    1;
+
+
+  let previewIsReady =
+    false;
+
+  let savedIsReady =
+    false;
+
+  let isSaving =
+    false;
 
 
   /* =====================================================
@@ -86,111 +165,190 @@
   ===================================================== */
 
   function escapeHTML(value) {
+
     return String(value ?? "")
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
+
   }
 
 
   function normalizeText(value) {
+
     return String(value ?? "")
       .trim()
       .toLowerCase()
       .replace(/ё/g, "е")
       .replace(/\s+/g, " ");
+
   }
 
 
   function normalizeHeader(value) {
+
     return normalizeText(value)
-      .replace(/[\n\r\t]+/g, " ")
-      .replace(/[()\[\]{}.,:;]+/g, " ")
-      .replace(/\s+/g, " ")
+      .replace(
+        /[\n\r\t]+/g,
+        " "
+      )
+      .replace(
+        /[()\[\]{}.,:;]+/g,
+        " "
+      )
+      .replace(
+        /\s+/g,
+        " "
+      )
       .trim();
+
   }
 
 
   function normalizeCode(value) {
+
     return String(value ?? "")
       .trim()
       .toUpperCase()
-      .replace(/[–—−]/g, "-")
-      .replace(/\s+/g, "");
+      .replace(
+        /[–—−]/g,
+        "-"
+      )
+      .replace(
+        /\s+/g,
+        ""
+      );
+
   }
 
 
   function toPositiveNumber(value) {
-    if (typeof value === "number") {
-      return Number.isFinite(value)
+
+    if (
+      typeof value ===
+      "number"
+    ) {
+
+      return Number.isFinite(
+        value
+      )
         ? Math.abs(value)
         : 0;
+
     }
 
-    let text = String(value ?? "")
-      .trim()
-      .replace(/\u00a0/g, "")
-      .replace(/\s+/g, "");
+
+    let text =
+      String(value ?? "")
+        .trim()
+        .replace(
+          /\u00a0/g,
+          ""
+        )
+        .replace(
+          /\s+/g,
+          ""
+        );
+
 
     if (!text) {
       return 0;
     }
 
+
     const parenthesized =
-      /^\(.*\)$/.test(text);
+      /^\(.*\)$/.test(
+        text
+      );
 
-    text = text
-      .replace(/^\((.*)\)$/, "$1")
-      .replace(/,/g, ".")
-      .replace(/[^0-9.\-]/g, "");
 
-    const number = Number(text);
+    text =
+      text
+        .replace(
+          /^\((.*)\)$/,
+          "$1"
+        )
+        .replace(
+          /,/g,
+          "."
+        )
+        .replace(
+          /[^0-9.\-]/g,
+          ""
+        );
 
-    if (!Number.isFinite(number)) {
+
+    const number =
+      Number(text);
+
+
+    if (
+      !Number.isFinite(
+        number
+      )
+    ) {
+
       return 0;
+
     }
+
 
     return Math.abs(
       parenthesized
         ? -number
         : number
     );
+
   }
 
 
   function round4(value) {
+
     return (
       Math.round(
-        (Number(value) + Number.EPSILON) *
-          10000
-      ) / 10000
+        (
+          Number(value) +
+          Number.EPSILON
+        ) *
+        10000
+      ) /
+      10000
     );
+
   }
 
 
   function formatNumber(value) {
+
     return new Intl.NumberFormat(
       "ru-RU",
       {
-        maximumFractionDigits: 4
+        maximumFractionDigits:
+          4
       }
     ).format(
       Number(value || 0)
     );
+
   }
 
 
-  function formatOrderDate(dateString) {
+  function formatOrderDate(
+    dateString
+  ) {
+
     if (!dateString) {
       return "—";
     }
+
 
     const date =
       new Date(
         `${dateString}T00:00:00`
       );
+
 
     return new Intl.DateTimeFormat(
       "ru-RU",
@@ -200,116 +358,215 @@
         year: "numeric"
       }
     ).format(date);
+
   }
 
 
-  function getOrderDayLabel(orderDay) {
-    if (orderDay === "monday") {
+  function getOrderDayLabel(
+    orderDay
+  ) {
+
+    if (
+      orderDay ===
+      "monday"
+    ) {
+
       return "ПН";
+
     }
 
-    if (orderDay === "thursday") {
+
+    if (
+      orderDay ===
+      "thursday"
+    ) {
+
       return "ЧТ";
+
     }
+
 
     return "—";
+
   }
 
 
   function getProductsWord(count) {
+
     const mod100 =
       count % 100;
 
+
     const mod10 =
       count % 10;
+
 
     if (
       mod100 >= 11 &&
       mod100 <= 14
     ) {
+
       return "товаров";
+
     }
 
-    if (mod10 === 1) {
+
+    if (
+      mod10 === 1
+    ) {
+
       return "товар";
+
     }
+
 
     if (
       mod10 >= 2 &&
       mod10 <= 4
     ) {
+
       return "товара";
+
     }
 
+
     return "товаров";
+
   }
 
 
-  function getCategoryLabel(category) {
+  function getCategoryLabel(
+    category
+  ) {
+
     return (
       CATEGORY_CONFIG.find(
         function (item) {
+
           return (
-            item.key === category
+            item.key ===
+            category
           );
+
         }
-      )?.label || category
+      )?.label ||
+      category
     );
+
   }
 
 
-  function getCategoryIndex(category) {
+  function getCategoryIndex(
+    category
+  ) {
+
     const index =
       CATEGORY_CONFIG.findIndex(
         function (item) {
+
           return (
-            item.key === category
+            item.key ===
+            category
           );
+
         }
       );
 
-    return index === -1
-      ? 999
-      : index;
+
+    return (
+      index === -1
+        ? 999
+        : index
+    );
+
   }
 
 
-  function createEmptyPreviewRow(product) {
+  /* =====================================================
+     PREVIEW ROW
+  ===================================================== */
+
+  function createEmptyPreviewRow(
+    product
+  ) {
+
     return {
+
       product,
-      matched: false,
 
-      realization: 0,
-      writeoff: 0,
-      usage: 0,
+      /*
+        matched = найден автоматически
+        в Excel.
+      */
 
-      averageRealization: 0,
-      averageUsage: 0,
+      matched:
+        false,
 
-      sourceName: "",
-      sourceRows: 0
+
+      /*
+        manual = пользователь
+        ввёл реализацию вручную.
+      */
+
+      manual:
+        false,
+
+
+      realization:
+        0,
+
+      writeoff:
+        0,
+
+      usage:
+        0,
+
+
+      averageRealization:
+        0,
+
+      averageUsage:
+        0,
+
+
+      sourceName:
+        "",
+
+      sourceRows:
+        0
+
     };
+
   }
 
+
+  /* =====================================================
+     STATUS
+  ===================================================== */
 
   function setFileStatus(
     message,
     status = "idle"
   ) {
+
     const element =
       root?.querySelector(
         "#sales-file-status"
       );
 
+
     if (!element) {
       return;
     }
 
+
     element.textContent =
       message;
 
+
     element.dataset.status =
       status;
+
   }
 
 
@@ -317,24 +574,31 @@
     message,
     status = "idle"
   ) {
+
     const text =
       root?.querySelector(
         "#sales-save-status"
       );
+
 
     const dot =
       root?.querySelector(
         "#sales-save-dot"
       );
 
+
     if (text) {
+
       text.textContent =
         message;
+
     }
+
 
     if (!dot) {
       return;
     }
+
 
     dot.classList.remove(
       "is-ready",
@@ -342,83 +606,160 @@
       "is-error"
     );
 
-    if (status === "ready") {
+
+    if (
+      status ===
+      "ready"
+    ) {
+
       dot.classList.add(
         "is-ready"
       );
+
     }
 
-    if (status === "saved") {
+
+    if (
+      status ===
+      "saved"
+    ) {
+
       dot.classList.add(
         "is-saved"
       );
+
     }
 
-    if (status === "error") {
+
+    if (
+      status ===
+      "error"
+    ) {
+
       dot.classList.add(
         "is-error"
       );
+
     }
+
   }
 
+
+  /* =====================================================
+     ROW COUNTS
+  ===================================================== */
 
   function getMatchedCount(
     rows = previewRows
   ) {
+
     return rows.filter(
       function (row) {
+
         return row.matched;
+
       }
     ).length;
+
+  }
+
+
+  function getManualCount(
+    rows = previewRows
+  ) {
+
+    return rows.filter(
+      function (row) {
+
+        return (
+          !row.matched &&
+          row.manual
+        );
+
+      }
+    ).length;
+
   }
 
 
   function getMissingCount(
     rows = previewRows
   ) {
+
     return rows.filter(
       function (row) {
-        return !row.matched;
+
+        return (
+          !row.matched &&
+          !row.manual
+        );
+
       }
     ).length;
+
   }
 
 
-  function allProductsMatched(
+  function allProductsReady(
     rows = previewRows
   ) {
+
     return (
+
       products.length > 0 &&
-      rows.length === products.length &&
-      getMissingCount(rows) === 0
+
+      rows.length ===
+        products.length &&
+
+      rows.every(
+        function (row) {
+
+          return (
+            row.matched ||
+            row.manual
+          );
+
+        }
+      )
+
     );
+
   }
 
 
   /* =====================================================
-     XLSX
+     XLSX LIBRARY
   ===================================================== */
 
   async function ensureXlsxLibrary() {
+
     if (window.XLSX) {
       return;
     }
+
 
     const existing =
       document.getElementById(
         "order-step-xlsx-library"
       );
 
+
     if (existing) {
+
       await new Promise(
         function (
           resolve,
           reject
         ) {
+
           if (window.XLSX) {
+
             resolve();
+
             return;
+
           }
+
 
           existing.addEventListener(
             "load",
@@ -428,6 +769,7 @@
             }
           );
 
+
           existing.addEventListener(
             "error",
             reject,
@@ -435,36 +777,48 @@
               once: true
             }
           );
+
         }
       );
 
+
       if (!window.XLSX) {
+
         throw new Error(
           "Библиотека Excel не загрузилась."
         );
+
       }
 
+
       return;
+
     }
+
 
     await new Promise(
       function (
         resolve,
         reject
       ) {
+
         const script =
           document.createElement(
             "script"
           );
 
+
         script.id =
           "order-step-xlsx-library";
+
 
         script.src =
           XLSX_CDN;
 
+
         script.async =
           true;
+
 
         script.addEventListener(
           "load",
@@ -474,31 +828,40 @@
           }
         );
 
+
         script.addEventListener(
           "error",
           function () {
+
             reject(
               new Error(
                 "Не удалось загрузить библиотеку Excel."
               )
             );
+
           },
           {
             once: true
           }
         );
 
+
         document.body.appendChild(
           script
         );
+
       }
     );
 
+
     if (!window.XLSX) {
+
       throw new Error(
         "Библиотека Excel не загрузилась."
       );
+
     }
+
   }
 
 
@@ -507,6 +870,7 @@
   ===================================================== */
 
   async function loadUserContext() {
+
     const {
       data: userData,
       error: userError
@@ -515,49 +879,70 @@
         .auth
         .getUser();
 
+
     if (
       userError ||
       !userData?.user
     ) {
+
       throw new Error(
         "Не удалось определить пользователя."
       );
+
     }
+
 
     userId =
       userData.user.id;
+
 
     const {
       data: profile,
       error: profileError
     } =
       await supabaseClient
-        .from("profiles")
+
+        .from(
+          "profiles"
+        )
+
         .select(`
           restaurant_id,
           restaurant:restaurants (
             id
           )
         `)
+
         .eq(
           "id",
           userId
         )
+
         .single();
 
+
     if (profileError) {
+
       throw profileError;
+
     }
 
+
     restaurantId =
+
       profile?.restaurant_id ||
+
       profile?.restaurant?.id;
 
+
     if (!restaurantId) {
+
       throw new Error(
         "У пользователя не указан ресторан."
       );
+
     }
+
   }
 
 
@@ -566,12 +951,17 @@
   ===================================================== */
 
   async function loadActiveWeeklyOrder() {
+
     const {
       data,
       error
     } =
       await supabaseClient
-        .from("weekly_orders")
+
+        .from(
+          "weekly_orders"
+        )
+
         .select(`
           id,
           restaurant_id,
@@ -584,10 +974,12 @@
           created_at,
           updated_at
         `)
+
         .eq(
           "restaurant_id",
           restaurantId
         )
+
         .in(
           "status",
           [
@@ -596,57 +988,79 @@
             "result"
           ]
         )
+
         .order(
           "updated_at",
           {
-            ascending: false
+            ascending:
+              false
           }
         )
+
         .order(
           "order_date",
           {
-            ascending: false
+            ascending:
+              false
           }
         )
+
         .limit(1)
+
         .maybeSingle();
 
+
     if (error) {
+
       throw error;
+
     }
 
+
     if (!data) {
+
       throw new Error(
-        "Сначала полностью завершите Шаг 1 и нажмите «Далее»."
+        "Сначала завершите Шаг 1 и нажмите «Далее»."
       );
+
     }
+
 
     weeklyOrder =
       data;
+
 
     const day =
       root.querySelector(
         "#sales-order-day"
       );
 
+
     const date =
       root.querySelector(
         "#sales-order-date"
       );
 
+
     if (day) {
+
       day.textContent =
         getOrderDayLabel(
           weeklyOrder.order_day
         );
+
     }
 
+
     if (date) {
+
       date.textContent =
         formatOrderDate(
           weeklyOrder.order_date
         );
+
     }
+
   }
 
 
@@ -655,12 +1069,17 @@
   ===================================================== */
 
   async function loadProducts() {
+
     const {
       data,
       error
     } =
       await supabaseClient
-        .from("order_products")
+
+        .from(
+          "order_products"
+        )
+
         .select(`
           id,
           category,
@@ -671,50 +1090,78 @@
           sort_order,
           is_active
         `)
+
         .eq(
           "restaurant_id",
           restaurantId
         )
+
         .eq(
           "is_active",
           true
         );
 
+
     if (error) {
+
       throw error;
+
     }
+
 
     products =
       (data || [])
         .sort(
-          function (a, b) {
+          function (
+            a,
+            b
+          ) {
+
             const categoryDiff =
+
               getCategoryIndex(
                 a.category
-              ) -
+              )
+
+              -
+
               getCategoryIndex(
                 b.category
               );
 
+
             if (
-              categoryDiff !== 0
+              categoryDiff !==
+              0
             ) {
+
               return categoryDiff;
+
             }
 
+
             const sortDiff =
+
               Number(
                 a.sort_order || 0
-              ) -
+              )
+
+              -
+
               Number(
                 b.sort_order || 0
               );
 
+
             if (
-              sortDiff !== 0
+              sortDiff !==
+              0
             ) {
+
               return sortDiff;
+
             }
+
 
             return String(
               a.name || ""
@@ -724,8 +1171,10 @@
               ),
               "ru"
             );
+
           }
         );
+
   }
 
 
@@ -734,21 +1183,30 @@
   ===================================================== */
 
   async function loadSavedItems() {
+
     savedItems =
       new Map();
 
-    if (!weeklyOrder?.id) {
+
+    if (
+      !weeklyOrder?.id
+    ) {
+
       return;
+
     }
+
 
     const {
       data,
       error
     } =
       await supabaseClient
+
         .from(
           "weekly_order_sales_items"
         )
+
         .select(`
           id,
           weekly_order_id,
@@ -764,125 +1222,182 @@
           source_rows,
           imported_at
         `)
+
         .eq(
           "weekly_order_id",
           weeklyOrder.id
         );
 
+
     if (error) {
+
       if (
-        error.code === "42P01"
+        error.code ===
+        "42P01"
       ) {
+
         return;
+
       }
+
 
       throw error;
+
     }
 
-    (
-      data || []
-    ).forEach(
-      function (item) {
-        savedItems.set(
-          item.product_id,
-          item
-        );
-      }
-    );
+
+    (data || [])
+      .forEach(
+        function (item) {
+
+          savedItems.set(
+            item.product_id,
+            item
+          );
+
+        }
+      );
+
   }
 
 
+  /* =====================================================
+     BUILD FROM SAVED
+  ===================================================== */
+
   function buildPreviewFromSavedItems() {
+
     previewRows =
       products.map(
         function (product) {
+
           const saved =
             savedItems.get(
               product.id
             );
 
+
           if (!saved) {
+
             return createEmptyPreviewRow(
               product
             );
+
           }
+
 
           const realization =
             Number(
               saved.realization_qty ||
-                0
+              0
             );
+
 
           const writeoff =
             Number(
               saved.writeoff_qty ||
-                0
+              0
             );
+
 
           const usage =
             Number(
               saved.usage_qty ||
-                0
+              0
             );
 
+
+          const isManual =
+            saved.source_sheet_name ===
+            "__manual__";
+
+
           return {
+
             product,
-            matched: true,
+
+
+            matched:
+              !isManual,
+
+
+            manual:
+              isManual,
+
 
             realization,
+
             writeoff,
+
             usage,
+
 
             averageRealization:
               round4(
                 realization /
-                  AVERAGE_DAYS
+                AVERAGE_DAYS
               ),
+
 
             averageUsage:
               round4(
                 usage /
-                  AVERAGE_DAYS
+                AVERAGE_DAYS
               ),
+
 
             sourceName:
               saved.iiko_name ||
               product.iiko_name ||
               "",
 
+
             sourceRows:
               Number(
                 saved.source_rows ||
-                  1
+                1
               )
+
           };
+
         }
       );
 
+
     savedIsReady =
+
       products.length > 0 &&
+
       products.every(
         function (product) {
+
           return savedItems.has(
             product.id
           );
+
         }
       );
+
 
     previewIsReady =
       false;
 
+
     if (savedIsReady) {
+
       setFileStatus(
         "Данные реализации уже сохранены. При необходимости можно загрузить новый Excel.",
         "success"
       );
 
+
       setSaveStatus(
         "Все данные реализации сохранены",
         "saved"
       );
+
     }
+
   }
 
 
@@ -894,85 +1409,124 @@
     headers,
     aliases
   ) {
-    let bestIndex = -1;
-    let bestScore = 0;
+
+    let bestIndex =
+      -1;
+
+
+    let bestScore =
+      0;
+
 
     headers.forEach(
       function (
         header,
         index
       ) {
+
         const normalized =
           normalizeHeader(
             header
           );
 
+
         if (!normalized) {
           return;
         }
 
+
         aliases.forEach(
           function (alias) {
+
             const normalizedAlias =
               normalizeHeader(
                 alias
               );
 
-            let score = 0;
+
+            let score =
+              0;
+
 
             if (
               normalized ===
               normalizedAlias
             ) {
-              score = 100;
-            } else if (
+
+              score =
+                100;
+
+            }
+
+            else if (
               normalized.includes(
                 normalizedAlias
               )
             ) {
+
               score =
                 60 +
                 normalizedAlias.length;
-            } else {
+
+            }
+
+            else {
+
               const aliasWords =
+
                 normalizedAlias
                   .split(" ")
                   .filter(Boolean);
 
+
               const allWordsFound =
                 aliasWords.every(
                   function (word) {
+
                     return normalized.includes(
                       word
                     );
+
                   }
                 );
+
 
               if (
                 allWordsFound
               ) {
+
                 score =
                   40 +
                   aliasWords.length;
+
               }
+
             }
+
 
             if (
               score >
               bestScore
             ) {
+
               bestScore =
                 score;
 
+
               bestIndex =
                 index;
+
             }
+
           }
         );
+
       }
     );
 
+
     return bestIndex;
+
   }
 
 
@@ -980,13 +1534,18 @@
     matrix,
     rowIndex
   ) {
+
     const upperRow =
-      matrix[rowIndex] || [];
+      matrix[rowIndex] ||
+      [];
+
 
     const lowerRow =
       matrix[
         rowIndex + 1
-      ] || [];
+      ] ||
+      [];
+
 
     const columnCount =
       Math.max(
@@ -994,22 +1553,31 @@
         lowerRow.length
       );
 
-    const result = [];
+
+    const result =
+      [];
+
 
     let currentGroup =
       "";
 
+
     for (
       let columnIndex = 0;
-      columnIndex < columnCount;
+
+      columnIndex <
+      columnCount;
+
       columnIndex++
     ) {
+
       const upperValue =
         String(
           upperRow[
             columnIndex
           ] ?? ""
         ).trim();
+
 
       const lowerValue =
         String(
@@ -1019,72 +1587,77 @@
         ).trim();
 
 
-      /*
-        ВАЖНЫЙ FIX:
-
-        В IIKO после реальных колонок могут
-        оставаться полностью пустые колонки.
-
-        Если обе ячейки пустые, мы НЕ наследуем
-        предыдущую группу.
-
-        Благодаря этому:
-
-        5. Списания Кол-во
-
-        больше не превращается ошибочно в:
-
-        6. Списания
-      */
       if (
         !upperValue &&
         !lowerValue
       ) {
-        result.push("");
+
+        result.push(
+          ""
+        );
+
+
         continue;
+
       }
 
 
       if (upperValue) {
+
         currentGroup =
           upperValue;
+
       }
 
 
-      const parts = [];
+      const parts =
+        [];
+
 
       if (currentGroup) {
+
         parts.push(
           currentGroup
         );
+
       }
 
+
       if (lowerValue) {
+
         parts.push(
           lowerValue
         );
+
       }
+
 
       result.push(
         parts
           .join(" ")
           .trim()
       );
+
     }
 
+
     return result;
+
   }
 
 
   function getHeaderIndexes(
     headers
   ) {
+
     return {
+
       code:
         findHeaderIndex(
           headers,
           HEADER_ALIASES.code
         ),
+
 
       name:
         findHeaderIndex(
@@ -1092,59 +1665,91 @@
           HEADER_ALIASES.name
         ),
 
+
       realization:
         findHeaderIndex(
           headers,
           HEADER_ALIASES.realization
         ),
 
+
       writeoff:
         findHeaderIndex(
           headers,
           HEADER_ALIASES.writeoff
         )
+
     };
+
   }
 
 
   function calculateHeaderScore(
     indexes
   ) {
-    let score = 0;
+
+    let score =
+      0;
+
 
     if (
-      indexes.code >= 0
+      indexes.code >=
+      0
     ) {
-      score += 10;
+
+      score +=
+        10;
+
     }
 
-    if (
-      indexes.realization >= 0
-    ) {
-      score += 10;
-    }
 
     if (
-      indexes.writeoff >= 0
+      indexes.realization >=
+      0
     ) {
-      score += 10;
+
+      score +=
+        10;
+
     }
 
+
     if (
-      indexes.name >= 0
+      indexes.writeoff >=
+      0
     ) {
-      score += 3;
+
+      score +=
+        10;
+
     }
+
+
+    if (
+      indexes.name >=
+      0
+    ) {
+
+      score +=
+        3;
+
+    }
+
 
     if (
       indexes.code >= 0 &&
       indexes.realization >= 0 &&
       indexes.writeoff >= 0
     ) {
-      score += 30;
+
+      score +=
+        30;
+
     }
 
+
     return score;
+
   }
 
 
@@ -1152,15 +1757,19 @@
     matrix,
     rowIndex
   ) {
+
     const oneRowHeaders =
       matrix[
         rowIndex
-      ] || [];
+      ] ||
+      [];
+
 
     const oneRowIndexes =
       getHeaderIndexes(
         oneRowHeaders
       );
+
 
     const oneRowScore =
       calculateHeaderScore(
@@ -1174,10 +1783,12 @@
         rowIndex
       );
 
+
     const twoRowIndexes =
       getHeaderIndexes(
         twoRowHeaders
       );
+
 
     const twoRowScore =
       calculateHeaderScore(
@@ -1189,40 +1800,66 @@
       twoRowScore >
       oneRowScore
     ) {
+
       return {
+
         rowIndex,
-        headerDepth: 2,
+
+        headerDepth:
+          2,
+
         headers:
           twoRowHeaders,
+
         indexes:
           twoRowIndexes,
+
         score:
           twoRowScore
+
       };
+
     }
 
 
     return {
+
       rowIndex,
-      headerDepth: 1,
+
+      headerDepth:
+        1,
+
       headers:
         oneRowHeaders,
+
       indexes:
         oneRowIndexes,
+
       score:
         oneRowScore
+
     };
+
   }
 
 
   function detectHeaderRow(
     matrix
   ) {
+
     let best = {
-      rowIndex: 0,
-      headerDepth: 1,
-      headers: [],
-      score: -1,
+
+      rowIndex:
+        0,
+
+      headerDepth:
+        1,
+
+      headers:
+        [],
+
+      score:
+        -1,
 
       indexes: {
         code: -1,
@@ -1230,7 +1867,9 @@
         realization: -1,
         writeoff: -1
       }
+
     };
+
 
     const scanLimit =
       Math.min(
@@ -1241,100 +1880,138 @@
 
     for (
       let rowIndex = 0;
-      rowIndex < scanLimit;
+
+      rowIndex <
+      scanLimit;
+
       rowIndex++
     ) {
+
       const candidate =
         detectHeaderAtRow(
           matrix,
           rowIndex
         );
 
+
       if (
         candidate.score >
         best.score
       ) {
+
         best =
           candidate;
+
       }
+
     }
 
 
     return best;
+
   }
 
 
   function detectBestSheet() {
-    let best = null;
+
+    let best =
+      null;
+
 
     workbook.SheetNames
       .forEach(
         function (
           sheetName
         ) {
+
           const matrix =
             getSheetMatrix(
               sheetName
             );
+
 
           const detected =
             detectHeaderRow(
               matrix
             );
 
+
           if (
             !best ||
             detected.score >
-              best.score
+            best.score
           ) {
+
             best = {
+
               sheetName,
+
               ...detected
+
             };
+
           }
+
         }
       );
 
+
     return best;
+
   }
 
 
   function getSheetMatrix(
     sheetName
   ) {
+
     if (
       workbookMatrices.has(
         sheetName
       )
     ) {
+
       return workbookMatrices.get(
         sheetName
       );
+
     }
+
 
     const sheet =
       workbook.Sheets[
         sheetName
       ];
 
+
     const matrix =
       window.XLSX.utils
         .sheet_to_json(
           sheet,
           {
-            header: 1,
-            defval: "",
-            raw: true,
-            blankrows: true
+            header:
+              1,
+
+            defval:
+              "",
+
+            raw:
+              true,
+
+            blankrows:
+              true
           }
         );
+
 
     workbookMatrices.set(
       sheetName,
       matrix
     );
 
+
     return matrix;
+
   }
 
 
@@ -1343,17 +2020,22 @@
   ===================================================== */
 
   function populateSheetSelect() {
+
     const select =
       root.querySelector(
         "#sales-sheet-select"
       );
 
+
     if (
       !select ||
       !workbook
     ) {
+
       return;
+
     }
+
 
     select.innerHTML =
       workbook.SheetNames
@@ -1361,41 +2043,54 @@
           function (
             sheetName
           ) {
+
             return `
-              <option value="${escapeHTML(
-                sheetName
-              )}">
+              <option
+                value="${escapeHTML(
+                  sheetName
+                )}"
+              >
                 ${escapeHTML(
                   sheetName
                 )}
               </option>
             `;
+
           }
         )
         .join("");
+
   }
 
 
   function getHeadersForCurrentMapping() {
+
     const matrix =
       getSheetMatrix(
         currentSheetName
       );
 
+
     if (
-      currentHeaderDepth === 2
+      currentHeaderDepth ===
+      2
     ) {
+
       return buildTwoRowHeaders(
         matrix,
         currentHeaderRowIndex
       );
+
     }
+
 
     return (
       matrix[
         currentHeaderRowIndex
-      ] || []
+      ] ||
+      []
     );
+
   }
 
 
@@ -1405,38 +2100,51 @@
     selectedIndex,
     allowEmpty
   ) {
+
     const select =
       root.querySelector(
         selectId
       );
 
+
     if (!select) {
       return;
     }
 
-    const options = [];
+
+    const options =
+      [];
+
 
     if (allowEmpty) {
+
       options.push(
         '<option value="-1">— не использовать —</option>'
       );
+
     }
+
 
     headers.forEach(
       function (
         header,
         index
       ) {
+
         const label =
           String(
             header ?? ""
-          ).trim() ||
+          ).trim()
+          ||
           `Колонка ${
             index + 1
           }`;
 
+
         options.push(`
-          <option value="${index}">
+          <option
+            value="${index}"
+          >
             ${escapeHTML(
               `${
                 index + 1
@@ -1444,36 +2152,52 @@
             )}
           </option>
         `);
+
       }
     );
+
 
     select.innerHTML =
       options.join("");
 
+
     if (
-      selectedIndex >= 0
+      selectedIndex >=
+      0
     ) {
+
       select.value =
         String(
           selectedIndex
         );
-    } else if (
+
+    }
+
+    else if (
       allowEmpty
     ) {
+
       select.value =
         "-1";
+
     }
+
   }
 
 
   function refreshMappingColumns(
     preselectedIndexes = null
   ) {
+
     const headers =
       getHeadersForCurrentMapping();
 
+
     const indexes =
-      preselectedIndexes || {
+      preselectedIndexes
+      ||
+      {
+
         code:
           findHeaderIndex(
             headers,
@@ -1497,7 +2221,9 @@
             headers,
             HEADER_ALIASES.writeoff
           )
+
       };
+
 
     populateColumnSelect(
       "#sales-code-column",
@@ -1506,12 +2232,14 @@
       false
     );
 
+
     populateColumnSelect(
       "#sales-name-column",
       headers,
       indexes.name,
       true
     );
+
 
     populateColumnSelect(
       "#sales-realization-column",
@@ -1520,82 +2248,105 @@
       false
     );
 
+
     populateColumnSelect(
       "#sales-writeoff-column",
       headers,
       indexes.writeoff,
       false
     );
+
   }
 
 
   function applyDetectedMapping(
     detected
   ) {
+
     currentSheetName =
       detected.sheetName;
+
 
     currentHeaderRowIndex =
       detected.rowIndex;
 
+
     currentHeaderDepth =
       detected.headerDepth ||
       1;
+
 
     const sheetSelect =
       root.querySelector(
         "#sales-sheet-select"
       );
 
+
     const headerInput =
       root.querySelector(
         "#sales-header-row"
       );
 
+
     if (sheetSelect) {
+
       sheetSelect.value =
         currentSheetName;
+
     }
 
+
     if (headerInput) {
+
       headerInput.value =
         String(
           currentHeaderRowIndex +
-            1
+          1
         );
+
     }
+
 
     refreshMappingColumns(
       detected.indexes
     );
+
   }
 
 
   function showMappingCard() {
+
     const card =
       root.querySelector(
         "#sales-mapping-card"
       );
 
+
     if (card) {
+
       card.hidden =
         false;
+
     }
+
   }
 
 
   function getSelectedColumnIndex(
     selector
   ) {
+
     const element =
       root.querySelector(
         selector
       );
 
+
     return Number(
       element?.value ??
-        -1
+      -1
     );
+
   }
 
 
@@ -1606,15 +2357,18 @@
   async function handleExcelFile(
     file
   ) {
+
     if (!file) {
       return;
     }
+
 
     const extension =
       file.name
         .split(".")
         .pop()
         ?.toLowerCase();
+
 
     if (
       !extension ||
@@ -1625,115 +2379,170 @@
         extension
       )
     ) {
+
       setFileStatus(
         "Выберите Excel-файл XLSX или XLS.",
         "error"
       );
 
+
       return;
+
     }
+
 
     previewIsReady =
       false;
 
+
     savedIsReady =
       false;
 
+
     updateActionButtons();
+
 
     setFileStatus(
       `Читаем ${file.name}...`,
       "idle"
     );
 
+
     setSaveStatus(
       "Новый файл еще не сохранен",
       "ready"
     );
 
+
     try {
+
       await ensureXlsxLibrary();
+
 
       const buffer =
         await file.arrayBuffer();
+
 
       workbook =
         window.XLSX.read(
           buffer,
           {
-            type: "array",
-            cellDates: false,
-            raw: true
+            type:
+              "array",
+
+            cellDates:
+              false,
+
+            raw:
+              true
           }
         );
+
 
       workbookFileName =
         file.name;
 
+
       workbookMatrices =
         new Map();
 
+
       if (
-        !workbook.SheetNames
+        !workbook
+          .SheetNames
           .length
       ) {
+
         throw new Error(
           "В Excel нет листов."
         );
+
       }
 
+
       populateSheetSelect();
+
 
       const detected =
         detectBestSheet();
 
+
       if (!detected) {
+
         throw new Error(
           "Не удалось прочитать структуру Excel."
         );
+
       }
+
 
       applyDetectedMapping(
         detected
       );
 
+
       showMappingCard();
 
+
       const hasRequiredColumns =
+
         detected.indexes.code >=
-          0 &&
+        0
+
+        &&
+
         detected.indexes
-          .realization >= 0 &&
+          .realization >=
+        0
+
+        &&
+
         detected.indexes
-          .writeoff >= 0;
+          .writeoff >=
+        0;
+
 
       if (
         hasRequiredColumns
       ) {
+
         processCurrentMapping();
-      } else {
+
+      }
+
+      else {
+
         setFileStatus(
           "Файл открыт, но не все колонки определились автоматически. Выберите Код, Реализация и Списание вручную.",
           "warning"
         );
+
       }
-    } catch (error) {
+
+    }
+
+    catch (error) {
+
       console.error(
         "Excel read error:",
         error
       );
 
+
       setFileStatus(
         error.message ||
-          "Не удалось прочитать Excel.",
+        "Не удалось прочитать Excel.",
         "error"
       );
+
 
       setSaveStatus(
         "Ошибка чтения файла",
         "error"
       );
+
     }
+
   }
 
 
@@ -1742,50 +2551,63 @@
   ===================================================== */
 
   function processCurrentMapping() {
+
     if (
       !workbook ||
       !currentSheetName
     ) {
+
       return;
+
     }
+
 
     const codeIndex =
       getSelectedColumnIndex(
         "#sales-code-column"
       );
 
+
     const nameIndex =
       getSelectedColumnIndex(
         "#sales-name-column"
       );
+
 
     const realizationIndex =
       getSelectedColumnIndex(
         "#sales-realization-column"
       );
 
+
     const writeoffIndex =
       getSelectedColumnIndex(
         "#sales-writeoff-column"
       );
+
 
     if (
       codeIndex < 0 ||
       realizationIndex < 0 ||
       writeoffIndex < 0
     ) {
+
       setFileStatus(
         "Укажите колонки Код IIKO, Реализация и Списание.",
         "error"
       );
 
+
       return;
+
     }
+
 
     const matrix =
       getSheetMatrix(
         currentSheetName
       );
+
 
     const aggregated =
       new Map();
@@ -1801,8 +2623,13 @@
 
       rowIndex++
     ) {
+
       const row =
-        matrix[rowIndex] || [];
+        matrix[
+          rowIndex
+        ] ||
+        [];
+
 
       const code =
         normalizeCode(
@@ -1811,9 +2638,11 @@
           ]
         );
 
+
       if (!code) {
         continue;
       }
+
 
       const realization =
         toPositiveNumber(
@@ -1822,6 +2651,7 @@
           ]
         );
 
+
       const writeoff =
         toPositiveNumber(
           row[
@@ -1829,54 +2659,78 @@
           ]
         );
 
+
       const sourceName =
-        nameIndex >= 0
+
+        nameIndex >=
+        0
+
           ? String(
               row[
                 nameIndex
               ] ?? ""
             ).trim()
+
           : "";
+
 
       const previous =
         aggregated.get(
           code
-        ) || {
-          realization: 0,
-          writeoff: 0,
-          sourceName: "",
-          sourceRows: 0
+        )
+        ||
+        {
+
+          realization:
+            0,
+
+          writeoff:
+            0,
+
+          sourceName:
+            "",
+
+          sourceRows:
+            0
+
         };
+
 
       previous.realization +=
         realization;
 
+
       previous.writeoff +=
         writeoff;
 
+
       previous.sourceRows +=
         1;
+
 
       if (
         !previous.sourceName &&
         sourceName
       ) {
+
         previous.sourceName =
           sourceName;
+
       }
+
 
       aggregated.set(
         code,
         previous
       );
+
     }
 
 
     previewRows =
       products.map(
-        function (
-          product
-        ) {
+        function (product) {
+
           const source =
             aggregated.get(
               normalizeCode(
@@ -1884,46 +2738,61 @@
               )
             );
 
+
           if (!source) {
+
             return createEmptyPreviewRow(
               product
             );
+
           }
+
 
           const realization =
             round4(
               source.realization
             );
 
+
           const writeoff =
             round4(
               source.writeoff
             );
 
+
           const usage =
             round4(
               realization +
-                writeoff
+              writeoff
             );
 
+
           return {
+
             product,
-            matched: true,
+
+            matched:
+              true,
+
+            manual:
+              false,
 
             realization,
+
             writeoff,
+
             usage,
 
             averageRealization:
               round4(
                 realization /
-                  AVERAGE_DAYS
+                AVERAGE_DAYS
               ),
 
             averageUsage:
               round4(
                 usage /
-                  AVERAGE_DAYS
+                AVERAGE_DAYS
               ),
 
             sourceName:
@@ -1931,7 +2800,9 @@
 
             sourceRows:
               source.sourceRows
+
           };
+
         }
       );
 
@@ -1939,40 +2810,54 @@
     previewIsReady =
       true;
 
+
     savedIsReady =
       false;
 
+
     const matched =
       getMatchedCount();
+
 
     const missing =
       getMissingCount();
 
 
-    if (missing === 0) {
+    if (
+      missing === 0
+    ) {
+
       setFileStatus(
         `${workbookFileName}: найдено ${matched} из ${products.length} позиций. Можно сохранять.`,
         "success"
       );
 
+
       setSaveStatus(
         "Проверено — нажмите «Сохранить данные»",
         "ready"
       );
-    } else {
+
+    }
+
+    else {
+
       setFileStatus(
-        `${workbookFileName}: найдено ${matched} из ${products.length}. Не найдено: ${missing}.`,
+        `${workbookFileName}: найдено ${matched} из ${products.length}. Не найдено: ${missing}. Для этих позиций введите реализацию вручную.`,
         "warning"
       );
 
+
       setSaveStatus(
-        "Есть товары без совпадения по IIKO-коду",
-        "error"
+        "Заполните товары «Не найден» вручную",
+        "ready"
       );
+
     }
 
 
     renderAll();
+
   }
 
 
@@ -1981,20 +2866,25 @@
   ===================================================== */
 
   function renderCategoryTabs() {
+
     const container =
       root.querySelector(
         "#sales-category-tabs"
       );
 
+
     if (!container) {
       return;
     }
+
 
     const categoriesWithProducts =
       new Set(
         products.map(
           function (product) {
+
             return product.category;
+
           }
         )
       );
@@ -2002,40 +2892,59 @@
 
     container.innerHTML =
       CATEGORY_CONFIG
+
         .filter(
           function (item) {
+
             return (
-              item.key === "all" ||
+              item.key ===
+              "all"
+
+              ||
+
               categoriesWithProducts.has(
                 item.key
               )
             );
+
           }
         )
+
         .map(
           function (item) {
+
             const categoryCount =
-              item.key === "all"
+
+              item.key ===
+              "all"
+
                 ? products.length
+
                 : products.filter(
-                    function (
-                      product
-                    ) {
+                    function (product) {
+
                       return (
                         product.category ===
                         item.key
                       );
+
                     }
                   ).length;
 
+
             return `
               <button
-                class="sales-category-tab ${
-                  item.key ===
-                  currentCategory
-                    ? "is-active"
-                    : ""
-                }"
+                class="
+                  sales-category-tab
+                  ${
+                    item.key ===
+                    currentCategory
+
+                      ? "is-active"
+
+                      : ""
+                  }
+                "
                 type="button"
                 data-sales-category="${escapeHTML(
                   item.key
@@ -2043,12 +2952,17 @@
               >
                 ${escapeHTML(
                   item.label
-                )} · ${categoryCount}
+                )}
+                ·
+                ${categoryCount}
               </button>
             `;
+
           }
         )
+
         .join("");
+
   }
 
 
@@ -2057,34 +2971,46 @@
   ===================================================== */
 
   function renderSummary() {
+
     const total =
       products.length;
+
 
     const matched =
       getMatchedCount();
 
+
+    const manual =
+      getManualCount();
+
+
     const missing =
       getMissingCount();
+
 
     const totalEl =
       root.querySelector(
         "#sales-total-count"
       );
 
+
     const matchedEl =
       root.querySelector(
         "#sales-matched-count"
       );
+
 
     const missingEl =
       root.querySelector(
         "#sales-missing-count"
       );
 
+
     const missingCard =
       root.querySelector(
         "#sales-missing-card"
       );
+
 
     const sourceElement =
       root.querySelector(
@@ -2093,71 +3019,125 @@
 
 
     if (totalEl) {
+
       totalEl.textContent =
         String(total);
+
     }
+
 
     if (matchedEl) {
+
+      /*
+        Здесь оставляем именно
+        найденные автоматически в Excel.
+      */
+
       matchedEl.textContent =
         String(matched);
+
     }
 
+
     if (missingEl) {
+
       missingEl.textContent =
         String(missing);
+
     }
 
 
     if (missingCard) {
+
       missingCard.classList.toggle(
         "is-warning",
         missing > 0
       );
 
+
       missingCard.classList.toggle(
         "is-success",
         missing === 0 &&
-          total > 0
+        total > 0
       );
+
+
+      if (
+        manual > 0
+      ) {
+
+        missingCard.title =
+          `Вручную заполнено: ${manual}`;
+
+      }
+
+      else {
+
+        missingCard.removeAttribute(
+          "title"
+        );
+
+      }
+
     }
 
 
     if (sourceElement) {
-      if (workbookFileName) {
+
+      if (
+        workbookFileName
+      ) {
+
         sourceElement.textContent =
           workbookFileName;
+
 
         sourceElement.title =
           workbookFileName;
 
-      } else if (
-        savedItems.size > 0
+      }
+
+      else if (
+        savedItems.size >
+        0
       ) {
+
         const firstSavedItem =
           Array.from(
             savedItems.values()
           )[0];
 
+
         const sourceName =
           firstSavedItem
-            ?.source_file_name ||
+            ?.source_file_name
+          ||
           "Supabase";
+
 
         sourceElement.textContent =
           sourceName;
+
 
         sourceElement.title =
           sourceName;
 
-      } else {
+      }
+
+      else {
+
         sourceElement.textContent =
           "—";
+
 
         sourceElement.removeAttribute(
           "title"
         );
+
       }
+
     }
+
   }
 
 
@@ -2166,21 +3146,28 @@
   ===================================================== */
 
   function getFilteredRows() {
+
     if (
       currentCategory ===
       "all"
     ) {
+
       return previewRows;
+
     }
+
 
     return previewRows.filter(
       function (row) {
+
         return (
           row.product.category ===
           currentCategory
         );
+
       }
     );
+
   }
 
 
@@ -2188,6 +3175,7 @@
     value,
     unit
   ) {
+
     return `
       <small
         class="sales-value-sub"
@@ -2200,28 +3188,34 @@
           white-space:nowrap;
         "
       >
-        ср. ${escapeHTML(
+        ср.
+        ${escapeHTML(
           formatNumber(
             value
           )
-        )} ${escapeHTML(
+        )}
+        ${escapeHTML(
           unit
         )}/день
       </small>
     `;
+
   }
 
 
   function renderTable() {
+
     const body =
       root.querySelector(
         "#sales-products-body"
       );
 
+
     const categoryTitle =
       root.querySelector(
         "#sales-current-category"
       );
+
 
     const categoryCount =
       root.querySelector(
@@ -2230,11 +3224,14 @@
 
 
     if (!body) {
+
       console.error(
         "Step 2: не найден #sales-products-body"
       );
 
+
       return;
+
     }
 
 
@@ -2243,60 +3240,95 @@
 
 
     if (categoryTitle) {
+
       categoryTitle.textContent =
+
         currentCategory ===
         "all"
+
           ? "Все товары"
+
           : getCategoryLabel(
               currentCategory
             );
+
     }
 
 
     if (categoryCount) {
+
       categoryCount.textContent =
-        `${rows.length} ${getProductsWord(
+        `${
           rows.length
-        )}`;
+        } ${
+          getProductsWord(
+            rows.length
+          )
+        }`;
+
     }
 
 
-    if (!rows.length) {
+    if (
+      !rows.length
+    ) {
+
       body.innerHTML = `
         <tr>
+
           <td
             colspan="6"
             class="sales-empty-cell"
           >
             Нет товаров в этой категории.
           </td>
+
         </tr>
       `;
 
+
       return;
+
     }
 
 
     body.innerHTML =
       rows
+
         .map(
           function (
             row,
             index
           ) {
+
             const product =
               row.product;
+
 
             const unit =
               product.iiko_unit ||
               "";
 
+
+            const rowClass =
+
+              row.matched
+
+                ? ""
+
+                : row.manual
+
+                  ? "sales-row-manual"
+
+                  : "sales-row-missing";
+
+
             return `
-              <tr class="${
-                row.matched
-                  ? ""
-                  : "sales-row-missing"
-              }">
+              <tr
+                class="${rowClass}"
+              >
+
+                <!-- NUMBER -->
 
                 <td
                   class="sales-number-cell"
@@ -2305,6 +3337,8 @@
                   ${index + 1}
                 </td>
 
+
+                <!-- PRODUCT -->
 
                 <td
                   class="sales-product-cell"
@@ -2321,15 +3355,17 @@
                   <div class="sales-product-meta">
 
                     <span class="sales-code">
-                      IIKO ${escapeHTML(
+                      IIKO
+                      ${escapeHTML(
                         product.iiko_code ||
-                          "—"
+                        "—"
                       )}
                     </span>
 
 
                     ${
                       row.sourceName
+
                         ? `
                           <span>
                             ${escapeHTML(
@@ -2337,7 +3373,9 @@
                             )}
                           </span>
                         `
+
                         : product.iiko_name
+
                           ? `
                             <span>
                               ${escapeHTML(
@@ -2345,18 +3383,22 @@
                               )}
                             </span>
                           `
+
                           : ""
                     }
 
 
                     ${
-                      row.sourceRows > 1
+                      row.sourceRows >
+                      1
+
                         ? `
                           <span>
                             ${row.sourceRows}
                             строк в Excel
                           </span>
                         `
+
                         : ""
                     }
 
@@ -2365,38 +3407,83 @@
                 </td>
 
 
+                <!-- REALIZATION -->
+
                 <td
                   data-label="Реализация"
                 >
 
-                  <span
-                    class="sales-value-main"
-                  >
-                    ${
-                      row.matched
-                        ? `${escapeHTML(
+                  ${
+                    row.matched
+
+                      ? `
+                        <span
+                          class="sales-value-main"
+                        >
+                          ${escapeHTML(
                             formatNumber(
                               row.realization
                             )
-                          )} ${escapeHTML(
+                          )}
+                          ${escapeHTML(
                             unit
-                          )}`
-                        : "—"
-                    }
-                  </span>
+                          )}
+                        </span>
 
 
-                  ${
-                    row.matched
-                      ? renderAverageLine(
+                        ${renderAverageLine(
                           row.averageRealization,
                           unit
-                        )
-                      : ""
+                        )}
+                      `
+
+                      : `
+                        <div
+                          class="sales-manual-input-wrap"
+                        >
+
+                          <input
+                            class="sales-manual-input"
+                            type="number"
+                            min="0"
+                            step="0.0001"
+                            inputmode="decimal"
+                            placeholder="0"
+                            value="${
+                              row.manual
+
+                                ? escapeHTML(
+                                    row.realization
+                                  )
+
+                                : ""
+                            }"
+                            data-sales-manual-realization="${escapeHTML(
+                              row.product.id
+                            )}"
+                          >
+
+                          <span>
+                            ${escapeHTML(
+                              unit
+                            )}
+                          </span>
+
+                        </div>
+
+
+                        <small
+                          class="sales-manual-hint"
+                        >
+                          Введите вручную
+                        </small>
+                      `
                   }
 
                 </td>
 
+
+                <!-- WRITEOFF -->
 
                 <td
                   data-label="Списание"
@@ -2406,20 +3493,28 @@
                     class="sales-value-main"
                   >
                     ${
-                      row.matched
-                        ? `${escapeHTML(
+                      row.matched ||
+                      row.manual
+
+                        ? `
+                          ${escapeHTML(
                             formatNumber(
                               row.writeoff
                             )
-                          )} ${escapeHTML(
+                          )}
+                          ${escapeHTML(
                             unit
-                          )}`
+                          )}
+                        `
+
                         : "—"
                     }
                   </span>
 
                 </td>
 
+
+                <!-- USAGE -->
 
                 <td
                   data-label="Расход"
@@ -2429,46 +3524,72 @@
                     class="sales-usage-value"
                   >
                     ${
-                      row.matched
-                        ? `${escapeHTML(
+                      row.matched ||
+                      row.manual
+
+                        ? `
+                          ${escapeHTML(
                             formatNumber(
                               row.usage
                             )
-                          )} ${escapeHTML(
+                          )}
+                          ${escapeHTML(
                             unit
-                          )}`
+                          )}
+                        `
+
                         : "—"
                     }
                   </span>
 
 
                   ${
-                    row.matched
+                    row.matched ||
+                    row.manual
+
                       ? renderAverageLine(
                           row.averageUsage,
                           unit
                         )
+
                       : ""
                   }
 
                 </td>
 
 
+                <!-- STATUS -->
+
                 <td
                   data-label="Статус"
                 >
 
                   <span
-                    class="sales-status-badge ${
-                      row.matched
-                        ? "is-found"
-                        : "is-missing"
-                    }"
+                    class="
+                      sales-status-badge
+                      ${
+                        row.matched
+
+                          ? "is-found"
+
+                          : row.manual
+
+                            ? "is-manual"
+
+                            : "is-missing"
+                      }
+                    "
                   >
                     ${
                       row.matched
+
                         ? "Найден"
-                        : "Не найден"
+
+                        : row.manual
+
+                          ? "Вручную"
+
+                          : "Не найден"
                     }
                   </span>
 
@@ -2476,9 +3597,12 @@
 
               </tr>
             `;
+
           }
         )
+
         .join("");
+
   }
 
 
@@ -2487,10 +3611,12 @@
   ===================================================== */
 
   function updateActionButtons() {
+
     const saveButton =
       root?.querySelector(
         "#sales-save-button"
       );
+
 
     const nextButton =
       root?.querySelector(
@@ -2498,29 +3624,166 @@
       );
 
 
+    /*
+      Excel обработан болса —
+      Сохранить әрқашан қолжетімді.
+
+      Не найден позициялар
+      қолмен толтырылмаса да
+      сақтауға кедергі болмайды.
+    */
+
     if (saveButton) {
+
       saveButton.disabled =
         isSaving ||
-        !previewIsReady ||
-        !allProductsMatched(
-          previewRows
-        );
+        !previewIsReady;
+
     }
 
 
+    /*
+      Далее — тек сақталғаннан кейін.
+    */
+
     if (nextButton) {
+
       nextButton.disabled =
         isSaving ||
         !savedIsReady;
+
     }
+
   }
 
 
   function renderAll() {
+
     renderCategoryTabs();
+
     renderSummary();
+
     renderTable();
+
     updateActionButtons();
+
+  }
+
+
+  /* =====================================================
+     MANUAL REALIZATION
+  ===================================================== */
+
+  function updateManualRealization(
+    productId,
+    rawValue
+  ) {
+
+    const row =
+      previewRows.find(
+        function (item) {
+
+          return (
+            String(
+              item.product.id
+            )
+            ===
+            String(
+              productId
+            )
+          );
+
+        }
+      );
+
+
+    if (!row) {
+      return;
+    }
+
+
+    /*
+      Если товар найден в Excel,
+      вручную его не меняем.
+    */
+
+    if (
+      row.matched
+    ) {
+
+      return;
+
+    }
+
+
+    const text =
+      String(
+        rawValue ?? ""
+      ).trim();
+
+
+    const hasValue =
+      text !== "";
+
+
+    const realization =
+
+      hasValue
+
+        ? toPositiveNumber(
+            text
+          )
+
+        : 0;
+
+
+    row.manual =
+      hasValue;
+
+
+    row.realization =
+      round4(
+        realization
+      );
+
+
+    /*
+      Для товара, которого
+      вообще нет в Excel,
+      списание автоматически 0.
+    */
+
+    row.writeoff =
+      0;
+
+
+    row.usage =
+      round4(
+        row.realization +
+        row.writeoff
+      );
+
+
+    row.averageRealization =
+      round4(
+        row.realization /
+        AVERAGE_DAYS
+      );
+
+
+    row.averageUsage =
+      round4(
+        row.usage /
+        AVERAGE_DAYS
+      );
+
+
+    savedIsReady =
+      false;
+
+
+    updateActionButtons();
+
   }
 
 
@@ -2529,12 +3792,10 @@
   ===================================================== */
 
   async function savePreview() {
+
     if (
       isSaving ||
-      !previewIsReady ||
-      !allProductsMatched(
-        previewRows
-      )
+      !previewIsReady
     ) {
       return;
     }
@@ -2549,12 +3810,15 @@
     isSaving =
       true;
 
+
     updateActionButtons();
 
 
     if (button) {
+
       button.textContent =
         "Сохранение...";
+
     }
 
 
@@ -2565,6 +3829,7 @@
 
 
     try {
+
       const importedAt =
         new Date()
           .toISOString();
@@ -2573,68 +3838,106 @@
       const payload =
         previewRows.map(
           function (row) {
+
             return {
+
               weekly_order_id:
                 weeklyOrder.id,
+
 
               restaurant_id:
                 restaurantId,
 
+
               product_id:
                 row.product.id,
+
 
               iiko_code:
                 row.product
                   .iiko_code,
 
+
               iiko_name:
-                row.sourceName ||
+                row.sourceName
+                ||
                 row.product
-                  .iiko_name ||
+                  .iiko_name
+                ||
                 null,
+
 
               iiko_unit:
                 row.product
                   .iiko_unit,
+
 
               realization_qty:
                 round4(
                   row.realization
                 ),
 
+
               writeoff_qty:
                 round4(
                   row.writeoff
                 ),
+
 
               usage_qty:
                 round4(
                   row.usage
                 ),
 
+
               source_file_name:
                 workbookFileName ||
                 null,
 
+
+              /*
+                "__manual__"
+                позволяет после перезагрузки
+                снова показать статус
+                "Вручную".
+              */
+
               source_sheet_name:
-                currentSheetName ||
-                null,
+
+                row.manual
+
+                  ? "__manual__"
+
+                  : (
+                      currentSheetName ||
+                      null
+                    ),
+
 
               source_rows:
-                Math.max(
-                  1,
-                  Number(
-                    row.sourceRows ||
-                      1
-                  )
-                ),
+
+                row.manual
+
+                  ? 1
+
+                  : Math.max(
+                      1,
+                      Number(
+                        row.sourceRows ||
+                        1
+                      )
+                    ),
+
 
               imported_by:
                 userId,
 
+
               imported_at:
                 importedAt
+
             };
+
           }
         );
 
@@ -2643,9 +3946,11 @@
         error: upsertError
       } =
         await supabaseClient
+
           .from(
             "weekly_order_sales_items"
           )
+
           .upsert(
             payload,
             {
@@ -2656,7 +3961,9 @@
 
 
       if (upsertError) {
+
         throw upsertError;
+
       }
 
 
@@ -2664,13 +3971,16 @@
         error: orderError
       } =
         await supabaseClient
+
           .from(
             "weekly_orders"
           )
+
           .update({
             status:
               "sales"
           })
+
           .eq(
             "id",
             weeklyOrder.id
@@ -2678,7 +3988,9 @@
 
 
       if (orderError) {
+
         throw orderError;
+
       }
 
 
@@ -2690,14 +4002,19 @@
 
 
       savedIsReady =
-        products.length > 0 &&
+
+        products.length >
+        0
+
+        &&
+
         products.every(
-          function (
-            product
-          ) {
+          function (product) {
+
             return savedItems.has(
               product.id
             );
+
           }
         );
 
@@ -2717,7 +4034,10 @@
         "saved"
       );
 
-    } catch (error) {
+    }
+
+    catch (error) {
+
       console.error(
         "Sales save error:",
         error
@@ -2725,14 +4045,19 @@
 
 
       setFileStatus(
+
         error.code ===
-          "42P01"
+        "42P01"
+
           ? "Сначала выполните SQL для таблицы weekly_order_sales_items."
+
           : (
               error.message ||
               "Не удалось сохранить данные."
             ),
+
         "error"
+
       );
 
 
@@ -2741,19 +4066,26 @@
         "error"
       );
 
-    } finally {
+    }
+
+    finally {
+
       isSaving =
         false;
 
 
       if (button) {
+
         button.textContent =
           "Сохранить данные";
+
       }
 
 
       renderAll();
+
     }
+
   }
 
 
@@ -2762,24 +4094,31 @@
   ===================================================== */
 
   async function goBack() {
+
     if (
       appContext &&
       typeof appContext.goToStep ===
-        "function"
+      "function"
     ) {
+
       await appContext.goToStep(
         1
       );
+
     }
+
   }
 
 
   async function goNext() {
+
     if (
       !savedIsReady ||
       isSaving
     ) {
+
       return;
+
     }
 
 
@@ -2790,23 +4129,29 @@
 
 
     if (button) {
+
       button.disabled =
         true;
+
     }
 
 
     try {
+
       const {
         error
       } =
         await supabaseClient
+
           .from(
             "weekly_orders"
           )
+
           .update({
             status:
               "calculation"
           })
+
           .eq(
             "id",
             weeklyOrder.id
@@ -2814,7 +4159,9 @@
 
 
       if (error) {
+
         throw error;
+
       }
 
 
@@ -2825,14 +4172,19 @@
       if (
         appContext &&
         typeof appContext.goToStep ===
-          "function"
+        "function"
       ) {
+
         await appContext.goToStep(
           3
         );
+
       }
 
-    } catch (error) {
+    }
+
+    catch (error) {
+
       console.error(
         "Go next error:",
         error
@@ -2846,10 +4198,14 @@
 
 
       if (button) {
+
         button.disabled =
           false;
+
       }
+
     }
+
   }
 
 
@@ -2858,10 +4214,12 @@
   ===================================================== */
 
   function bindEvents() {
+
     const fileInput =
       root.querySelector(
         "#sales-file-input"
       );
+
 
     const uploadCard =
       root.querySelector(
@@ -2869,39 +4227,51 @@
       );
 
 
+    /* FILE */
+
     fileInput?.addEventListener(
       "change",
       function () {
+
         const file =
-          fileInput.files?.[0];
+          fileInput
+            .files?.[0];
+
 
         handleExcelFile(
           file
         );
+
       }
     );
 
 
+    /* DRAG & DROP */
+
     if (uploadCard) {
+
       [
         "dragenter",
         "dragover"
       ].forEach(
-        function (
-          eventName
-        ) {
+        function (eventName) {
+
           uploadCard.addEventListener(
             eventName,
-            function (
-              event
-            ) {
+            function (event) {
+
               event.preventDefault();
 
-              uploadCard.classList.add(
-                "is-dragover"
-              );
+
+              uploadCard
+                .classList
+                .add(
+                  "is-dragover"
+                );
+
             }
           );
+
         }
       );
 
@@ -2910,43 +4280,53 @@
         "dragleave",
         "drop"
       ].forEach(
-        function (
-          eventName
-        ) {
+        function (eventName) {
+
           uploadCard.addEventListener(
             eventName,
-            function (
-              event
-            ) {
+            function (event) {
+
               event.preventDefault();
 
-              uploadCard.classList.remove(
-                "is-dragover"
-              );
+
+              uploadCard
+                .classList
+                .remove(
+                  "is-dragover"
+                );
+
             }
           );
+
         }
       );
 
 
       uploadCard.addEventListener(
         "drop",
-        function (
-          event
-        ) {
+        function (event) {
+
           const file =
-            event.dataTransfer
+            event
+              .dataTransfer
               ?.files?.[0];
 
+
           if (file) {
+
             handleExcelFile(
               file
             );
+
           }
+
         }
       );
+
     }
 
+
+    /* SHEET */
 
     root
       .querySelector(
@@ -2954,9 +4334,8 @@
       )
       ?.addEventListener(
         "change",
-        function (
-          event
-        ) {
+        function (event) {
+
           currentSheetName =
             event.target.value;
 
@@ -2989,20 +4368,25 @@
 
 
           if (headerInput) {
+
             headerInput.value =
               String(
                 currentHeaderRowIndex +
-                  1
+                1
               );
+
           }
 
 
           refreshMappingColumns(
             detected.indexes
           );
+
         }
       );
 
+
+    /* HEADER ROW */
 
     root
       .querySelector(
@@ -3010,9 +4394,8 @@
       )
       ?.addEventListener(
         "change",
-        function (
-          event
-        ) {
+        function (event) {
+
           const matrix =
             getSheetMatrix(
               currentSheetName
@@ -3024,7 +4407,7 @@
               1,
               Number(
                 event.target.value ||
-                  1
+                1
               )
             );
 
@@ -3054,16 +4437,19 @@
           event.target.value =
             String(
               currentHeaderRowIndex +
-                1
+              1
             );
 
 
           refreshMappingColumns(
             detected.indexes
           );
+
         }
       );
 
+
+    /* PROCESS */
 
     root
       .querySelector(
@@ -3075,20 +4461,81 @@
       );
 
 
+    /* MANUAL REALIZATION */
+
+    root.addEventListener(
+      "input",
+      function (event) {
+
+        const input =
+          event.target.closest(
+            "[data-sales-manual-realization]"
+          );
+
+
+        if (!input) {
+          return;
+        }
+
+
+        updateManualRealization(
+
+          input.dataset
+            .salesManualRealization,
+
+          input.value
+
+        );
+
+      }
+    );
+
+
+    /*
+      После выхода из поля
+      перерисовываем строку,
+      чтобы показать:
+      расход / среднее / статус.
+    */
+
+    root.addEventListener(
+      "change",
+      function (event) {
+
+        const input =
+          event.target.closest(
+            "[data-sales-manual-realization]"
+          );
+
+
+        if (!input) {
+          return;
+        }
+
+
+        renderAll();
+
+      }
+    );
+
+
+    /* CLICK EVENTS */
+
     root.addEventListener(
       "click",
-      function (
-        event
-      ) {
+      function (event) {
+
+
+        /* CATEGORY */
+
         const categoryButton =
           event.target.closest(
             "[data-sales-category]"
           );
 
 
-        if (
-          categoryButton
-        ) {
+        if (categoryButton) {
+
           currentCategory =
             categoryButton.dataset
               .salesCategory;
@@ -3096,41 +4543,59 @@
 
           renderAll();
 
+
           return;
+
         }
 
+
+        /* SAVE */
 
         if (
           event.target.closest(
             "#sales-save-button"
           )
         ) {
+
           savePreview();
 
+
           return;
+
         }
 
+
+        /* BACK */
 
         if (
           event.target.closest(
             "#sales-back-button"
           )
         ) {
+
           goBack();
 
+
           return;
+
         }
 
+
+        /* NEXT */
 
         if (
           event.target.closest(
             "#sales-next-button"
           )
         ) {
+
           goNext();
+
         }
+
       }
     );
+
   }
 
 
@@ -3142,6 +4607,7 @@
     container,
     context
   ) {
+
     root =
       container.querySelector(
         "#order-sales-step"
@@ -3149,9 +4615,11 @@
 
 
     if (!root) {
+
       throw new Error(
         "Step 2 root не найден."
       );
+
     }
 
 
@@ -3162,8 +4630,10 @@
     userId =
       null;
 
+
     restaurantId =
       null;
+
 
     weeklyOrder =
       null;
@@ -3172,8 +4642,10 @@
     products =
       [];
 
+
     savedItems =
       new Map();
+
 
     previewRows =
       [];
@@ -3186,17 +4658,22 @@
     workbook =
       null;
 
+
     workbookFileName =
       "";
+
 
     workbookMatrices =
       new Map();
 
+
     currentSheetName =
       "";
 
+
     currentHeaderRowIndex =
       0;
+
 
     currentHeaderDepth =
       1;
@@ -3205,8 +4682,10 @@
     previewIsReady =
       false;
 
+
     savedIsReady =
       false;
+
 
     isSaving =
       false;
@@ -3216,6 +4695,7 @@
 
 
     try {
+
       setFileStatus(
         "Подготовка шага реализации...",
         "idle"
@@ -3224,9 +4704,12 @@
 
       await loadUserContext();
 
+
       await loadActiveWeeklyOrder();
 
+
       await loadProducts();
+
 
       await loadSavedItems();
 
@@ -3234,13 +4717,16 @@
       if (
         !products.length
       ) {
+
         throw new Error(
           "В order_products нет активных товаров заказа."
         );
+
       }
 
 
       buildPreviewFromSavedItems();
+
 
       renderAll();
 
@@ -3248,6 +4734,7 @@
       if (
         !savedItems.size
       ) {
+
         setFileStatus(
           "Загрузите файл из IIKO.",
           "idle"
@@ -3258,9 +4745,13 @@
           "Данные еще не сохранены",
           "idle"
         );
+
       }
 
-    } catch (error) {
+    }
+
+    catch (error) {
+
       console.error(
         "Step 2 init error:",
         error
@@ -3269,7 +4760,7 @@
 
       setFileStatus(
         error.message ||
-          "Ошибка загрузки шага 2.",
+        "Ошибка загрузки шага 2.",
         "error"
       );
 
@@ -3287,7 +4778,9 @@
 
 
       renderAll();
+
     }
+
   }
 
 
@@ -3296,28 +4789,37 @@
   ===================================================== */
 
   window.OrderStep2Sales = {
+
     init,
+
 
     reload:
       async function () {
+
         if (
           !root ||
           !restaurantId ||
           !weeklyOrder
         ) {
+
           return;
+
         }
 
 
         await loadProducts();
+
 
         await loadSavedItems();
 
 
         buildPreviewFromSavedItems();
 
+
         renderAll();
+
       }
+
   };
 
 })();

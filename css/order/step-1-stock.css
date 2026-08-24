@@ -3,7 +3,7 @@
 ===================================================== */
 
 .stock-step {
-  overflow: hidden;
+  overflow: visible;
 
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -123,7 +123,377 @@
 
 
 /* =====================================================
-   CATEGORY
+   ORDER DAY SELECTOR
+===================================================== */
+
+.stock-order-selector {
+  min-width: 160px;
+
+  padding: 11px 13px;
+
+  border: 1px solid #eceef0;
+  border-radius: 14px;
+
+  background: #fafafa;
+}
+
+
+.stock-order-selector-label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #858990;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+
+.stock-order-day-buttons {
+  display: flex;
+
+  gap: 6px;
+
+  margin-bottom: 8px;
+}
+
+
+.stock-order-day-button {
+  width: 46px;
+  height: 32px;
+
+  border: 1px solid #dfe2e5;
+  border-radius: 8px;
+
+  color: #686c73;
+  background: #ffffff;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+
+.stock-order-day-button.is-active {
+  border-color: #1d1e20;
+
+  color: #ffffff;
+  background: #1d1e20;
+}
+
+
+.stock-order-selector > strong {
+  display: block;
+
+  color: #1c1d20;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+.stock-order-selector > small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #888c93;
+
+  font-size: 9px;
+}
+
+
+/* =====================================================
+   SAME DAY DELIVERY
+===================================================== */
+
+.stock-same-day-delivery,
+.stock-no-same-day-delivery {
+  margin: 0 28px 18px;
+}
+
+
+.stock-same-day-delivery {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 15px 17px;
+
+  border: 1px solid #eadfae;
+  border-radius: 14px;
+
+  background: #fffdf4;
+}
+
+
+.stock-same-day-delivery[hidden],
+.stock-no-same-day-delivery[hidden] {
+  display: none;
+}
+
+
+.stock-same-day-delivery-info > span,
+.stock-same-day-delivery-info > strong,
+.stock-same-day-delivery-info > small {
+  display: block;
+}
+
+
+.stock-same-day-delivery-info > span {
+  margin-bottom: 4px;
+
+  color: #987400;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+
+.stock-same-day-delivery-info > strong {
+  color: #252629;
+
+  font-size: 12px;
+}
+
+
+.stock-same-day-delivery-info > small {
+  margin-top: 4px;
+
+  color: #858990;
+
+  font-size: 9px;
+}
+
+
+.stock-delivery-status-buttons {
+  display: flex;
+
+  gap: 8px;
+}
+
+
+.stock-delivery-status-button {
+  min-width: 155px;
+
+  padding: 9px 11px;
+
+  border: 1px solid #dedfe2;
+  border-radius: 10px;
+
+  color: #555960;
+  background: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+
+.stock-delivery-status-button strong,
+.stock-delivery-status-button span {
+  display: block;
+}
+
+
+.stock-delivery-status-button strong {
+  margin-bottom: 3px;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+.stock-delivery-status-button span {
+  color: #91959b;
+
+  font-size: 8px;
+}
+
+
+.stock-delivery-status-button.is-active {
+  border-color: #1d1e20;
+
+  color: #ffffff;
+  background: #1d1e20;
+}
+
+
+.stock-delivery-status-button.is-active span {
+  color: #c9ccd0;
+}
+
+
+.stock-no-same-day-delivery {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px 14px;
+
+  border: 1px solid #e2ebe3;
+  border-radius: 12px;
+
+  background: #f6fbf6;
+}
+
+
+.stock-no-same-day-delivery > span {
+  color: #4c9552;
+
+  font-size: 14px;
+  font-weight: 900;
+}
+
+
+.stock-no-same-day-delivery strong,
+.stock-no-same-day-delivery small {
+  display: block;
+}
+
+
+.stock-no-same-day-delivery strong {
+  color: #456c49;
+
+  font-size: 10px;
+}
+
+
+.stock-no-same-day-delivery small {
+  margin-top: 2px;
+
+  color: #829184;
+
+  font-size: 8px;
+}
+
+
+/* =====================================================
+   PRODUCT SEARCH
+===================================================== */
+
+.stock-search-wrap {
+  padding: 0 28px 10px;
+}
+
+
+.stock-search {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  width: 100%;
+}
+
+
+.stock-search-icon {
+  position: absolute;
+  z-index: 2;
+
+  left: 15px;
+
+  color: #858990;
+
+  font-size: 17px;
+
+  pointer-events: none;
+}
+
+
+.stock-search-input {
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 46px;
+
+  padding:
+    0 46px
+    0 43px;
+
+  border: 1px solid #dfe2e5;
+  border-radius: 12px;
+
+  outline: none;
+
+  color: #1d1e20;
+  background: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+.stock-search-input::placeholder {
+  color: #9a9ea5;
+
+  font-weight: 500;
+}
+
+
+.stock-search-input:focus {
+  border-color: #d5aa00;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 196, 0, 0.12);
+}
+
+
+.stock-search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+
+.stock-search-clear {
+  position: absolute;
+
+  right: 10px;
+
+  width: 28px;
+  height: 28px;
+
+  border: 0;
+  border-radius: 8px;
+
+  color: #747880;
+  background: #f1f2f3;
+
+  font-size: 17px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+.stock-search-clear:hover {
+  color: #1d1e20;
+
+  background: #e7e9eb;
+}
+
+
+.stock-search-clear[hidden] {
+  display: none;
+}
+
+
+/* =====================================================
+   CATEGORIES
 ===================================================== */
 
 .stock-categories {
@@ -133,7 +503,9 @@
 
   overflow-x: auto;
 
-  padding: 0 28px 18px;
+  margin: 0;
+
+  padding: 0 28px 12px;
 
   scrollbar-width: thin;
 }
@@ -158,6 +530,8 @@
 
   font-size: 12px;
   font-weight: 700;
+
+  cursor: pointer;
 }
 
 
@@ -257,6 +631,8 @@
 
   font-size: 11px;
   font-weight: 800;
+
+  cursor: pointer;
 }
 
 
@@ -321,6 +697,8 @@
 
   color: #686d75;
 
+  background: #ffffff;
+
   font-size: 10px;
 
   text-align: center;
@@ -344,7 +722,7 @@
 
 
 .stock-product-row.is-counted {
-  background: rgba(70, 150, 75, 0.025);
+  background: rgba(70, 150, 75, 0.05);
 }
 
 
@@ -385,6 +763,8 @@
 
   font-size: 9px;
   font-weight: 700;
+
+  cursor: pointer;
 }
 
 
@@ -520,7 +900,9 @@
 }
 
 
-/* BASE UNIT INPUT */
+/* =====================================================
+   BASE UNIT INPUT
+===================================================== */
 
 .stock-unit-count-wrap {
   display: flex;
@@ -562,6 +944,7 @@
 
 .stock-count-unit {
   margin-right: 6px;
+
   padding: 5px 6px;
 
   border-radius: 6px;
@@ -721,6 +1104,8 @@
 
   font-size: 11px;
   font-weight: 800;
+
+  cursor: pointer;
 }
 
 
@@ -830,6 +1215,8 @@ body.stock-modal-open {
   background: #f2f3f4;
 
   font-size: 21px;
+
+  cursor: pointer;
 }
 
 
@@ -957,6 +1344,7 @@ body.stock-modal-open {
 
 .stock-unit-input > span {
   margin-right: 7px;
+
   padding: 5px 7px;
 
   border-radius: 6px;
@@ -977,6 +1365,7 @@ body.stock-modal-open {
   display: none;
 
   margin: 15px 26px 0;
+
   padding: 10px 12px;
 
   border-radius: 9px;
@@ -1014,7 +1403,8 @@ body.stock-modal-open {
 
 
 .stock-cancel-button,
-.stock-save-button {
+.stock-save-button,
+.stock-warning-continue {
   min-height: 42px;
 
   padding: 0 17px;
@@ -1023,6 +1413,8 @@ body.stock-modal-open {
 
   font-size: 10px;
   font-weight: 800;
+
+  cursor: pointer;
 }
 
 
@@ -1033,7 +1425,8 @@ body.stock-modal-open {
 }
 
 
-.stock-save-button {
+.stock-save-button,
+.stock-warning-continue {
   border: 0;
 
   background: var(--accent);
@@ -1041,792 +1434,84 @@ body.stock-modal-open {
 
 
 /* =====================================================
-   MOBILE COUNTING MODE
-   Карточки вместо широкой таблицы
+   UNCOUNTED WARNING
 ===================================================== */
 
-@media (max-width: 700px) {
-
-  /* =====================================================
-     PAGE
-  ===================================================== */
-
-  .stock-table-wrapper {
-    padding: 0;
-  }
-
-
-  .stock-table-scroll {
-    overflow: visible;
-  }
-
-
-  .stock-table {
-    display: block;
-
-    width: 100%;
-    min-width: 0;
-  }
-
-
-  .stock-table colgroup,
-  .stock-table thead {
-    display: none;
-  }
-
-
-  .stock-table tbody {
-    display: block;
-  }
-
-
-  /* =====================================================
-     PRODUCT CARD
-  ===================================================== */
-
-  .stock-product-row {
-    position: relative;
-
-    display: grid;
-
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
-
-    gap: 10px;
-
-    margin: 10px 10px 14px;
-    padding: 16px 12px;
-
-    border: 1px solid #e3e5e8;
-    border-radius: 16px;
-
-    background: #ffffff;
-
-    box-shadow:
-      0 2px 8px
-      rgba(0, 0, 0, 0.03);
-  }
-
-
-  .stock-product-row.is-counted {
-    border-color: #d8ead9;
-
-    background: #fbfefb;
-  }
-
-
-  .stock-product-row td {
-    display: block;
-
-    min-height: 0;
-    height: auto;
-
-    padding: 0;
-
-    border: 0;
-  }
-
-
-  /* =====================================================
-     NUMBER
-  ===================================================== */
-
-  .stock-product-row
-  .stock-number-cell {
-    position: absolute;
-
-    top: 16px;
-    right: 14px;
-
-    width: auto;
-
-    color: #a1a5ab;
-
-    font-size: 10px;
-  }
-
-
-  .stock-product-row
-  .stock-number-cell::before {
-    content: "№";
-  }
-
-
-  /* =====================================================
-     PRODUCT INFO
-  ===================================================== */
-
-  .stock-product-row td:nth-child(2) {
-    grid-column: 1 / -1;
-
-    padding-right: 32px;
-  }
-
-
-  .stock-product-main {
-    align-items: flex-start;
-  }
-
-
-  .stock-product-main strong {
-    max-width: 85%;
-
-    color: #1c1d20;
-
-    font-size: 15px;
-    font-weight: 800;
-
-    line-height: 1.3;
-  }
-
-
-  /* hide edit from title line */
-
-  .stock-product-main
-  .stock-edit-button {
-    display: none;
-  }
-
-
-  /* =====================================================
-     META
-  ===================================================== */
-
-  .stock-product-meta {
-    margin-top: 7px;
-  }
-
-
-  .stock-product-meta
-  span:not(.stock-iiko-status) {
-    display: none;
-  }
-
-
-  .stock-iiko-status {
-    font-size: 9px;
-  }
-
-
-  /* =====================================================
-     PACKAGE INFO
-  ===================================================== */
-
-  .stock-product-package {
-    margin-top: 7px;
-  }
-
-
-  .stock-product-package span {
-    font-size: 9px;
-  }
-
-
-  /* =====================================================
-     COUNT CELLS
-  ===================================================== */
-
-  .stock-product-row
-  .stock-count-cell,
-  .stock-product-row
-  .stock-count-disabled {
-    position: relative;
-
-    padding-top: 21px;
-  }
-
-
-  /* CASE LABEL */
-
-  .stock-product-row
-  td:nth-child(3)::before {
-    position: absolute;
-
-    top: 0;
-    left: 2px;
-
-    content: "case";
-
-    color: #747880;
-
-    font-size: 10px;
-    font-weight: 700;
-  }
-
-
-  /* SLV LABEL */
-
-  .stock-product-row
-  td:nth-child(4)::before {
-    position: absolute;
-
-    top: 0;
-    left: 2px;
-
-    content: "slv";
-
-    color: #747880;
-
-    font-size: 10px;
-    font-weight: 700;
-  }
-
-
-  /* BASE UNIT LABEL */
-
-  .stock-product-row
-  td:nth-child(5)::before {
-    position: absolute;
-
-    top: 0;
-    left: 2px;
-
-    content: "ед.";
-
-    color: #747880;
-
-    font-size: 10px;
-    font-weight: 700;
-  }
-
-
-  /* =====================================================
-     INPUTS
-  ===================================================== */
-
-  .stock-count-input {
-    width: 100%;
-    max-width: none;
-    height: 54px;
-
-    border-radius: 12px;
-
-    font-size: 19px;
-    font-weight: 800;
-  }
-
-
-  .stock-unit-count-wrap {
-    width: 100%;
-    max-width: none;
-    height: 54px;
-
-    border-radius: 12px;
-  }
-
-
-  .stock-unit-count-wrap
-  .stock-count-input {
-    height: 52px;
-  }
-
-
-  .stock-count-unit {
-    margin-right: 7px;
-
-    padding: 6px;
-
-    font-size: 10px;
-  }
-
-
-  .stock-count-disabled {
-    display: grid !important;
-
-    min-height: 54px !important;
-
-    place-items: center;
-
-    border-radius: 12px;
-
-    color: #b7bbc0;
-
-    background: #f5f6f7;
-
-    font-size: 18px;
-  }
-
-
-  /* =====================================================
-     TOTAL
-  ===================================================== */
-
-  .stock-product-row
-  .stock-total-cell {
-    grid-column: 1 / -1;
-
-    margin-top: 3px;
-    padding-top: 12px;
-
-    border-top: 1px solid #eceef0;
-
-    text-align: left;
-  }
-
-
-  .stock-total-cell::before {
-    margin-right: 7px;
-
-    content: "Итого:";
-
-    color: #747880;
-
-    font-size: 11px;
-    font-weight: 600;
-  }
-
-
-  .stock-total-value {
-    padding: 6px 9px;
-
-    background: #f1f3f4;
-  }
-
-
-  .stock-total-number {
-    font-size: 16px;
-  }
-
-
-  .stock-total-unit {
-    font-size: 10px;
-  }
-
-
-  /* =====================================================
-     BUTTONS
-  ===================================================== */
-
-  .stock-product-tools {
-    display: flex;
-
-    grid-column: 1 / -1;
-
-    justify-content: space-between;
-
-    margin-top: 2px;
-  }
-
-
-  .stock-zero-button {
-    min-height: 38px;
-
-    padding: 0 11px;
-
-    border-radius: 9px;
-
-    font-size: 10px;
-  }
-
-
-  /* Add edit button visually through existing button */
-
-  .stock-product-tools::after {
-    content: "Изменить";
-
-    display: inline-flex;
-
-    min-height: 38px;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 0 11px;
-
-    border-radius: 9px;
-
-    color: #686c73;
-    background: #f2f3f4;
-
-    font-size: 10px;
-    font-weight: 700;
-  }
-
-
-  /* =====================================================
-     CATEGORY HEADER
-  ===================================================== */
-
-  .stock-category-header {
-    gap: 10px;
-  }
-
-
-  .stock-category-actions {
-    align-items: center;
-  }
-
-
-  .stock-add-button {
-    min-height: 42px;
-
-    border-radius: 11px;
-  }
-
-
-  /* =====================================================
-     CATEGORIES STICKY
-  ===================================================== */
-
-  .stock-categories {
-    position: sticky;
-    z-index: 20;
-
-    top: 0;
-
-    padding-top: 10px;
-    padding-bottom: 10px;
-
-    border-bottom: 1px solid #eceef0;
-
-    background: rgba(255, 255, 255, 0.96);
-
-    backdrop-filter: blur(8px);
-  }
-
-
-  /* =====================================================
-     FOOTER STICKY
-  ===================================================== */
-
-  .stock-footer {
-    position: sticky;
-    z-index: 25;
-
-    bottom: 0;
-
-    margin-top: 5px;
-
-    border-top: 1px solid #e4e6e9;
-
-    background: rgba(255, 255, 255, 0.97);
-
-    backdrop-filter: blur(8px);
-  }
-
-}
-
-/* =====================================================
-   ORDER DAY SELECTOR
-===================================================== */
-
-.stock-order-selector {
-  min-width: 160px;
-
-  padding: 11px 13px;
-
-  border: 1px solid #eceef0;
-  border-radius: 14px;
-
-  background: #fafafa;
+.stock-warning-dialog {
+  width: min(600px, 100%);
 }
 
 
-.stock-order-selector-label {
-  display: block;
-
-  margin-bottom: 7px;
-
-  color: #858990;
-
-  font-size: 9px;
-  font-weight: 700;
+.stock-warning-content {
+  padding: 20px 26px;
 }
 
 
-.stock-order-day-buttons {
-  display: flex;
+.stock-warning-content > p {
+  margin: 0 0 16px;
 
-  gap: 6px;
+  color: #686d75;
 
-  margin-bottom: 8px;
+  font-size: 11px;
+  line-height: 1.6;
 }
 
 
-.stock-order-day-button {
-  width: 46px;
-  height: 32px;
+.stock-warning-list {
+  display: grid;
 
-  border: 1px solid #dfe2e5;
-  border-radius: 8px;
+  gap: 7px;
 
-  color: #686c73;
-  background: #ffffff;
+  max-height: 330px;
 
-  font-size: 10px;
-  font-weight: 800;
+  overflow-y: auto;
 }
 
 
-.stock-order-day-button.is-active {
-  border-color: #1d1e20;
-
-  color: #ffffff;
-  background: #1d1e20;
-}
-
-
-.stock-order-selector > strong {
-  display: block;
-
-  color: #1c1d20;
-
-  font-size: 13px;
-  font-weight: 800;
-}
-
-
-.stock-order-selector > small {
-  display: block;
-
-  margin-top: 2px;
-
-  color: #888c93;
-
-  font-size: 9px;
-}
-
-
-/* =====================================================
-   SAME DAY DELIVERY
-===================================================== */
-
-.stock-same-day-delivery,
-.stock-no-same-day-delivery {
-  margin: 0 28px 18px;
-}
-
-
-.stock-same-day-delivery {
+.stock-warning-item {
   display: flex;
 
   align-items: center;
   justify-content: space-between;
 
-  gap: 20px;
+  gap: 12px;
 
-  padding: 15px 17px;
+  padding: 10px 12px;
 
-  border: 1px solid #eadfae;
-  border-radius: 14px;
-
-  background: #fffdf4;
-}
-
-
-.stock-same-day-delivery[hidden],
-.stock-no-same-day-delivery[hidden] {
-  display: none;
-}
-
-
-.stock-same-day-delivery-info > span,
-.stock-same-day-delivery-info > strong,
-.stock-same-day-delivery-info > small {
-  display: block;
-}
-
-
-.stock-same-day-delivery-info > span {
-  margin-bottom: 4px;
-
-  color: #987400;
-
-  font-size: 9px;
-  font-weight: 800;
-
-  text-transform: uppercase;
-}
-
-
-.stock-same-day-delivery-info > strong {
-  color: #252629;
-
-  font-size: 12px;
-}
-
-
-.stock-same-day-delivery-info > small {
-  margin-top: 4px;
-
-  color: #858990;
-
-  font-size: 9px;
-}
-
-
-/* =====================================================
-   DELIVERY STATUS BUTTONS
-===================================================== */
-
-.stock-delivery-status-buttons {
-  display: flex;
-
-  gap: 8px;
-}
-
-
-.stock-delivery-status-button {
-  min-width: 155px;
-
-  padding: 9px 11px;
-
-  border: 1px solid #dedfe2;
+  border: 1px solid #ece3bc;
   border-radius: 10px;
 
-  color: #555960;
-  background: #ffffff;
-
-  text-align: left;
+  background: #fffaf0;
 }
 
 
-.stock-delivery-status-button strong,
-.stock-delivery-status-button span {
-  display: block;
+.stock-warning-item strong {
+  color: #292a2d;
+
+  font-size: 11px;
 }
 
 
-.stock-delivery-status-button strong {
-  margin-bottom: 3px;
+.stock-warning-item span {
+  flex-shrink: 0;
 
-  font-size: 10px;
+  padding: 3px 7px;
+
+  border-radius: 6px;
+
+  color: #846600;
+  background: #fff1ba;
+
+  font-size: 8px;
   font-weight: 800;
 }
 
 
-.stock-delivery-status-button span {
-  color: #91959b;
-
-  font-size: 8px;
-}
-
-
-.stock-delivery-status-button.is-active {
-  border-color: #1d1e20;
-
-  color: #ffffff;
-  background: #1d1e20;
-}
-
-
-.stock-delivery-status-button.is-active span {
-  color: #c9ccd0;
-}
-
-
 /* =====================================================
-   NO DELIVERY
-===================================================== */
-
-.stock-no-same-day-delivery {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  padding: 11px 14px;
-
-  border: 1px solid #e2ebe3;
-  border-radius: 12px;
-
-  background: #f6fbf6;
-}
-
-
-.stock-no-same-day-delivery > span {
-  color: #4c9552;
-
-  font-size: 14px;
-  font-weight: 900;
-}
-
-
-.stock-no-same-day-delivery strong,
-.stock-no-same-day-delivery small {
-  display: block;
-}
-
-
-.stock-no-same-day-delivery strong {
-  color: #456c49;
-
-  font-size: 10px;
-}
-
-
-.stock-no-same-day-delivery small {
-  margin-top: 2px;
-
-  color: #829184;
-
-  font-size: 8px;
-}
-
-
-/* =====================================================
-   MOBILE
+   MOBILE COUNTING MODE
 ===================================================== */
 
 @media (max-width: 700px) {
-
-  .stock-header-info {
-    display: grid;
-
-    width: 100%;
-
-    grid-template-columns:
-      1fr 1fr;
-  }
-
-
-  .stock-order-selector {
-    min-width: 0;
-  }
-
-
-  .stock-same-day-delivery {
-    align-items: stretch;
-
-    flex-direction: column;
-
-    margin:
-      0 15px 14px;
-
-    padding: 13px;
-  }
-
-
-  .stock-no-same-day-delivery {
-    margin:
-      0 15px 14px;
-  }
-
-
-  .stock-delivery-status-buttons {
-    display: grid;
-
-    grid-template-columns:
-      1fr 1fr;
-  }
-
-
-  .stock-delivery-status-button {
-    min-width: 0;
-
-    min-height: 57px;
-  }
-
-}
-
-/* =====================================================
-   STEP 1 — MOBILE HEADER FIX
-===================================================== */
-
-@media (max-width: 700px) {
-
-  /* HEADER толық вертикально */
 
   .stock-header {
     display: flex !important;
@@ -1841,8 +1526,6 @@ body.stock-modal-open {
     padding: 20px 16px 18px !important;
   }
 
-
-  /* Заголовок */
 
   .stock-header > div:first-child {
     width: 100%;
@@ -1867,10 +1550,6 @@ body.stock-modal-open {
     line-height: 1.55;
   }
 
-
-  /* =====================================================
-     ЕКІ КАРТОЧКА
-  ===================================================== */
 
   .stock-header-info {
     display: grid !important;
@@ -1901,10 +1580,6 @@ body.stock-modal-open {
     border-radius: 14px;
   }
 
-
-  /* =====================================================
-     ДЕНЬ ЗАКАЗА
-  ===================================================== */
 
   .stock-order-selector-label {
     display: block;
@@ -1961,10 +1636,6 @@ body.stock-modal-open {
   }
 
 
-  /* =====================================================
-     ПРОГРЕСС
-  ===================================================== */
-
   .stock-progress {
     display: flex;
 
@@ -1990,10 +1661,6 @@ body.stock-modal-open {
   }
 
 
-  /* =====================================================
-     ПОСТАВКА
-  ===================================================== */
-
   .stock-same-day-delivery,
   .stock-no-same-day-delivery {
     width: auto;
@@ -2003,28 +1670,451 @@ body.stock-modal-open {
   }
 
 
+  .stock-same-day-delivery {
+    align-items: stretch;
+
+    flex-direction: column;
+
+    padding: 13px;
+  }
+
+
   .stock-no-same-day-delivery {
     padding: 13px 14px;
   }
 
 
-  .stock-no-same-day-delivery strong {
+  .stock-delivery-status-buttons {
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+
+  .stock-delivery-status-button {
+    min-width: 0;
+
+    min-height: 57px;
+  }
+
+
+  /* STICKY NAV */
+
+  .stock-sticky-navigation {
+    top: 0;
+
+    padding-top: 10px;
+  }
+
+
+  .stock-search-wrap {
+    padding:
+      0 16px
+      9px;
+  }
+
+
+  .stock-search-input {
+    height: 46px;
+
+    font-size: 13px;
+  }
+
+
+  .stock-categories {
+    padding:
+      0 16px
+      10px;
+  }
+
+
+  /* TABLE TO CARDS */
+
+  .stock-table-wrapper {
+    padding: 0;
+  }
+
+
+  .stock-table-scroll {
+    overflow: visible;
+  }
+
+
+  .stock-table {
+    display: block;
+
+    width: 100%;
+    min-width: 0;
+  }
+
+
+  .stock-table colgroup,
+  .stock-table thead {
+    display: none;
+  }
+
+
+  .stock-table tbody {
+    display: block;
+  }
+
+
+  .stock-product-row {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin: 10px 10px 14px;
+
+    padding: 16px 12px;
+
+    border: 1px solid #e3e5e8;
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+      0 2px 8px
+      rgba(0, 0, 0, 0.03);
+  }
+
+
+  .stock-product-row.is-counted {
+    border-color: #b9dfbc;
+
+    background: #f3fbf4;
+  }
+
+
+  .stock-product-row td {
+    display: block;
+
+    min-height: 0;
+    height: auto;
+
+    padding: 0;
+
+    border: 0;
+  }
+
+
+  .stock-product-row
+  .stock-number-cell {
+    position: absolute;
+
+    top: 16px;
+    right: 14px;
+
+    width: auto;
+
+    color: #a1a5ab;
+
     font-size: 10px;
   }
 
 
-  .stock-no-same-day-delivery small {
+  .stock-product-row
+  .stock-number-cell::before {
+    content: "№";
+  }
+
+
+  .stock-product-row td:nth-child(2) {
+    grid-column: 1 / -1;
+
+    padding-right: 32px;
+  }
+
+
+  .stock-product-main {
+    align-items: flex-start;
+  }
+
+
+  .stock-product-main strong {
+    max-width: 85%;
+
+    color: #1c1d20;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    line-height: 1.3;
+  }
+
+
+  .stock-product-main
+  .stock-edit-button {
+    display: none;
+  }
+
+
+  .stock-product-meta {
+    margin-top: 7px;
+  }
+
+
+  .stock-product-meta
+  span:not(.stock-iiko-status) {
+    display: none;
+  }
+
+
+  .stock-iiko-status {
+    font-size: 9px;
+  }
+
+
+  .stock-product-package {
+    margin-top: 7px;
+  }
+
+
+  .stock-product-package span {
+    font-size: 9px;
+  }
+
+
+  .stock-product-row
+  .stock-count-cell,
+  .stock-product-row
+  .stock-count-disabled {
+    position: relative;
+
+    padding-top: 21px;
+  }
+
+
+  .stock-product-row
+  td:nth-child(3)::before {
+    position: absolute;
+
+    top: 0;
+    left: 2px;
+
+    content: "case";
+
+    color: #747880;
+
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+
+  .stock-product-row
+  td:nth-child(4)::before {
+    position: absolute;
+
+    top: 0;
+    left: 2px;
+
+    content: "slv";
+
+    color: #747880;
+
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+
+  .stock-product-row
+  td:nth-child(5)::before {
+    position: absolute;
+
+    top: 0;
+    left: 2px;
+
+    content: "ед.";
+
+    color: #747880;
+
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+
+  .stock-count-input {
+    width: 100%;
+    max-width: none;
+    height: 54px;
+
+    border-radius: 12px;
+
+    font-size: 19px;
+    font-weight: 800;
+  }
+
+
+  .stock-unit-count-wrap {
+    width: 100%;
+    max-width: none;
+    height: 54px;
+
+    border-radius: 12px;
+  }
+
+
+  .stock-unit-count-wrap
+  .stock-count-input {
+    height: 52px;
+  }
+
+
+  .stock-count-unit {
+    margin-right: 7px;
+
+    padding: 6px;
+
+    font-size: 10px;
+  }
+
+
+  .stock-count-disabled {
+    display: grid !important;
+
+    min-height: 54px !important;
+
+    place-items: center;
+
+    border-radius: 12px;
+
+    color: #b7bbc0;
+
+    background: #f5f6f7;
+
+    font-size: 18px;
+  }
+
+
+  .stock-product-row
+  .stock-total-cell {
+    grid-column: 1 / -1;
+
     margin-top: 3px;
 
-    font-size: 8px;
-    line-height: 1.4;
+    padding-top: 12px;
+
+    border-top: 1px solid #eceef0;
+
+    text-align: left;
+  }
+
+
+  .stock-total-cell::before {
+    margin-right: 7px;
+
+    content: "Итого:";
+
+    color: #747880;
+
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+
+  .stock-total-value {
+    padding: 6px 9px;
+
+    background: #f1f3f4;
+  }
+
+
+  .stock-total-number {
+    font-size: 16px;
+  }
+
+
+  .stock-total-unit {
+    font-size: 10px;
+  }
+
+
+  .stock-product-tools {
+    display: flex;
+
+    grid-column: 1 / -1;
+
+    justify-content: space-between;
+
+    margin-top: 2px;
+  }
+
+
+  .stock-zero-button {
+    min-height: 38px;
+
+    padding: 0 11px;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+  }
+
+
+  .stock-category-header {
+    gap: 10px;
+
+    padding:
+      14px 16px;
+  }
+
+
+  .stock-category-actions {
+    align-items: center;
+  }
+
+
+  .stock-add-button {
+    min-height: 42px;
+
+    border-radius: 11px;
+  }
+
+
+  .stock-footer {
+    position: sticky;
+
+    z-index: 25;
+
+    bottom: 0;
+
+    margin-top: 5px;
+
+    border-top: 1px solid #e4e6e9;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    backdrop-filter: blur(8px);
+  }
+
+
+  .stock-warning-content {
+    padding: 18px;
+  }
+
+
+  .stock-warning-list {
+    max-height: 45vh;
+  }
+
+
+  .stock-warning-item {
+    align-items: flex-start;
+
+    flex-direction: column;
   }
 
 }
 
 
 /* =====================================================
-   ӨТЕ КІШКЕНТАЙ ТЕЛЕФОН
+   SMALL MOBILE
 ===================================================== */
 
 @media (max-width: 380px) {
@@ -2037,6 +2127,566 @@ body.stock-modal-open {
   .stock-order-selector,
   .stock-progress {
     min-height: auto;
+  }
+
+}
+
+
+/* =====================================================
+   STEP 1 — FIXED PRODUCTS AREA
+   Поиск/категории стоят на месте,
+   скроллится только список товаров
+===================================================== */
+
+
+/* =====================================================
+   STEP CONTAINER
+===================================================== */
+
+.stock-step {
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  border-radius: 20px;
+
+  background: var(--surface);
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.stock-search-wrap {
+  padding:
+    14px 28px
+    10px;
+
+  background: #ffffff;
+}
+
+
+.stock-search {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+}
+
+
+.stock-search-icon {
+  position: absolute;
+  z-index: 2;
+
+  left: 15px;
+
+  color: #858990;
+
+  font-size: 17px;
+
+  pointer-events: none;
+}
+
+
+.stock-search-input {
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 46px;
+
+  padding:
+    0 46px
+    0 43px;
+
+  border: 1px solid #dfe2e5;
+  border-radius: 12px;
+
+  outline: none;
+
+  color: #1d1e20;
+  background: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+.stock-search-input::placeholder {
+  color: #9a9ea5;
+
+  font-weight: 500;
+}
+
+
+.stock-search-input:focus {
+  border-color: #d5aa00;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 196, 0, 0.12);
+}
+
+
+.stock-search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+
+.stock-search-clear {
+  position: absolute;
+
+  right: 10px;
+
+  width: 28px;
+  height: 28px;
+
+  border: 0;
+  border-radius: 8px;
+
+  color: #747880;
+  background: #f1f2f3;
+
+  font-size: 17px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+.stock-search-clear:hover {
+  color: #1d1e20;
+
+  background: #e7e9eb;
+}
+
+
+.stock-search-clear[hidden] {
+  display: none;
+}
+
+
+/* =====================================================
+   SEARCH + CATEGORY WRAPPER
+   Sticky больше НЕ используется
+===================================================== */
+
+.stock-sticky-navigation {
+  position: static;
+
+  padding: 0;
+
+  border: 0;
+
+  background: #ffffff;
+
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+
+/* =====================================================
+   CATEGORIES
+===================================================== */
+
+.stock-categories {
+  position: static;
+
+  display: flex;
+
+  gap: 8px;
+
+  overflow-x: auto;
+
+  margin: 0;
+
+  padding:
+    0 28px
+    12px;
+
+  border-bottom: 1px solid #eceef0;
+
+  background: #ffffff;
+
+  scrollbar-width: thin;
+}
+
+
+.stock-category {
+  display: inline-flex;
+
+  min-height: 38px;
+
+  flex: 0 0 auto;
+
+  align-items: center;
+
+  padding: 0 16px;
+
+  border: 1px solid #e1e3e6;
+  border-radius: 11px;
+
+  color: #555a62;
+  background: #fff;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.stock-category.is-active {
+  border-color: #1d1e20;
+
+  color: #fff;
+  background: #1d1e20;
+}
+
+
+.stock-category.is-complete::after {
+  margin-left: 7px;
+
+  color: #57a85c;
+
+  content: "✓";
+
+  font-size: 11px;
+  font-weight: 900;
+}
+
+
+.stock-category.is-active.is-complete::after {
+  color: var(--accent);
+}
+
+
+/* =====================================================
+   CATEGORY HEADER
+===================================================== */
+
+.stock-category-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding: 14px 28px;
+
+  border-bottom: 1px solid #eff0f2;
+
+  background: #fbfbfc;
+}
+
+
+/* =====================================================
+   TABLE AREA
+===================================================== */
+
+.stock-table-wrapper {
+  padding: 0 28px;
+
+  background: #ffffff;
+}
+
+
+/*
+  ТЕК ОСЫ БЛОК СКРОЛЛ БОЛАДЫ
+*/
+
+.stock-table-scroll {
+  width: 100%;
+
+  height: clamp(
+    420px,
+    57vh,
+    650px
+  );
+
+  overflow-x: auto;
+  overflow-y: auto;
+
+  overscroll-behavior: contain;
+
+  scrollbar-gutter: stable;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.stock-table {
+  width: 100%;
+  min-width: 820px;
+
+  border-collapse: separate;
+  border-spacing: 0;
+
+  table-layout: fixed;
+}
+
+
+/* TABLE HEADER */
+
+.stock-table thead th {
+  position: sticky;
+
+  top: 0;
+  z-index: 10;
+
+  height: 48px;
+
+  padding: 0 9px;
+
+  border-bottom: 1px solid #e5e7ea;
+
+  color: #686d75;
+  background: #ffffff;
+
+  font-size: 10px;
+
+  text-align: center;
+
+  box-shadow:
+    0 1px 0
+    #e5e7ea;
+}
+
+
+.stock-table thead th:nth-child(2) {
+  text-align: left;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.stock-footer {
+  position: static;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 16px 28px;
+
+  border-top: 1px solid #eceef0;
+
+  background: #fbfbfc;
+}
+
+
+/* =====================================================
+   DESKTOP HEIGHT
+===================================================== */
+
+@media (min-width: 701px) {
+
+  .stock-table-scroll {
+    height: clamp(
+      430px,
+      58vh,
+      680px
+    );
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  /* SEARCH */
+
+  .stock-search-wrap {
+    padding:
+      10px 16px
+      9px;
+  }
+
+
+  .stock-search-input {
+    height: 46px;
+
+    font-size: 13px;
+  }
+
+
+  /* CATEGORIES */
+
+  .stock-categories {
+    position: static;
+
+    padding:
+      0 16px
+      10px;
+  }
+
+
+  /*
+    MOBILE-де де тек карточкалар
+    орналасқан зона скролл болады.
+  */
+
+  .stock-table-wrapper {
+    padding: 0;
+  }
+
+
+  .stock-table-scroll {
+    height: 58vh;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    padding-top: 2px;
+  }
+
+
+  /* TABLE -> CARDS */
+
+  .stock-table {
+    display: block;
+
+    width: 100%;
+    min-width: 0;
+  }
+
+
+  .stock-table colgroup,
+  .stock-table thead {
+    display: none;
+  }
+
+
+  .stock-table tbody {
+    display: block;
+  }
+
+
+  /* CATEGORY HEADER */
+
+  .stock-category-header {
+    gap: 10px;
+
+    padding:
+      12px 16px;
+  }
+
+
+  /* FOOTER */
+
+  .stock-footer {
+    position: static;
+
+    padding:
+      14px 16px;
+
+    background: #fbfbfc;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 380px) {
+
+  .stock-table-scroll {
+    height: 55vh;
+  }
+
+}
+
+/* =====================================================
+   STEP 1 — COUNTED PRODUCT HIGHLIGHT
+===================================================== */
+
+/* Desktop */
+
+.stock-product-row.is-counted {
+  background: #e8f7ea;
+}
+
+
+.stock-product-row.is-counted td {
+  border-bottom-color: #c9e6cd;
+}
+
+
+.stock-product-row.is-counted
+.stock-product-main strong {
+  color: #176b2c;
+}
+
+
+.stock-product-row.is-counted
+.stock-total-value {
+  background: #cfead3;
+}
+
+
+.stock-product-row.is-counted
+.stock-total-number {
+  color: #146426;
+}
+
+
+/* Inputs */
+
+.stock-product-row.is-counted
+.stock-count-input {
+  border-color: #7fc78a;
+
+  background: #f3fff5;
+}
+
+
+.stock-product-row.is-counted
+.stock-unit-count-wrap {
+  border-color: #7fc78a;
+
+  background: #f3fff5;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .stock-product-row.is-counted {
+    border-color: #69b977;
+
+    background: #e4f6e7;
+
+    box-shadow:
+      0 0 0 1px
+      rgba(48, 140, 62, 0.12);
+  }
+
+
+  .stock-product-row.is-counted
+  .stock-total-value {
+    background: #c7e7cc;
   }
 
 }

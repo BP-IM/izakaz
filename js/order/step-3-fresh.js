@@ -974,6 +974,70 @@
      MAIN CALCULATION
   ===================================================== */
 
+  function getDeliveryCaseOverride(
+    overrides,
+    deliveryDate
+  ) {
+
+    let exists =
+      false;
+
+
+    let value;
+
+
+    if (
+      overrides instanceof Map
+    ) {
+
+      exists =
+        overrides.has(
+          deliveryDate
+        );
+
+
+      value =
+        overrides.get(
+          deliveryDate
+        );
+
+    } else if (
+      overrides &&
+      typeof overrides === "object"
+    ) {
+
+      exists =
+        Object.prototype
+          .hasOwnProperty.call(
+            overrides,
+            deliveryDate
+          );
+
+
+      value =
+        overrides[
+          deliveryDate
+        ];
+
+    }
+
+
+    if (!exists) {
+
+      return null;
+
+    }
+
+
+    return Math.max(
+      0,
+      Math.round(
+        Number(value) || 0
+      )
+    );
+
+  }
+
   function calculateProduct(
     options
   ) {
@@ -1032,7 +1096,10 @@
           options.orderDay,
 
         deliverySchedule:
-          options.deliverySchedule
+          options.deliverySchedule,
+
+        coverageIncludesNextDeliveryDay:
+          false
 
       });
 
@@ -1252,11 +1319,44 @@
           Только полный CASE.
         */
 
-        const rounded =
+        const automaticRounded =
           Core.roundToCases(
             rawRequiredBaseQty,
             caseToBase
           );
+
+
+        const overriddenCases =
+          getDeliveryCaseOverride(
+            options.deliveryCaseOverrides,
+            plannedDelivery.date
+          );
+
+
+        const isManualOverride =
+          overriddenCases !==
+          null;
+
+
+        const rounded =
+          isManualOverride
+
+            ? {
+
+                cases:
+                  overriddenCases,
+
+                baseQty:
+                  Core.roundNumber(
+
+                    overriddenCases *
+                    caseToBase
+
+                  )
+
+              }
+
+            : automaticRounded;
 
 
         recommendedMap.set(
@@ -1328,6 +1428,14 @@
 
           rawRecommendedBaseQty:
             rawRequiredBaseQty,
+
+          automaticRecommendedCases:
+            automaticRounded.cases,
+
+          automaticRecommendedBaseQty:
+            automaticRounded.baseQty,
+
+          isManualOverride,
 
           recommendedCases:
             rounded.cases,

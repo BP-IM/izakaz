@@ -39,6 +39,12 @@
       null,
 
     onNext:
+      null,
+
+    onGeneralDeliveryChange:
+      null,
+
+    onFreshDeliveryChange:
       null
 
   };
@@ -75,6 +81,47 @@
       }
     ).format(
       Number(value || 0)
+    );
+
+  }
+
+
+  function isPieceUnit(unit) {
+
+    const normalized =
+      String(unit || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\./g, "");
+
+
+    return [
+      "шт",
+      "штук",
+      "штука",
+      "pcs",
+      "pc",
+      "piece",
+      "pieces",
+      "дана"
+    ].includes(
+      normalized
+    );
+
+  }
+
+
+  function formatQuantity(
+    value,
+    unit,
+    digits = 2
+  ) {
+
+    return formatNumber(
+      value,
+      isPieceUnit(unit)
+        ? 0
+        : digits
     );
 
   }
@@ -513,8 +560,9 @@
                 delivery.date
               ) +
               " +" +
-              formatNumber(
-                delivery.qty
+              formatQuantity(
+                delivery.qty,
+                unit
               ) +
               " " +
               unit
@@ -557,8 +605,9 @@
           </span>
 
           <strong>
-            ${formatNumber(
-              item.startStock
+            ${formatQuantity(
+              item.startStock,
+              unit
             )}
             ${escapeHTML(unit)}
           </strong>
@@ -573,8 +622,9 @@
           </span>
 
           <strong>
-            ${formatNumber(
-              item.dailyUsage
+            ${formatQuantity(
+              item.dailyUsage,
+              unit
             )}
             ${escapeHTML(unit)}
           </strong>
@@ -589,8 +639,9 @@
           </span>
 
           <strong>
-            ${formatNumber(
-              item.caseToBase
+            ${formatQuantity(
+              item.caseToBase,
+              unit
             )}
             ${escapeHTML(unit)}
           </strong>
@@ -605,8 +656,9 @@
           </span>
 
           <strong>
-            ${formatNumber(
-              item.safetyStock
+            ${formatQuantity(
+              item.safetyStock,
+              unit
             )}
             ${escapeHTML(unit)}
           </strong>
@@ -926,8 +978,9 @@
 
         <div class="step3-day-stock">
 
-          ${formatNumber(
-            row.closingStock
+          ${formatQuantity(
+            row.closingStock,
+            unit
           )}
 
           <small>
@@ -940,8 +993,9 @@
         <div class="step3-day-extra">
 
           Расход:
-          ${formatNumber(
-            row.usageQty
+          ${formatQuantity(
+            row.usageQty,
+            unit
           )}
           ${escapeHTML(unit)}
 
@@ -957,8 +1011,9 @@
               <div class="step3-day-delivery">
 
                 + Новый заказ:
-                ${formatNumber(
-                  row.deliveryQty
+                ${formatQuantity(
+                  row.deliveryQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
 
@@ -976,8 +1031,9 @@
               <div class="step3-day-shortage">
 
                 🔴 Не хватит:
-                ${formatNumber(
-                  row.shortageQty
+                ${formatQuantity(
+                  row.shortageQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
 
@@ -1031,10 +1087,23 @@
     return `
       <article class="
         step3-cola-card
+
         ${
           item.hasShortageBeforeDelivery
             ? "has-shortage"
             : ""
+        }
+
+        ${
+          Number(item.safetyStock || 0) > 0
+            ? "has-safety"
+            : ""
+        }
+
+        ${
+          Number(item.recommendedCases || 0) > 0
+            ? "has-order"
+            : "no-order"
         }
       ">
 
@@ -1061,12 +1130,41 @@
                 ${escapeHTML(unit)}
               </span>
 
+              ${
+                Number(item.safetyStock || 0) > 0
+                  ? `
+                    <span class="step3-stock-badge">
+                      Запас +
+                      ${formatQuantity(item.safetyStock, unit)}
+                      ${escapeHTML(unit)}
+                    </span>
+                  `
+                  : ""
+              }
+
+              ${
+                item.hasShortageBeforeDelivery
+                  ? `
+                    <span class="step3-risk-badge">
+                      Риск до поставки
+                    </span>
+                  `
+                  : ""
+              }
+
             </div>
 
           </div>
 
 
-          <div class="step3-cola-recommendation">
+          <div class="
+            step3-cola-recommendation
+            ${
+              Number(item.recommendedCases || 0) > 0
+                ? "is-order"
+                : "is-zero"
+            }
+          ">
 
             <span>
               Заказать
@@ -1086,8 +1184,9 @@
             </strong>
 
             <small>
-              ${formatNumber(
-                item.recommendedBaseQty
+              ${formatQuantity(
+                item.recommendedBaseQty,
+                unit
               )}
               ${escapeHTML(unit)}
             </small>
@@ -1217,17 +1316,76 @@
 
                     <div class="step3-general-split-qty">
 
-                      <strong>
-                        ${formatNumber(
-                          delivery.recommendedCases,
-                          0
-                        )}
-                        CASE
-                      </strong>
+                      <div class="step3-general-case-editor">
+
+                        <button
+                          class="step3-general-case-button"
+                          type="button"
+                          data-general-case-action="decrement"
+                          aria-label="Уменьшить CASE"
+                        >−</button>
+
+                        <input
+                          class="step3-general-case-input"
+                          type="number"
+                          min="0"
+                          step="1"
+                          inputmode="numeric"
+                          value="${formatNumber(
+                            delivery.recommendedCases,
+                            0
+                          )}"
+                          data-general-case-input
+                          data-product-id="${escapeHTML(
+                            item.product?.id || ""
+                          )}"
+                          data-delivery-date="${escapeHTML(
+                            delivery.date
+                          )}"
+                          aria-label="CASE для ${escapeHTML(
+                            item.product?.name || "товара"
+                          )}"
+                        >
+
+                        <span>CASE</span>
+
+                        <button
+                          class="step3-general-case-button"
+                          type="button"
+                          data-general-case-action="increment"
+                          aria-label="Увеличить CASE"
+                        >+</button>
+
+                      </div>
+
+                      ${
+                        delivery.isManualOverride
+                          ? `
+                            <button
+                              class="step3-general-case-auto"
+                              type="button"
+                              data-general-case-reset
+                              data-product-id="${escapeHTML(
+                                item.product?.id || ""
+                              )}"
+                              data-delivery-date="${escapeHTML(
+                                delivery.date
+                              )}"
+                            >
+                              ↺ Авто:
+                              ${formatNumber(
+                                delivery.automaticRecommendedCases,
+                                0
+                              )}
+                            </button>
+                          `
+                          : ""
+                      }
 
                       <small>
-                        ${formatNumber(
-                          delivery.recommendedBaseQty
+                        ${formatQuantity(
+                          delivery.recommendedBaseQty,
+                          unit
                         )}
                         ${escapeHTML(unit)}
                       </small>
@@ -1330,8 +1488,9 @@
 
         <div class="step3-day-stock">
 
-          ${formatNumber(
-            row.closingStock
+          ${formatQuantity(
+            row.closingStock,
+            unit
           )}
 
           <small>
@@ -1343,8 +1502,9 @@
 
         <div class="step3-day-extra">
           Расход:
-          ${formatNumber(
-            row.usageQty
+          ${formatQuantity(
+            row.usageQty,
+            unit
           )}
           ${escapeHTML(unit)}
         </div>
@@ -1358,8 +1518,9 @@
             ? `
               <div class="step3-day-known-delivery">
                 🔵 Уже ожидается:
-                +${formatNumber(
-                  row.knownDeliveryQty
+                +${formatQuantity(
+                  row.knownDeliveryQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
               </div>
@@ -1383,8 +1544,9 @@
                   0
                 )}
                 CASE /
-                ${formatNumber(
-                  row.recommendedDeliveryQty
+                ${formatQuantity(
+                  row.recommendedDeliveryQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
 
@@ -1401,8 +1563,9 @@
             ? `
               <div class="step3-day-shortage">
                 🔴 Не хватит:
-                ${formatNumber(
-                  row.shortageQty
+                ${formatQuantity(
+                  row.shortageQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
               </div>
@@ -1454,10 +1617,23 @@
     return `
       <article class="
         step3-cola-card
+
         ${
           item.hasShortageBeforeFirstDelivery
             ? "has-shortage"
             : ""
+        }
+
+        ${
+          Number(item.safetyStock || 0) > 0
+            ? "has-safety"
+            : ""
+        }
+
+        ${
+          Number(item.totalRecommendedCases || 0) > 0
+            ? "has-order"
+            : "no-order"
         }
       ">
 
@@ -1492,12 +1668,41 @@
                 ${escapeHTML(unit)}
               </span>
 
+              ${
+                Number(item.safetyStock || 0) > 0
+                  ? `
+                    <span class="step3-stock-badge">
+                      Запас +
+                      ${formatQuantity(item.safetyStock, unit)}
+                      ${escapeHTML(unit)}
+                    </span>
+                  `
+                  : ""
+              }
+
+              ${
+                item.hasShortageBeforeFirstDelivery
+                  ? `
+                    <span class="step3-risk-badge">
+                      Риск до поставки
+                    </span>
+                  `
+                  : ""
+              }
+
             </div>
 
           </div>
 
 
-          <div class="step3-cola-recommendation">
+          <div class="
+            step3-cola-recommendation
+            ${
+              Number(item.totalRecommendedCases || 0) > 0
+                ? "is-order"
+                : "is-zero"
+            }
+          ">
 
             <span>
               Всего заказать
@@ -1512,8 +1717,9 @@
             </strong>
 
             <small>
-              ${formatNumber(
-                item.totalRecommendedBaseQty
+              ${formatQuantity(
+                item.totalRecommendedBaseQty,
+                unit
               )}
               ${escapeHTML(unit)}
             </small>
@@ -2072,8 +2278,9 @@
                       </span>
 
                       <span class="step3-fresh-lot-qty">
-                        ${formatNumber(
-                          lot.qty
+                        ${formatQuantity(
+                          lot.qty,
+                          unit
                         )}
                         ${escapeHTML(unit)}
                       </span>
@@ -2150,17 +2357,76 @@
 
                     <div class="step3-fresh-delivery-qty">
 
-                      <strong>
-                        ${formatNumber(
-                          delivery.recommendedCases,
-                          0
-                        )}
-                        CASE
-                      </strong>
+                      <div class="step3-general-case-editor">
+
+                        <button
+                          class="step3-general-case-button"
+                          type="button"
+                          data-fresh-case-action="decrement"
+                          aria-label="Уменьшить Fresh CASE"
+                        >−</button>
+
+                        <input
+                          class="step3-general-case-input"
+                          type="number"
+                          min="0"
+                          step="1"
+                          inputmode="numeric"
+                          value="${formatNumber(
+                            delivery.recommendedCases,
+                            0
+                          )}"
+                          data-fresh-case-input
+                          data-product-id="${escapeHTML(
+                            item.product?.id || ""
+                          )}"
+                          data-delivery-date="${escapeHTML(
+                            delivery.date
+                          )}"
+                          aria-label="Fresh CASE для ${escapeHTML(
+                            item.product?.name || "товара"
+                          )}"
+                        >
+
+                        <span>CASE</span>
+
+                        <button
+                          class="step3-general-case-button"
+                          type="button"
+                          data-fresh-case-action="increment"
+                          aria-label="Увеличить Fresh CASE"
+                        >+</button>
+
+                      </div>
+
+                      ${
+                        delivery.isManualOverride
+                          ? `
+                            <button
+                              class="step3-general-case-auto"
+                              type="button"
+                              data-fresh-case-reset
+                              data-product-id="${escapeHTML(
+                                item.product?.id || ""
+                              )}"
+                              data-delivery-date="${escapeHTML(
+                                delivery.date
+                              )}"
+                            >
+                              ↺ Авто:
+                              ${formatNumber(
+                                delivery.automaticRecommendedCases,
+                                0
+                              )}
+                            </button>
+                          `
+                          : ""
+                      }
 
                       <small>
-                        ${formatNumber(
-                          delivery.recommendedBaseQty
+                        ${formatQuantity(
+                          delivery.recommendedBaseQty,
+                          unit
                         )}
                         ${escapeHTML(unit)}
                       </small>
@@ -2280,8 +2546,9 @@
 
         <div class="step3-day-stock">
 
-          ${formatNumber(
-            row.closingStock
+          ${formatQuantity(
+            row.closingStock,
+            unit
           )}
 
           <small>
@@ -2294,8 +2561,9 @@
         <div class="step3-day-extra">
 
           Расход:
-          ${formatNumber(
-            row.usageQty
+          ${formatQuantity(
+            row.usageQty,
+            unit
           )}
           ${escapeHTML(unit)}
 
@@ -2311,8 +2579,9 @@
               <div class="step3-day-known-delivery">
 
                 🔵 Уже ожидается:
-                +${formatNumber(
-                  row.knownDeliveryQty
+                +${formatQuantity(
+                  row.knownDeliveryQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
 
@@ -2337,8 +2606,9 @@
                   0
                 )}
                 CASE /
-                ${formatNumber(
-                  row.recommendedDeliveryQty
+                ${formatQuantity(
+                  row.recommendedDeliveryQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
 
@@ -2358,8 +2628,9 @@
               <div class="step3-day-expiry">
 
                 🟠 Срок закончился:
-                ${formatNumber(
-                  row.expiredQty
+                ${formatQuantity(
+                  row.expiredQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
 
@@ -2377,8 +2648,9 @@
               <div class="step3-day-shortage">
 
                 🔴 Не хватит:
-                ${formatNumber(
-                  row.shortageQty
+                ${formatQuantity(
+                  row.shortageQty,
+                  unit
                 )}
                 ${escapeHTML(unit)}
 
@@ -2464,6 +2736,34 @@
     }
 
 
+    if (
+      Number(item.safetyStock || 0) > 0
+    ) {
+
+      classes.push(
+        "has-safety"
+      );
+
+    }
+
+
+    if (
+      Number(item.totalRecommendedCases || 0) > 0
+    ) {
+
+      classes.push(
+        "has-order"
+      );
+
+    } else {
+
+      classes.push(
+        "no-order"
+      );
+
+    }
+
+
     return `
       <article class="${classes.join(" ")}">
 
@@ -2499,6 +2799,19 @@
 
 
               ${
+                Number(item.safetyStock || 0) > 0
+                  ? `
+                    <span class="step3-stock-badge">
+                      Запас +
+                      ${formatQuantity(item.safetyStock, unit)}
+                      ${escapeHTML(unit)}
+                    </span>
+                  `
+                  : ""
+              }
+
+
+              ${
                 item.hasExpiry
 
                   ? `
@@ -2515,11 +2828,8 @@
                 item.hasShortageBeforeFirstDelivery
 
                   ? `
-                    <span style="
-                      color:#b42318;
-                      font-weight:800;
-                    ">
-                      🔴 Риск до поставки
+                    <span class="step3-risk-badge">
+                      Риск до поставки
                     </span>
                   `
 
@@ -2531,7 +2841,14 @@
           </div>
 
 
-          <div class="step3-cola-recommendation">
+          <div class="
+            step3-cola-recommendation
+            ${
+              Number(item.totalRecommendedCases || 0) > 0
+                ? "is-order"
+                : "is-zero"
+            }
+          ">
 
             <span>
               Всего заказать
@@ -2551,8 +2868,9 @@
             </strong>
 
             <small>
-              ${formatNumber(
-                item.totalRecommendedBaseQty
+              ${formatQuantity(
+                item.totalRecommendedBaseQty,
+                unit
               )}
               ${escapeHTML(unit)}
             </small>
@@ -2889,11 +3207,353 @@
      EVENTS
   ===================================================== */
 
+  async function commitGeneralCaseChange(
+    change
+  ) {
+
+    if (
+      typeof state.onGeneralDeliveryChange !==
+      "function"
+    ) {
+
+      return;
+
+    }
+
+
+    try {
+
+      setStatus(
+        "Сохраняем ручное количество...",
+        "loading"
+      );
+
+
+      await state
+        .onGeneralDeliveryChange(
+          change
+        );
+
+
+      setStatus(
+        "Ручное количество сохранено",
+        "ready"
+      );
+
+    } catch (error) {
+
+      console.error(
+        "General delivery override:",
+        error
+      );
+
+
+      setStatus(
+        error?.message ||
+        "Не удалось сохранить количество",
+        "error"
+      );
+
+
+      alert(
+        error?.message ||
+        "Не удалось сохранить количество поставки."
+      );
+
+    }
+
+  }
+
+
+  function commitGeneralCaseInput(
+    input
+  ) {
+
+    const cases =
+      Math.max(
+        0,
+        Math.round(
+          Number(input.value) || 0
+        )
+      );
+
+
+    input.value =
+      String(cases);
+
+
+    commitGeneralCaseChange({
+
+      productId:
+        input.dataset.productId,
+
+      deliveryDate:
+        input.dataset.deliveryDate,
+
+      cases,
+
+      mode:
+        "manual"
+
+    });
+
+  }
+
+
+  async function commitFreshCaseChange(
+    change
+  ) {
+
+    if (
+      typeof state.onFreshDeliveryChange !==
+      "function"
+    ) {
+
+      return;
+
+    }
+
+
+    try {
+
+      setStatus(
+        "Сохраняем Fresh количество...",
+        "loading"
+      );
+
+
+      await state
+        .onFreshDeliveryChange(
+          change
+        );
+
+
+      setStatus(
+        "Fresh количество сохранено",
+        "ready"
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Fresh delivery override:",
+        error
+      );
+
+
+      setStatus(
+        error?.message ||
+        "Не удалось сохранить Fresh количество",
+        "error"
+      );
+
+
+      alert(
+        error?.message ||
+        "Не удалось сохранить Fresh поставку."
+      );
+
+    }
+
+  }
+
+
+  function commitFreshCaseInput(
+    input
+  ) {
+
+    const cases =
+      Math.max(
+        0,
+        Math.round(
+          Number(input.value) || 0
+        )
+      );
+
+
+    input.value =
+      String(cases);
+
+
+    commitFreshCaseChange({
+
+      productId:
+        input.dataset.productId,
+
+      deliveryDate:
+        input.dataset.deliveryDate,
+
+      cases,
+
+      mode:
+        "manual"
+
+    });
+
+  }
+
   function bindEvents() {
 
     root.addEventListener(
       "click",
       function (event) {
+
+        const caseAction =
+          event.target.closest(
+            "[data-general-case-action]"
+          );
+
+
+        if (caseAction) {
+
+          const editor =
+            caseAction.closest(
+              ".step3-general-case-editor"
+            );
+
+
+          const input =
+            editor?.querySelector(
+              "[data-general-case-input]"
+            );
+
+
+          if (input) {
+
+            const current =
+              Math.max(
+                0,
+                Math.round(
+                  Number(input.value) || 0
+                )
+              );
+
+
+            input.value =
+              String(
+                caseAction.dataset.generalCaseAction ===
+                  "increment"
+                  ? current + 1
+                  : Math.max(0, current - 1)
+              );
+
+
+            commitGeneralCaseInput(
+              input
+            );
+
+          }
+
+
+          return;
+
+        }
+
+
+        const reset =
+          event.target.closest(
+            "[data-general-case-reset]"
+          );
+
+
+        if (reset) {
+
+          commitGeneralCaseChange({
+
+            productId:
+              reset.dataset.productId,
+
+            deliveryDate:
+              reset.dataset.deliveryDate,
+
+            mode:
+              "auto"
+
+          });
+
+
+          return;
+
+        }
+
+
+        const freshCaseAction =
+          event.target.closest(
+            "[data-fresh-case-action]"
+          );
+
+
+        if (freshCaseAction) {
+
+          const editor =
+            freshCaseAction.closest(
+              ".step3-general-case-editor"
+            );
+
+
+          const input =
+            editor?.querySelector(
+              "[data-fresh-case-input]"
+            );
+
+
+          if (input) {
+
+            const current =
+              Math.max(
+                0,
+                Math.round(
+                  Number(input.value) || 0
+                )
+              );
+
+
+            input.value =
+              String(
+                freshCaseAction.dataset.freshCaseAction ===
+                  "increment"
+                  ? current + 1
+                  : Math.max(0, current - 1)
+              );
+
+
+            commitFreshCaseInput(
+              input
+            );
+
+          }
+
+
+          return;
+
+        }
+
+
+        const freshReset =
+          event.target.closest(
+            "[data-fresh-case-reset]"
+          );
+
+
+        if (freshReset) {
+
+          commitFreshCaseChange({
+
+            productId:
+              freshReset.dataset.productId,
+
+            deliveryDate:
+              freshReset.dataset.deliveryDate,
+
+            mode:
+              "auto"
+
+          });
+
+
+          return;
+
+        }
 
         const tab =
           event.target.closest(
@@ -2953,6 +3613,46 @@
       }
     );
 
+
+    root.addEventListener(
+      "change",
+      function (event) {
+
+        const generalInput =
+          event.target.closest(
+            "[data-general-case-input]"
+          );
+
+
+        if (generalInput) {
+
+          commitGeneralCaseInput(
+            generalInput
+          );
+
+
+          return;
+
+        }
+
+
+        const freshInput =
+          event.target.closest(
+            "[data-fresh-case-input]"
+          );
+
+
+        if (freshInput) {
+
+          commitFreshCaseInput(
+            freshInput
+          );
+
+        }
+
+      }
+    );
+
   }
 
 
@@ -3006,6 +3706,14 @@
 
       onNext:
         options.onNext ||
+        null,
+
+      onGeneralDeliveryChange:
+        options.onGeneralDeliveryChange ||
+        null,
+
+      onFreshDeliveryChange:
+        options.onFreshDeliveryChange ||
         null
 
     };

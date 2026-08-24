@@ -1,19 +1,594 @@
-<section class="order-products-settings">
+<section
+  class="order-products-settings"
+  id="order-products-settings"
+>
 
-  <div class="order-products-placeholder">
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
-    <span>
-      Настройки
-    </span>
+  <div class="order-products-header">
 
-    <h2>
-      Товары заказа
-    </h2>
+    <div>
 
-    <p>
-      Здесь будет общий список товаров ресторана:
-      IIKO код, категория, case, slv, единица и запас.
-    </p>
+      <span class="order-products-kicker">
+        Настройки
+      </span>
+
+      <h2>
+        Товары заказа
+      </h2>
+
+      <p>
+        Управление товарами, участвующими
+        в еженедельном заказе.
+      </p>
+
+    </div>
+
+
+    <button
+      class="order-products-add-button"
+      id="order-products-add-button"
+      type="button"
+    >
+      ＋ Добавить товар
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       STATS
+  ====================================================== -->
+
+  <div class="order-products-stats">
+
+    <div class="order-products-stat">
+
+      <span>
+        Всего
+      </span>
+
+      <strong id="order-products-stat-total">
+        0
+      </strong>
+
+    </div>
+
+
+    <div class="order-products-stat is-active">
+
+      <span>
+        Активные
+      </span>
+
+      <strong id="order-products-stat-active">
+        0
+      </strong>
+
+    </div>
+
+
+    <div class="order-products-stat is-inactive">
+
+      <span>
+        Неактивные
+      </span>
+
+      <strong id="order-products-stat-inactive">
+        0
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       FILTERS
+  ====================================================== -->
+
+  <div class="order-products-toolbar">
+
+    <label class="order-products-search">
+
+      <span class="order-products-search-icon">
+        ⌕
+      </span>
+
+      <input
+        id="order-products-search"
+        type="search"
+        placeholder="Поиск по названию или IIKO коду..."
+        autocomplete="off"
+      >
+
+    </label>
+
+
+    <select
+      class="order-products-status-filter"
+      id="order-products-status-filter"
+    >
+      <option value="all">
+        Все статусы
+      </option>
+
+      <option value="active">
+        Только активные
+      </option>
+
+      <option value="inactive">
+        Только неактивные
+      </option>
+    </select>
+
+  </div>
+
+
+  <!-- =====================================================
+       CATEGORIES
+  ====================================================== -->
+
+  <div
+    class="order-products-categories"
+    id="order-products-categories"
+  >
+
+    <button
+      class="order-products-category is-active"
+      type="button"
+      data-order-category="all"
+    >
+      Все
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       MESSAGE
+  ====================================================== -->
+
+  <div
+    class="order-products-message"
+    id="order-products-message"
+    hidden
+  ></div>
+
+
+  <!-- =====================================================
+       PRODUCTS
+  ====================================================== -->
+
+  <div class="order-products-card">
+
+    <div
+      class="order-products-loading"
+      id="order-products-loading"
+    >
+      Загрузка товаров...
+    </div>
+
+
+    <div
+      class="order-products-empty"
+      id="order-products-empty"
+      hidden
+    >
+
+      <strong>
+        Товары не найдены
+      </strong>
+
+      <span>
+        Измените поиск или фильтры.
+      </span>
+
+    </div>
+
+
+    <div
+      class="order-products-table-wrap"
+      id="order-products-table-wrap"
+      hidden
+    >
+
+      <table class="order-products-table">
+
+        <thead>
+
+          <tr>
+
+            <th class="order-products-number-column">
+              №
+            </th>
+
+            <th>
+              Товар
+            </th>
+
+            <th>
+              Категория
+            </th>
+
+            <th>
+              Case
+            </th>
+
+            <th>
+              Slv
+            </th>
+
+            <th>
+              Ед.
+            </th>
+
+            <th>
+              Запас +
+            </th>
+
+            <th>
+              Статус
+            </th>
+
+            <th class="order-products-actions-column">
+              Действия
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="order-products-body">
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       PRODUCT MODAL
+  ====================================================== -->
+
+  <div
+    class="order-products-modal"
+    id="order-products-modal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="order-products-modal-backdrop"
+      data-order-products-modal-close
+    ></div>
+
+
+    <div
+      class="order-products-modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="order-products-modal-title"
+    >
+
+      <div class="order-products-modal-header">
+
+        <div>
+
+          <span>
+            Товар заказа
+          </span>
+
+          <h3 id="order-products-modal-title">
+            Добавить товар
+          </h3>
+
+        </div>
+
+
+        <button
+          class="order-products-modal-close"
+          type="button"
+          aria-label="Закрыть"
+          data-order-products-modal-close
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form id="order-products-form">
+
+        <input
+          id="order-products-product-id"
+          type="hidden"
+        >
+
+
+        <div class="order-products-form-grid">
+
+          <label class="order-products-field is-wide">
+
+            <span>
+              Название товара *
+            </span>
+
+            <input
+              id="order-products-name"
+              type="text"
+              required
+              placeholder="Например: Салат Айсберг"
+            >
+
+          </label>
+
+
+          <label class="order-products-field">
+
+            <span>
+              IIKO код *
+            </span>
+
+            <input
+              id="order-products-iiko-code"
+              type="text"
+              required
+              placeholder="Код IIKO"
+            >
+
+          </label>
+
+
+          <label class="order-products-field">
+
+            <span>
+              Категория *
+            </span>
+
+            <select
+              id="order-products-category"
+              required
+            >
+
+              <option value="cola">
+                Cola
+              </option>
+
+              <option value="fresh">
+                Fresh
+              </option>
+
+              <option value="freezer">
+                Freezer
+              </option>
+
+              <option value="cooler">
+                Cooler
+              </option>
+
+              <option value="dry">
+                Сухой
+              </option>
+
+            </select>
+
+          </label>
+
+
+          <label class="order-products-field">
+
+            <span>
+              Единица
+            </span>
+
+            <select id="order-products-unit">
+
+              <option value="шт">
+                шт
+              </option>
+
+              <option value="кг">
+                кг
+              </option>
+
+              <option value="л">
+                л
+              </option>
+
+            </select>
+
+          </label>
+
+
+          <label class="order-products-field">
+
+            <span>
+              Case
+            </span>
+
+            <input
+              id="order-products-case"
+              type="number"
+              min="0"
+              step="0.0001"
+              inputmode="decimal"
+              placeholder="Например: 6"
+            >
+
+          </label>
+
+
+          <label class="order-products-field">
+
+            <span>
+              Slv
+            </span>
+
+            <input
+              id="order-products-slv"
+              type="number"
+              min="0"
+              step="0.0001"
+              inputmode="decimal"
+              placeholder="Необязательно"
+            >
+
+          </label>
+
+
+          <label class="order-products-field">
+
+            <span>
+              Коэффициент ед.
+            </span>
+
+            <input
+              id="order-products-pcs"
+              type="number"
+              min="0"
+              step="0.0001"
+              inputmode="decimal"
+              value="1"
+            >
+
+          </label>
+
+
+          <label class="order-products-field">
+
+            <span>
+              Запас +
+            </span>
+
+            <input
+              id="order-products-safety"
+              type="number"
+              min="0"
+              step="0.0001"
+              inputmode="decimal"
+              value="0"
+            >
+
+          </label>
+
+        </div>
+
+
+        <div
+          class="order-products-form-message"
+          id="order-products-form-message"
+        ></div>
+
+
+        <div class="order-products-modal-actions">
+
+          <button
+            class="order-products-secondary-button"
+            type="button"
+            data-order-products-modal-close
+          >
+            Отмена
+          </button>
+
+
+          <button
+            class="order-products-primary-button"
+            id="order-products-save-button"
+            type="submit"
+          >
+            Добавить товар
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       DELETE MODAL
+  ====================================================== -->
+
+  <div
+    class="order-products-modal"
+    id="order-products-delete-modal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="order-products-modal-backdrop"
+      data-order-products-delete-close
+    ></div>
+
+
+    <div
+      class="
+        order-products-modal-card
+        order-products-delete-card
+      "
+      role="dialog"
+      aria-modal="true"
+    >
+
+      <div class="order-products-delete-icon">
+        !
+      </div>
+
+
+      <h3>
+        Удалить товар?
+      </h3>
+
+
+      <p>
+        Товар
+        <strong id="order-products-delete-name">
+          —
+        </strong>
+        будет удалён из базы.
+      </p>
+
+
+      <div
+        class="order-products-delete-warning"
+      >
+        Если товар уже использовался
+        в предыдущих заказах, база может
+        запретить удаление. В таком случае
+        используйте «Деактивировать».
+      </div>
+
+
+      <div class="order-products-modal-actions">
+
+        <button
+          class="order-products-secondary-button"
+          type="button"
+          data-order-products-delete-close
+        >
+          Отмена
+        </button>
+
+
+        <button
+          class="order-products-delete-confirm"
+          id="order-products-delete-confirm"
+          type="button"
+        >
+          Удалить
+        </button>
+
+      </div>
+
+    </div>
 
   </div>
 

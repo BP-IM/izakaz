@@ -32,6 +32,12 @@
   let generalResults = [];
   let freshResults = [];
 
+  let generalDeliveryOverrides =
+    new Map();
+
+  let freshDeliveryOverrides =
+    new Map();
+
 
   /* =====================================================
      MODULES
@@ -1628,6 +1634,12 @@
           deliverySchedule:
             generalSchedule,
 
+          deliveryCaseOverrides:
+            generalDeliveryOverrides.get(
+              product.id
+            ) ||
+            null,
+
           knownDeliveries
 
         });
@@ -1830,6 +1842,12 @@
 
           deliverySchedule:
             generalSchedule,
+
+          deliveryCaseOverrides:
+            freshDeliveryOverrides.get(
+              product.id
+            ) ||
+            null,
 
           knownDeliveries
 
@@ -2308,6 +2326,502 @@
 
 
   /* =====================================================
+     UI ACTIONS
+  ===================================================== */
+
+  async function handleBack() {
+
+    if (
+      appContext &&
+      typeof appContext.goToStep ===
+        "function"
+    ) {
+
+      await appContext.goToStep(
+        2
+      );
+
+    }
+
+  }
+
+
+  async function loadDeliveryOverrides() {
+
+    generalDeliveryOverrides =
+      new Map();
+
+
+    freshDeliveryOverrides =
+      new Map();
+
+
+    const savedRows =
+      await window
+        .OrderStep3Save
+        .load(
+          weeklyOrder.id
+        );
+
+
+    savedRows
+      .filter(
+        function (row) {
+
+          return (
+            (
+              row.section === "general" ||
+              row.section === "fresh"
+            ) &&
+            row.calculation_meta
+              ?.manual_override ===
+              true
+          );
+
+        }
+      )
+      .forEach(
+        function (row) {
+
+          if (
+            !row.product_id ||
+            !row.delivery_date
+          ) {
+
+            return;
+
+          }
+
+
+          const overrideStore =
+            row.section === "fresh"
+
+              ? freshDeliveryOverrides
+
+              : generalDeliveryOverrides;
+
+
+          if (
+            !overrideStore.has(
+              row.product_id
+            )
+          ) {
+
+            overrideStore.set(
+              row.product_id,
+              new Map()
+            );
+
+          }
+
+
+          overrideStore
+            .get(
+              row.product_id
+            )
+            .set(
+              row.delivery_date,
+              Math.max(
+                0,
+                Math.round(
+                  Number(
+                    row.recommended_case_qty
+                  ) || 0
+                )
+              )
+            );
+
+        }
+      );
+
+  }
+
+
+  async function handleNext() {
+
+    const button =
+      root.querySelector(
+        "#step3-next-button"
+      );
+
+
+    if (button) {
+
+      button.disabled =
+        true;
+
+    }
+
+
+    try {
+
+      await saveResults();
+
+
+      if (
+        appContext &&
+        typeof appContext.goToStep ===
+          "function"
+      ) {
+
+        await appContext.goToStep(
+          4
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Step 3 -> Step 4:",
+        error
+      );
+
+
+      alert(
+        error.message ||
+        "Не удалось открыть итоговый заказ."
+      );
+
+
+      if (button) {
+
+        button.disabled =
+          false;
+
+
+        button.removeAttribute(
+          "disabled"
+        );
+
+      }
+
+    }
+
+  }
+
+
+  async function handleGeneralDeliveryChange(
+    change
+  ) {
+
+    const productId =
+      change?.productId;
+
+
+    const deliveryDate =
+      change?.deliveryDate;
+
+
+    if (
+      !productId ||
+      !deliveryDate
+    ) {
+
+      throw new Error(
+        "Не удалось определить товар или дату поставки."
+      );
+
+    }
+
+
+    let overrides =
+      generalDeliveryOverrides.get(
+        productId
+      );
+
+
+    if (!overrides) {
+
+      overrides =
+        new Map();
+
+
+      generalDeliveryOverrides.set(
+        productId,
+        overrides
+      );
+
+    }
+
+
+    if (
+      change.mode === "auto"
+    ) {
+
+      overrides.delete(
+        deliveryDate
+      );
+
+
+      if (!overrides.size) {
+
+        generalDeliveryOverrides.delete(
+          productId
+        );
+
+      }
+
+    } else {
+
+      const cases =
+        Math.max(
+          0,
+          Math.round(
+            Number(change.cases) || 0
+          )
+        );
+
+
+      overrides.set(
+        deliveryDate,
+        cases
+      );
+
+    }
+
+
+    const resultIndex =
+      generalResults.findIndex(
+        function (item) {
+
+          return (
+            item.product?.id ===
+            productId
+          );
+
+        }
+      );
+
+
+    const product =
+      generalProducts.find(
+        function (item) {
+
+          return (
+            item.id ===
+            productId
+          );
+
+        }
+      );
+
+
+    if (
+      resultIndex < 0 ||
+      !product
+    ) {
+
+      throw new Error(
+        "Товар для перерасчета не найден."
+      );
+
+    }
+
+
+    generalResults[
+      resultIndex
+    ] = {
+
+      ok:
+        true,
+
+      ...calculateGeneralProduct(
+        product
+      )
+
+    };
+
+
+    await saveResults();
+
+
+    renderCalculation(
+      "general"
+    );
+
+  }
+
+
+  async function handleFreshDeliveryChange(
+    change
+  ) {
+
+    const productId =
+      change?.productId;
+
+
+    const deliveryDate =
+      change?.deliveryDate;
+
+
+    if (
+      !productId ||
+      !deliveryDate
+    ) {
+
+      throw new Error(
+        "Не удалось определить Fresh товар или дату поставки."
+      );
+
+    }
+
+
+    let overrides =
+      freshDeliveryOverrides.get(
+        productId
+      );
+
+
+    if (!overrides) {
+
+      overrides =
+        new Map();
+
+
+      freshDeliveryOverrides.set(
+        productId,
+        overrides
+      );
+
+    }
+
+
+    if (
+      change.mode === "auto"
+    ) {
+
+      overrides.delete(
+        deliveryDate
+      );
+
+
+      if (!overrides.size) {
+
+        freshDeliveryOverrides.delete(
+          productId
+        );
+
+      }
+
+    } else {
+
+      const cases =
+        Math.max(
+          0,
+          Math.round(
+            Number(change.cases) || 0
+          )
+        );
+
+
+      overrides.set(
+        deliveryDate,
+        cases
+      );
+
+    }
+
+
+    const resultIndex =
+      freshResults.findIndex(
+        function (item) {
+
+          return (
+            item.product?.id ===
+            productId
+          );
+
+        }
+      );
+
+
+    const product =
+      freshProducts.find(
+        function (item) {
+
+          return (
+            item.id ===
+            productId
+          );
+
+        }
+      );
+
+
+    if (
+      resultIndex < 0 ||
+      !product
+    ) {
+
+      throw new Error(
+        "Fresh товар для перерасчета не найден."
+      );
+
+    }
+
+
+    freshResults[
+      resultIndex
+    ] = {
+
+      ok:
+        true,
+
+      ...calculateFreshProduct(
+        product
+      )
+
+    };
+
+
+    await saveResults();
+
+
+    renderCalculation(
+      "fresh"
+    );
+
+  }
+
+
+  function renderCalculation(
+    activeTab = "cola"
+  ) {
+
+    window.OrderStep3UI.render({
+
+      container:
+        root,
+
+      weeklyOrder,
+
+      colaResults,
+
+      generalResults,
+
+      freshResults,
+
+      activeTab,
+
+      onBack:
+        handleBack,
+
+      onNext:
+        handleNext,
+
+      onGeneralDeliveryChange:
+        handleGeneralDeliveryChange,
+
+      onFreshDeliveryChange:
+        handleFreshDeliveryChange
+
+    });
+
+  }
+
+
+  /* =====================================================
      LOAD REAL DATA
   ===================================================== */
 
@@ -2316,6 +2830,9 @@
     await loadUserContext();
 
     await loadWeeklyOrder();
+
+
+    await loadDeliveryOverrides();
 
 
     await Promise.all([
@@ -2362,126 +2879,9 @@
     );
 
 
-    window.OrderStep3UI.render({
-
-      container:
-        root,
-
-      weeklyOrder,
-
-      colaResults,
-
-      generalResults,
-
-      freshResults,
-
-      activeTab:
-        "cola",
-
-
-      onBack:
-        async function () {
-
-          if (
-            appContext &&
-            typeof appContext.goToStep ===
-              "function"
-          ) {
-
-            await appContext.goToStep(
-              2
-            );
-
-          }
-
-        },
-
-
-      onNext:
-        async function () {
-
-          const button =
-            root.querySelector(
-              "#step3-next-button"
-            );
-
-
-          if (button) {
-
-            button.disabled =
-              true;
-
-          }
-
-
-          try {
-
-            /*
-              Финально сохраняем расчет.
-            */
-
-            await saveResults();
-
-
-            /*
-              ВАЖНО:
-
-              weekly_orders.status
-              НЕ МЕНЯЕМ.
-
-              status = "result"
-              запрещен текущим
-              weekly_orders_status_check.
-
-              Step 4 берет результат
-              из weekly_order_result_items.
-            */
-
-
-            if (
-              appContext &&
-              typeof appContext.goToStep ===
-                "function"
-            ) {
-
-              await appContext.goToStep(
-                4
-              );
-
-            }
-
-
-          } catch (error) {
-
-            console.error(
-              "Step 3 -> Step 4:",
-              error
-            );
-
-
-            alert(
-              error.message ||
-              "Не удалось открыть итоговый заказ."
-            );
-
-
-            if (button) {
-
-              button.disabled =
-                false;
-
-
-              button.removeAttribute(
-                "disabled"
-              );
-
-            }
-
-          }
-
-        }
-
-    });
+    renderCalculation(
+      "cola"
+    );
 
 
     /*
@@ -2599,6 +2999,14 @@
 
     freshResults =
       [];
+
+
+    generalDeliveryOverrides =
+      new Map();
+
+
+    freshDeliveryOverrides =
+      new Map();
 
   }
 
