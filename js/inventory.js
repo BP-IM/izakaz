@@ -1000,7 +1000,9 @@
      ИНИЦИАЛИЗАЦИЯ СТРАНИЦЫ
   ===================================================== */
 
-  async function initInventoryPage() {
+  async function initInventoryPage(
+    routeParams = []
+  ) {
     const page =
       document.querySelector(
         '[data-page="inventory"]'
@@ -1036,6 +1038,18 @@
       );
 
 
+    const requestedDate =
+      Array.isArray(routeParams)
+        ? routeParams[0]
+        : null;
+
+
+    const shouldAutoPrint =
+      Array.isArray(routeParams) &&
+      routeParams[1] ===
+        "print";
+
+
     if (!dateInput) {
       console.error(
         "Не найден элемент #inventory-date"
@@ -1046,7 +1060,9 @@
 
 
     dateInput.value =
-      getLocalISODate();
+      parseDate(requestedDate)
+        ? requestedDate
+        : getLocalISODate();
 
 
     dateInput.addEventListener(
@@ -1075,6 +1091,28 @@
 
       await updateInventoryDate();
 
+
+      if (shouldAutoPrint) {
+
+        window.setTimeout(
+          function () {
+
+            if (
+              document.querySelector(
+                '[data-page="inventory"]'
+              )
+            ) {
+
+              window.print();
+
+            }
+
+          },
+          150
+        );
+
+      }
+
     } catch (error) {
       console.error(
         "Ошибка запуска страницы инвентаризации:",
@@ -1099,7 +1137,11 @@
         event.detail?.route ===
         "inventory"
       ) {
-        initInventoryPage();
+
+        initInventoryPage(
+          event.detail?.params || []
+        );
+
       }
     }
   );

@@ -163,6 +163,48 @@
       </div>
 
 
+      <div class="deliveries-date-filters">
+
+        <label class="delivery-date-filter-field">
+
+          <span>
+            Дата от
+          </span>
+
+          <input
+            id="delivery-date-from"
+            type="date"
+          >
+
+        </label>
+
+
+        <label class="delivery-date-filter-field">
+
+          <span>
+            Дата до
+          </span>
+
+          <input
+            id="delivery-date-to"
+            type="date"
+          >
+
+        </label>
+
+
+        <button
+          id="delivery-date-reset"
+          class="delivery-date-reset"
+          type="button"
+          disabled
+        >
+          Сбросить
+        </button>
+
+      </div>
+
+
       <div
         id="deliveries-list"
         class="deliveries-list"
@@ -307,6 +349,138 @@
         </div>
 
       </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       DELETE DELIVERY MODAL
+  ====================================================== -->
+
+  <div
+    id="delivery-delete-modal"
+    class="
+      delivery-modal
+      delivery-delete-modal
+    "
+    aria-hidden="true"
+  >
+
+    <div
+      class="delivery-modal-backdrop"
+      data-delivery-delete-close
+    ></div>
+
+
+    <div
+      class="delivery-delete-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delivery-delete-title"
+    >
+
+      <div class="delivery-delete-icon">
+        !
+      </div>
+
+
+      <div class="delivery-delete-heading">
+
+        <span>
+          УДАЛЕНИЕ ПОСТАВКИ
+        </span>
+
+        <h2 id="delivery-delete-title">
+          Удалить поставку?
+        </h2>
+
+        <p>
+          Это действие нельзя отменить. Все товары внутри поставки тоже будут удалены.
+        </p>
+
+      </div>
+
+
+      <div class="delivery-delete-summary">
+
+        <div>
+
+          <span>
+            Дата
+          </span>
+
+          <strong id="delivery-delete-date">
+            —
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Поставка
+          </span>
+
+          <strong id="delivery-delete-group">
+            —
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Источник
+          </span>
+
+          <strong id="delivery-delete-source">
+            —
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="delivery-delete-warning"
+        class="delivery-delete-warning"
+        hidden
+      >
+        Системная поставка создана из недельного заказа. После удаления недельный заказ можно будет подтвердить заново.
+      </div>
+
+
+      <div
+        id="delivery-delete-message"
+        class="delivery-delete-message"
+      ></div>
+
+
+      <div class="delivery-delete-actions">
+
+        <button
+          type="button"
+          class="delivery-secondary-button"
+          data-delivery-delete-close
+        >
+          Отмена
+        </button>
+
+
+        <button
+          id="delivery-delete-confirm"
+          type="button"
+          class="delivery-danger-button"
+        >
+          Удалить поставку
+        </button>
+
+      </div>
 
     </div>
 

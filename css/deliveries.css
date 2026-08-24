@@ -219,6 +219,95 @@
 
 
 /* =====================================================
+   DATE FILTERS
+===================================================== */
+
+.deliveries-date-filters {
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 10px;
+
+  margin: -4px 0 18px;
+
+  padding: 12px;
+
+  border: 1px solid #eceef0;
+  border-radius: 12px;
+
+  background: #fafafa;
+}
+
+
+.delivery-date-filter-field {
+  display: grid;
+
+  gap: 5px;
+}
+
+
+.delivery-date-filter-field span {
+  color: var(--muted);
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+
+.delivery-date-filter-field input {
+  min-width: 145px;
+  min-height: 36px;
+
+  padding: 0 10px;
+
+  border: 1px solid var(--line);
+  border-radius: 9px;
+
+  outline: none;
+
+  color: #252629;
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+.delivery-date-filter-field input:focus {
+  border-color: #d5ad23;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 196, 0, 0.11);
+}
+
+
+.delivery-date-reset {
+  min-height: 36px;
+
+  padding: 0 12px;
+
+  border: 1px solid var(--line);
+  border-radius: 9px;
+
+  color: #60646c;
+  background: #ffffff;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+.delivery-date-reset:disabled {
+  cursor: default;
+
+  opacity: 0.45;
+}
+
+
+/* =====================================================
    DELIVERY LIST
 ===================================================== */
 
@@ -237,7 +326,7 @@
     minmax(180px, 1fr)
     130px
     130px
-    180px;
+    230px;
 
   align-items: center;
 
@@ -376,6 +465,37 @@
   border-color: #d8b544;
 
   background: #fffdf3;
+}
+
+
+.delivery-delete-button {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  border: 1px solid #f0caca;
+  border-radius: 9px;
+
+  color: #b63e3e;
+  background: #fff4f4;
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+
+.delivery-delete-button:hover {
+  border-color: #e99c9c;
+
+  background: #ffe5e5;
+}
+
+
+.delivery-delete-button:disabled {
+  cursor: wait;
+
+  opacity: 0.55;
 }
 
 
@@ -578,6 +698,205 @@
 
   font-size: 11px;
   font-weight: 700;
+}
+
+
+/* =====================================================
+   DELETE MODAL
+===================================================== */
+
+.delivery-delete-dialog {
+  position: relative;
+
+  z-index: 1;
+
+  width: min(100%, 460px);
+
+  padding: 25px;
+
+  border: 1px solid #eceef0;
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 28px 80px
+    rgba(0, 0, 0, 0.24);
+}
+
+
+.delivery-delete-icon {
+  display: grid;
+
+  width: 48px;
+  height: 48px;
+
+  place-items: center;
+
+  margin-bottom: 18px;
+
+  border-radius: 14px;
+
+  color: #b83232;
+  background: #ffe7e7;
+
+  font-size: 22px;
+  font-weight: 900;
+}
+
+
+.delivery-delete-heading > span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #b83232;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+
+.delivery-delete-heading h2 {
+  margin: 0 0 9px;
+
+  font-size: 22px;
+
+  letter-spacing: -0.7px;
+}
+
+
+.delivery-delete-heading p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+
+.delivery-delete-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+
+.delivery-delete-summary > div {
+  min-width: 0;
+
+  padding: 12px;
+
+  border-radius: 11px;
+
+  background: #f6f7f8;
+}
+
+
+.delivery-delete-summary span,
+.delivery-delete-summary strong {
+  display: block;
+}
+
+
+.delivery-delete-summary span {
+  margin-bottom: 6px;
+
+  color: var(--muted);
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+
+.delivery-delete-summary strong {
+  overflow: hidden;
+
+  font-size: 10px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.delivery-delete-warning {
+  margin-top: 12px;
+
+  padding: 11px 12px;
+
+  border: 1px solid #f1d77d;
+  border-radius: 10px;
+
+  color: #765900;
+  background: #fff8dc;
+
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+
+.delivery-delete-message {
+  margin-top: 10px;
+
+  color: #b83232;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+.delivery-delete-message:empty {
+  display: none;
+}
+
+
+.delivery-delete-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  margin-top: 22px;
+}
+
+
+.delivery-danger-button {
+  min-height: 42px;
+
+  padding: 0 15px;
+
+  border: 1px solid #c83c3c;
+  border-radius: 10px;
+
+  color: #ffffff;
+  background: #c83c3c;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+.delivery-danger-button:hover {
+  border-color: #ad2e2e;
+
+  background: #ad2e2e;
+}
+
+
+.delivery-danger-button:disabled {
+  cursor: wait;
+
+  opacity: 0.65;
 }
 
 
@@ -1066,6 +1385,23 @@
   }
 
 
+  .deliveries-date-filters {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+  }
+
+
+  .delivery-date-filter-field input {
+    min-width: 0;
+  }
+
+
+  .delivery-date-reset {
+    grid-column: 1 / -1;
+  }
+
+
   .delivery-card {
     grid-template-columns:
       1fr 1fr;
@@ -1091,6 +1427,26 @@
 
   .delivery-detail-modal {
     padding: 0;
+  }
+
+
+  .delivery-delete-dialog {
+    padding: 21px;
+  }
+
+
+  .delivery-delete-summary {
+    grid-template-columns: 1fr;
+  }
+
+
+  .delivery-delete-actions {
+    flex-direction: column-reverse;
+  }
+
+
+  .delivery-delete-actions button {
+    width: 100%;
   }
 
 

@@ -31,6 +31,18 @@
   let currentFilter =
     "all";
 
+  let currentDateFrom =
+    "";
+
+  let currentDateTo =
+    "";
+
+  let pendingDeleteDelivery =
+    null;
+
+  let deleteInProgress =
+    false;
+
 
   /* =====================================================
      DETAIL STATE
@@ -485,19 +497,29 @@
       deliveries.filter(
         function (delivery) {
 
-          if (
+          const statusMatches =
             currentFilter ===
-            "all"
-          ) {
+              "all" ||
+            delivery.status ===
+              currentFilter;
 
-            return true;
 
-          }
+          const fromMatches =
+            !currentDateFrom ||
+            delivery.delivery_date >=
+              currentDateFrom;
+
+
+          const toMatches =
+            !currentDateTo ||
+            delivery.delivery_date <=
+              currentDateTo;
 
 
           return (
-            delivery.status ===
-            currentFilter
+            statusMatches &&
+            fromMatches &&
+            toMatches
           );
 
         }
@@ -508,7 +530,7 @@
 
       list.innerHTML = `
         <div class="deliveries-empty">
-          Поставок пока нет.
+          По выбранному фильтру поставок нет.
         </div>
       `;
 
@@ -652,6 +674,30 @@
                         Лист поставки
                     </button>
 
+
+                    ${
+                      delivery.status ===
+                        "expected"
+                        ? `
+                          <button
+                            class="delivery-delete-button"
+                            type="button"
+                            data-delivery-delete="${escapeHTML(
+                              delivery.id
+                            )}"
+                            title="Удалить поставку"
+                            aria-label="Удалить поставку ${escapeHTML(
+                              formatDate(
+                                delivery.delivery_date
+                              )
+                            )}"
+                          >
+                            ×
+                          </button>
+                        `
+                        : ""
+                    }
+
                     </div>
 
               </article>
@@ -663,6 +709,442 @@
 
 
     updateSummary();
+
+  }
+
+
+  /* =====================================================
+     DELETE DELIVERY
+  ===================================================== */
+
+  function openDeleteModal(
+    deliveryId
+  ) {
+
+    const delivery =
+      deliveries.find(
+        function (item) {
+
+          return (
+            item.id ===
+            deliveryId
+          );
+
+        }
+      );
+
+
+    if (
+      !delivery ||
+      delivery.status !==
+        "expected"
+    ) {
+      return;
+    }
+
+
+    const modal =
+      root.querySelector(
+        "#delivery-delete-modal"
+      );
+
+
+    if (!modal) {
+      return;
+    }
+
+
+    pendingDeleteDelivery =
+      delivery;
+
+
+    const dateElement =
+      root.querySelector(
+        "#delivery-delete-date"
+      );
+
+
+    const groupElement =
+      root.querySelector(
+        "#delivery-delete-group"
+      );
+
+
+    const sourceElement =
+      root.querySelector(
+        "#delivery-delete-source"
+      );
+
+
+    const warningElement =
+      root.querySelector(
+        "#delivery-delete-warning"
+      );
+
+
+    const messageElement =
+      root.querySelector(
+        "#delivery-delete-message"
+      );
+
+
+    const confirmButton =
+      root.querySelector(
+        "#delivery-delete-confirm"
+      );
+
+
+    if (dateElement) {
+
+      dateElement.textContent =
+        formatDate(
+          delivery.delivery_date
+        );
+
+    }
+
+
+    if (groupElement) {
+
+      groupElement.textContent =
+        getGroupName(
+          delivery.delivery_group
+        );
+
+    }
+
+
+    if (sourceElement) {
+
+      sourceElement.textContent =
+        getSourceName(
+          delivery.source
+        );
+
+    }
+
+
+    if (warningElement) {
+
+      warningElement.hidden =
+        delivery.source !==
+        "system";
+
+    }
+
+
+    if (messageElement) {
+      messageElement.textContent = "";
+    }
+
+
+    if (confirmButton) {
+
+      confirmButton.disabled =
+        false;
+
+      confirmButton.textContent =
+        "Удалить поставку";
+
+    }
+
+
+    modal.classList.add(
+      "is-open"
+    );
+
+
+    modal.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+
+    window.setTimeout(
+      function () {
+
+        confirmButton?.focus();
+
+      },
+      0
+    );
+
+  }
+
+
+  function closeDeleteModal() {
+
+    if (deleteInProgress) {
+      return;
+    }
+
+
+    const modal =
+      root.querySelector(
+        "#delivery-delete-modal"
+      );
+
+
+    if (!modal) {
+      return;
+    }
+
+
+    modal.classList.remove(
+      "is-open"
+    );
+
+
+    modal.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+
+    pendingDeleteDelivery =
+      null;
+
+  }
+
+
+  async function deleteDelivery(
+    deliveryId,
+    button
+  ) {
+
+    const delivery =
+      deliveries.find(
+        function (item) {
+
+          return (
+            item.id ===
+            deliveryId
+          );
+
+        }
+      );
+
+
+    if (!delivery) {
+      return;
+    }
+
+
+    if (
+      delivery.status !==
+      "expected"
+    ) {
+
+      return;
+
+    }
+
+
+    if (button) {
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Удаление...";
+
+    }
+
+
+    deleteInProgress =
+      true;
+
+
+    try {
+
+      const {
+        data: deletedDirectly,
+        error: directDeleteError
+      } =
+        await supabaseClient
+
+          .from(
+            "order_deliveries"
+          )
+
+          .delete()
+
+          .eq(
+            "id",
+            delivery.id
+          )
+
+          .eq(
+            "restaurant_id",
+            restaurantId
+          )
+
+          .eq(
+            "status",
+            "expected"
+          )
+
+          .select(
+            "id"
+          );
+
+
+      if (
+        directDeleteError &&
+        directDeleteError.code !==
+          "23503"
+      ) {
+
+        throw directDeleteError;
+
+      }
+
+
+      if (
+        !directDeleteError &&
+        !deletedDirectly?.length
+      ) {
+
+        throw new Error(
+          "Поставка не удалена. Возможно, ее статус уже изменился."
+        );
+
+      }
+
+
+      if (directDeleteError) {
+
+        const {
+          error: itemsError
+        } =
+          await supabaseClient
+
+            .from(
+              "order_delivery_items"
+            )
+
+            .delete()
+
+            .eq(
+              "delivery_id",
+              delivery.id
+            );
+
+
+        if (itemsError) {
+          throw itemsError;
+        }
+
+
+        const {
+          data: deletedAfterItems,
+          error: deliveryError
+        } =
+          await supabaseClient
+
+            .from(
+              "order_deliveries"
+            )
+
+            .delete()
+
+            .eq(
+              "id",
+              delivery.id
+            )
+
+            .eq(
+              "restaurant_id",
+              restaurantId
+            )
+
+            .eq(
+              "status",
+              "expected"
+            )
+
+            .select(
+              "id"
+            );
+
+
+        if (deliveryError) {
+          throw deliveryError;
+        }
+
+
+        if (!deletedAfterItems?.length) {
+
+          throw new Error(
+            "Поставка не удалена. Возможно, ее статус уже изменился."
+          );
+
+        }
+
+      }
+
+
+      deliveries =
+        deliveries.filter(
+          function (item) {
+
+            return (
+              item.id !==
+              delivery.id
+            );
+
+          }
+        );
+
+
+      renderDeliveries();
+
+
+      deleteInProgress =
+        false;
+
+
+      closeDeleteModal();
+
+
+    } catch (error) {
+
+      console.error(
+        "Delete delivery:",
+        error
+      );
+
+
+      deleteInProgress =
+        false;
+
+
+      const messageElement =
+        root.querySelector(
+          "#delivery-delete-message"
+        );
+
+
+      if (messageElement) {
+
+        messageElement.textContent =
+          error.message ||
+          "Не удалось удалить поставку.";
+
+      }
+
+
+      if (button) {
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Удалить поставку";
+
+      }
+
+    }
 
   }
 
@@ -2677,6 +3159,129 @@
 
         }
 
+
+        /*
+          CLOSE DELETE MODAL
+        */
+
+        if (
+          event.target.closest(
+            "[data-delivery-delete-close]"
+          )
+        ) {
+
+          closeDeleteModal();
+
+          return;
+
+        }
+
+
+        /*
+          CONFIRM DELETE
+        */
+
+        if (
+          event.target.closest(
+            "#delivery-delete-confirm"
+          ) &&
+          pendingDeleteDelivery
+        ) {
+
+          const confirmButton =
+            root.querySelector(
+              "#delivery-delete-confirm"
+            );
+
+
+          await deleteDelivery(
+            pendingDeleteDelivery.id,
+            confirmButton
+          );
+
+          return;
+
+        }
+
+
+        /*
+          RESET DATE FILTER
+        */
+
+        if (
+          event.target.closest(
+            "#delivery-date-reset"
+          )
+        ) {
+
+          currentDateFrom =
+            "";
+
+          currentDateTo =
+            "";
+
+
+          const fromInput =
+            root.querySelector(
+              "#delivery-date-from"
+            );
+
+
+          const toInput =
+            root.querySelector(
+              "#delivery-date-to"
+            );
+
+
+          const resetButton =
+            root.querySelector(
+              "#delivery-date-reset"
+            );
+
+
+          if (fromInput) {
+            fromInput.value = "";
+          }
+
+
+          if (toInput) {
+            toInput.value = "";
+          }
+
+
+          if (resetButton) {
+            resetButton.disabled = true;
+          }
+
+
+          renderDeliveries();
+
+          return;
+
+        }
+
+
+        /*
+          DELETE DELIVERY
+        */
+
+        const deleteButton =
+          event.target.closest(
+            "[data-delivery-delete]"
+          );
+
+
+        if (deleteButton) {
+
+          openDeleteModal(
+            deleteButton.dataset
+              .deliveryDelete
+          );
+
+          return;
+
+        }
+
          
          /*
             DELIVERY SHEET
@@ -2764,6 +3369,47 @@
     root.addEventListener(
       "input",
       function (event) {
+
+        const dateInput =
+          event.target.closest(
+            "#delivery-date-from, #delivery-date-to"
+          );
+
+
+        if (dateInput) {
+
+          currentDateFrom =
+            root.querySelector(
+              "#delivery-date-from"
+            )?.value || "";
+
+
+          currentDateTo =
+            root.querySelector(
+              "#delivery-date-to"
+            )?.value || "";
+
+
+          const resetButton =
+            root.querySelector(
+              "#delivery-date-reset"
+            );
+
+
+          if (resetButton) {
+
+            resetButton.disabled =
+              !currentDateFrom &&
+              !currentDateTo;
+
+          }
+
+
+          renderDeliveries();
+
+          return;
+
+        }
 
         const searchInput =
           event.target.closest(
@@ -2865,6 +3511,22 @@
 
     currentFilter =
       "all";
+
+
+    currentDateFrom =
+      "";
+
+
+    currentDateTo =
+      "";
+
+
+    pendingDeleteDelivery =
+      null;
+
+
+    deleteInProgress =
+      false;
 
 
     deliveries =
