@@ -4345,6 +4345,7 @@ searchClear?.addEventListener(
   ===================================================== */
 
   window.OrderStep1Stock = {
+    getNotesContext: () => ({ order: weeklyOrder, userId, restaurantId, products }),
 
     init,
 

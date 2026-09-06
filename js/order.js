@@ -434,6 +434,8 @@
     currentStep =
       step;
 
+    window.OrderNotes?.setContext(null);
+
 
     updateStepper(
       root,
@@ -575,6 +577,8 @@
             }
         }
       );
+
+      if (version === loadVersion) window.OrderNotes?.setContext(moduleObject.getNotesContext?.());
 
     } catch (error) {
 

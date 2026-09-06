@@ -4789,6 +4789,7 @@
   ===================================================== */
 
   window.OrderStep2Sales = {
+    getNotesContext: () => ({ order: weeklyOrder, userId, restaurantId, products }),
 
     init,
 

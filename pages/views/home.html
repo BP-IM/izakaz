@@ -62,7 +62,7 @@
         </h2>
 
         <p>
-          Инвентаризация, недельный заказ и контроль сроков — в одном месте.
+          Инвентаризация, недельный заказ и заметки — в одном месте.
         </p>
 
       </div>
@@ -161,44 +161,17 @@
     </section>
 
 
-    <section class="home-expiry-section">
-
+    <section class="home-notes-section" aria-labelledby="home-notes-title">
       <div class="home-section-heading">
-
-        <div>
-
-          <span>
-            КОНТРОЛЬ СРОКОВ
-          </span>
-
-          <h2>
-            Заканчивается в ближайшие 3 дня
-          </h2>
-
-        </div>
-
-
-        <div
-          id="home-expiry-count"
-          class="home-expiry-count"
-        >
-          0 поз.
-        </div>
-
+        <div><span>НАПОМИНАНИЯ</span><h2 id="home-notes-title">Заметки к заказу</h2></div>
+        <div id="home-notes-count" class="home-notes-count">0 невыполненных</div>
       </div>
-
-
-      <div
-        id="home-expiry-list"
-        class="home-expiry-list"
-      >
-
-        <div class="home-loading">
-          Загрузка сроков...
-        </div>
-
+      <div class="home-notes-toolbar">
+        <label for="home-notes-order">Заказ</label>
+        <select id="home-notes-order" disabled><option>Загрузка заказов…</option></select>
+        <a href="#order" class="home-notes-link">Перейти к заказам →</a>
       </div>
-
+      <div id="home-notes-host"><div class="home-loading">Загрузка заметок…</div></div>
     </section>
 
   </div>

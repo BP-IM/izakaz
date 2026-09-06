@@ -2895,6 +2895,7 @@
   ===================================================== */
 
   window.OrderStep4Result = {
+    getNotesContext: () => ({ order: weeklyOrder, userId, restaurantId, products: resultRows.map(row => ({ id: row.product_id, name: row.calculation_meta?.product_name || 'Товар' })) }),
 
     init,
 

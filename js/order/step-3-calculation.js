@@ -3145,6 +3145,7 @@
   ===================================================== */
 
   window.OrderStep3Calculation = {
+    getNotesContext: () => ({ order: weeklyOrder, userId, restaurantId, products: [...colaProducts, ...generalProducts, ...freshProducts] }),
 
     init,
 

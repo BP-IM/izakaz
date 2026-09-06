@@ -206,7 +206,7 @@
 ===================================================== */
 
 .home-quick-section,
-.home-expiry-section {
+.home-notes-section {
   margin-top: 20px;
 
   padding: 24px;
@@ -837,7 +837,7 @@
 
 
   .home-quick-section,
-  .home-expiry-section {
+  .home-notes-section {
     padding: 18px;
   }
 
