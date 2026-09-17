@@ -1,0 +1,307 @@
+<section
+  id="home-page"
+  class="home-page"
+>
+
+  <header class="home-topbar">
+
+    <div class="home-topbar-left">
+
+      <button
+        id="sidebar-open"
+        class="menu-button"
+        type="button"
+        aria-label="Открыть меню"
+      >
+        ☰
+      </button>
+
+
+      <div>
+
+        <p class="page-label">
+          РАБОЧИЙ ДЕНЬ
+        </p>
+
+        <h1>
+          Главная
+        </h1>
+
+      </div>
+
+    </div>
+
+
+    <div class="home-current-date">
+
+      <span>
+        Сегодня
+      </span>
+
+      <strong id="home-current-date">
+        —
+      </strong>
+
+    </div>
+
+  </header>
+
+
+  <div class="home-content">
+
+    <section class="home-welcome">
+
+      <div>
+
+        <p class="home-welcome-label">
+          I’M ЗАКАЗ
+        </p>
+
+        <h2 id="home-welcome-title">
+          Добрый день!
+        </h2>
+
+        <p>
+          Инвентаризация, недельный заказ и контроль сроков — в одном месте.
+        </p>
+
+      </div>
+
+
+      <div class="home-welcome-mark">
+        IM
+      </div>
+
+    </section>
+
+
+    <section class="home-quick-section">
+
+      <div class="home-section-heading">
+
+        <div>
+
+          <span>
+            БЫСТРЫЙ ДОСТУП
+          </span>
+
+          <h2>
+            Что нужно сделать?
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="home-quick-grid">
+
+        <button
+          class="home-quick-card is-accent"
+          type="button"
+          data-home-inventory-open
+        >
+
+          <span class="home-quick-icon">
+            ▦
+          </span>
+
+
+          <span class="home-quick-copy">
+
+            <strong>
+              Начать инвентаризацию
+            </strong>
+
+            <small>
+              Выбрать день недели и распечатать готовый бланк
+            </small>
+
+          </span>
+
+
+          <span class="home-quick-arrow">
+            →
+          </span>
+
+        </button>
+
+
+        <a
+          class="home-quick-card"
+          href="#order"
+        >
+
+          <span class="home-quick-icon">
+            +
+          </span>
+
+
+          <span class="home-quick-copy">
+
+            <strong>
+              Еженедельный заказ
+            </strong>
+
+            <small>
+              Остатки, расход и поставки → рекомендация заказа в CASE
+            </small>
+
+          </span>
+
+
+          <span class="home-quick-arrow">
+            →
+          </span>
+
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <section class="home-expiry-section">
+
+      <div class="home-section-heading">
+
+        <div>
+
+          <span>
+            КОНТРОЛЬ СРОКОВ
+          </span>
+
+          <h2>
+            Заканчивается в ближайшие 3 дня
+          </h2>
+
+        </div>
+
+
+        <div
+          id="home-expiry-count"
+          class="home-expiry-count"
+        >
+          0 поз.
+        </div>
+
+      </div>
+
+
+      <div
+        id="home-expiry-list"
+        class="home-expiry-list"
+      >
+
+        <div class="home-loading">
+          Загрузка сроков...
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <div
+    id="home-inventory-modal"
+    class="home-modal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="home-modal-backdrop"
+      data-home-inventory-close
+    ></div>
+
+
+    <div
+      class="home-inventory-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="home-inventory-title"
+    >
+
+      <div class="home-modal-header">
+
+        <div>
+
+          <span>
+            ИНВЕНТАРИЗАЦИЯ
+          </span>
+
+          <h2 id="home-inventory-title">
+            Какой день распечатать?
+          </h2>
+
+          <p>
+            Выберите день текущей недели. Откроется готовый бланк для печати.
+          </p>
+
+        </div>
+
+
+        <button
+          class="home-modal-close"
+          type="button"
+          data-home-inventory-close
+          aria-label="Закрыть"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div
+        id="home-weekday-grid"
+        class="home-weekday-grid"
+      ></div>
+
+
+      <div class="home-selected-day">
+
+        <span>
+          Выбранная дата
+        </span>
+
+        <strong id="home-selected-date">
+          —
+        </strong>
+
+      </div>
+
+
+      <div
+        id="home-inventory-message"
+        class="home-inventory-message"
+      ></div>
+
+
+      <div class="home-modal-actions">
+
+        <button
+          class="home-secondary-button"
+          type="button"
+          data-home-inventory-close
+        >
+          Отмена
+        </button>
+
+
+        <button
+          id="home-inventory-print"
+          class="home-primary-button"
+          type="button"
+        >
+          Печать бланка
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

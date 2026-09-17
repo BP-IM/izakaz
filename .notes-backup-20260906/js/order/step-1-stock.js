@@ -2,10 +2,8 @@
    I’M | ЗАКАЗ
    STEP 1 — ФАКТИЧЕСКИЕ ОСТАТКИ
 
-   - выбор конкретной даты заказа
-   - заказ только ПН / ЧТ
-   - General + Cola delivery schedule
-   - preview будущих поставок
+   - ПН / ЧТ
+   - график поставок ресторана
    - машина приехала / еще не приехала
    - фактический подсчет
    - case / slv / кг-л-шт
@@ -53,17 +51,6 @@
   };
 
 
-  const WEEKDAY_SHORT = {
-    1: "ПН",
-    2: "ВТ",
-    3: "СР",
-    4: "ЧТ",
-    5: "ПТ",
-    6: "СБ",
-    7: "ВС"
-  };
-
-
   const SAVE_DELAY = 500;
 
 
@@ -81,23 +68,7 @@
 
   let weeklyOrder = null;
 
-
-  /*
-    Теперь храним:
-
-    selectedOrderDate:
-      "2026-09-14"
-
-    selectedOrderDay:
-      "monday"
-      или
-      "thursday"
-  */
-
-  let selectedOrderDate = null;
-
   let selectedOrderDay = "monday";
-
 
   let currentCategory = "cola";
 
@@ -105,24 +76,7 @@
 
   let products = [];
 
-
-  /*
-    Map:
-
-    general => [
-      {
-        weekday: 4,
-        source_order_day: "monday",
-        is_active: true
-      }
-    ]
-
-    cola => [...]
-  */
-
-  let deliveryScheduleByGroup =
-    new Map();
-
+  let deliverySchedule = new Map();
 
   let stockMap = new Map();
 
@@ -141,9 +95,7 @@
 
   function escapeHTML(value) {
 
-    return String(
-      value ?? ""
-    )
+    return String(value ?? "")
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
@@ -155,9 +107,7 @@
 
   function normalizeDecimal(value) {
 
-    return String(
-      value ?? ""
-    )
+    return String(value ?? "")
       .trim()
       .replace(",", ".");
 
@@ -167,15 +117,11 @@
   function toNullableNumber(value) {
 
     const raw =
-      normalizeDecimal(
-        value
-      );
+      normalizeDecimal(value);
 
 
     if (raw === "") {
-
       return null;
-
     }
 
 
@@ -187,9 +133,7 @@
       !Number.isFinite(number) ||
       number < 0
     ) {
-
       return null;
-
     }
 
 
@@ -201,9 +145,7 @@
   function formatNumber(value) {
 
     const number =
-      Number(
-        value || 0
-      );
+      Number(value || 0);
 
 
     return new Intl.NumberFormat(
@@ -211,9 +153,7 @@
       {
         maximumFractionDigits: 4
       }
-    ).format(
-      number
-    );
+    ).format(number);
 
   }
 
@@ -224,15 +164,11 @@
       value === null ||
       value === undefined
     ) {
-
       return "";
-
     }
 
 
-    return String(
-      value
-    );
+    return String(value);
 
   }
 
@@ -255,36 +191,24 @@
     const month =
       String(
         date.getMonth() + 1
-      ).padStart(
-        2,
-        "0"
-      );
+      ).padStart(2, "0");
 
 
     const day =
       String(
         date.getDate()
-      ).padStart(
-        2,
-        "0"
-      );
+      ).padStart(2, "0");
 
 
-    return (
-      `${year}-${month}-${day}`
-    );
+    return `${year}-${month}-${day}`;
 
   }
 
 
-  function formatOrderDate(
-    dateString
-  ) {
+  function formatOrderDate(dateString) {
 
     if (!dateString) {
-
       return "—";
-
     }
 
 
@@ -301,9 +225,7 @@
         month: "2-digit",
         year: "numeric"
       }
-    ).format(
-      date
-    );
+    ).format(date);
 
   }
 
@@ -322,18 +244,12 @@
       mod100 >= 11 &&
       mod100 <= 14
     ) {
-
       return "товаров";
-
     }
 
 
-    if (
-      mod10 === 1
-    ) {
-
+    if (mod10 === 1) {
       return "товар";
-
     }
 
 
@@ -341,9 +257,7 @@
       mod10 >= 2 &&
       mod10 <= 4
     ) {
-
       return "товара";
-
     }
 
 
@@ -351,10 +265,6 @@
 
   }
 
-
-  /* =====================================================
-     DEFAULT ORDER DATE
-  ===================================================== */
 
   function getCurrentIsoWeekday() {
 
@@ -377,73 +287,37 @@
       getCurrentIsoWeekday();
 
 
-    /*
-      ПН
-      → сегодня ПН
-    */
-
-    if (
-      weekday === 1
-    ) {
-
+    if (weekday === 1) {
       return "monday";
-
     }
 
 
-    /*
-      ВТ / СР
-      → ближайший ЧТ
-    */
+    if (weekday === 4) {
+      return "thursday";
+    }
+
 
     if (
       weekday === 2 ||
       weekday === 3
     ) {
-
       return "thursday";
-
     }
 
-
-    /*
-      ЧТ
-      → сегодня ЧТ
-    */
-
-    if (
-      weekday === 4
-    ) {
-
-      return "thursday";
-
-    }
-
-
-    /*
-      ПТ / СБ / ВС
-      → ближайший ПН
-    */
 
     return "monday";
 
   }
 
 
-  function getOrderDateForDay(
-    orderDay
-  ) {
+  function getOrderDateForDay(orderDay) {
 
     const config =
-      ORDER_DAYS[
-        orderDay
-      ];
+      ORDER_DAYS[orderDay];
 
 
     if (!config) {
-
       return getTodayString();
-
     }
 
 
@@ -470,19 +344,13 @@
       currentWeekday;
 
 
-    if (
-      difference < 0
-    ) {
-
+    if (difference < 0) {
       difference += 7;
-
     }
 
 
     const result =
-      new Date(
-        today
-      );
+      new Date(today);
 
 
     result.setDate(
@@ -493,247 +361,6 @@
 
     return dateToYMD(
       result
-    );
-
-  }
-
-
-  function getDefaultOrderDate() {
-
-    return getOrderDateForDay(
-      getDefaultOrderDay()
-    );
-
-  }
-
-
-  /* =====================================================
-     DATE HELPERS
-  ===================================================== */
-
-  function parseYMDUtc(value) {
-
-    if (
-      !value ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(
-        value
-      )
-    ) {
-
-      return null;
-
-    }
-
-
-    const [
-      year,
-      month,
-      day
-    ] =
-      value
-        .split("-")
-        .map(Number);
-
-
-    const date =
-      new Date(
-        Date.UTC(
-          year,
-          month - 1,
-          day
-        )
-      );
-
-
-    if (
-      date.getUTCFullYear() !==
-        year ||
-
-      date.getUTCMonth() !==
-        month - 1 ||
-
-      date.getUTCDate() !==
-        day
-    ) {
-
-      return null;
-
-    }
-
-
-    return date;
-
-  }
-
-
-  function formatYMDUtc(date) {
-
-    return [
-
-      date.getUTCFullYear(),
-
-      String(
-        date.getUTCMonth() + 1
-      ).padStart(
-        2,
-        "0"
-      ),
-
-      String(
-        date.getUTCDate()
-      ).padStart(
-        2,
-        "0"
-      )
-
-    ].join("-");
-
-  }
-
-
-  function getIsoWeekdayForDate(
-    dateString
-  ) {
-
-    const date =
-      parseYMDUtc(
-        dateString
-      );
-
-
-    if (!date) {
-
-      return null;
-
-    }
-
-
-    const weekday =
-      date.getUTCDay();
-
-
-    return (
-      weekday === 0
-        ? 7
-        : weekday
-    );
-
-  }
-
-
-  function getOrderDayFromDate(
-    dateString
-  ) {
-
-    const weekday =
-      getIsoWeekdayForDate(
-        dateString
-      );
-
-
-    if (
-      weekday === 1
-    ) {
-
-      return "monday";
-
-    }
-
-
-    if (
-      weekday === 4
-    ) {
-
-      return "thursday";
-
-    }
-
-
-    return null;
-
-  }
-
-
-  /*
-    Аналогично Step 3:
-
-    если target weekday совпадает
-    с исходной датой —
-    берем следующий такой день.
-  */
-
-  function nextWeekdayDate(
-    fromDate,
-    targetWeekday
-  ) {
-
-    const date =
-      parseYMDUtc(
-        fromDate
-      );
-
-
-    if (!date) {
-
-      return null;
-
-    }
-
-
-    const currentWeekday =
-      getIsoWeekdayForDate(
-        fromDate
-      );
-
-
-    const target =
-      Number(
-        targetWeekday
-      );
-
-
-    if (
-      !Number.isFinite(target) ||
-      target < 1 ||
-      target > 7
-    ) {
-
-      return null;
-
-    }
-
-
-    let difference =
-      target -
-      currentWeekday;
-
-
-    if (
-      difference < 0
-    ) {
-
-      difference += 7;
-
-    }
-
-
-    if (
-      difference === 0
-    ) {
-
-      difference = 7;
-
-    }
-
-
-    date.setUTCDate(
-      date.getUTCDate() +
-      difference
-    );
-
-
-    return formatYMDUtc(
-      date
     );
 
   }
@@ -776,9 +403,7 @@
     } =
       await supabaseClient
 
-        .from(
-          "profiles"
-        )
+        .from("profiles")
 
         .select(`
           restaurant_id,
@@ -795,23 +420,19 @@
         .single();
 
 
-    if (
-      profileError
-    ) {
-
+    if (profileError) {
       throw profileError;
-
     }
 
 
     restaurantId =
+
       profile?.restaurant_id ||
+
       profile?.restaurant?.id;
 
 
-    if (
-      !restaurantId
-    ) {
+    if (!restaurantId) {
 
       throw new Error(
         "У пользователя не указан ресторан."
@@ -850,11 +471,16 @@
           restaurantId
         )
 
-        .order(
+        /*
+          STEP 1 использует только
+          основной график поставок.
+
+          Cola рассчитывается отдельно
+          в STEP 3.
+        */
+        .eq(
           "delivery_group",
-          {
-            ascending: true
-          }
+          "general"
         )
 
         .order(
@@ -865,80 +491,25 @@
         );
 
 
-    if (
-      error
-    ) {
-
+    if (error) {
       throw error;
-
     }
 
 
-    deliveryScheduleByGroup =
+    deliverySchedule =
       new Map();
-
-
-    deliveryScheduleByGroup.set(
-      "general",
-      []
-    );
-
-
-    deliveryScheduleByGroup.set(
-      "cola",
-      []
-    );
 
 
     (data || [])
       .forEach(
         function (item) {
 
-          const group =
-            item.delivery_group;
-
-
-          if (
-            group !== "general" &&
-            group !== "cola"
-          ) {
-
-            return;
-
-          }
-
-
-          if (
-            !deliveryScheduleByGroup.has(
-              group
-            )
-          ) {
-
-            deliveryScheduleByGroup.set(
-              group,
-              []
-            );
-
-          }
-
-
-          deliveryScheduleByGroup
-            .get(group)
-            .push({
-
-              ...item,
-
-              weekday:
-                Number(
-                  item.weekday
-                ),
-
-              is_active:
-                Boolean(
-                  item.is_active
-                )
-
-            });
+          deliverySchedule.set(
+            Number(
+              item.weekday
+            ),
+            item
+          );
 
         }
       );
@@ -946,29 +517,28 @@
   }
 
 
-  /* =====================================================
-     SAME DAY DELIVERY
-  ===================================================== */
-
   function getSameDayDelivery() {
 
-    if (
-      !selectedOrderDate
-    ) {
+    const config =
+      ORDER_DAYS[
+        selectedOrderDay
+      ];
 
+
+    if (!config) {
       return null;
-
     }
 
 
-    const weekday =
-      getIsoWeekdayForDate(
-        selectedOrderDate
+    const item =
+      deliverySchedule.get(
+        config.weekday
       );
 
 
     if (
-      !weekday
+      !item ||
+      !item.is_active
     ) {
 
       return null;
@@ -976,41 +546,7 @@
     }
 
 
-    /*
-      Вопрос "машина уже приехала?"
-      относится к основной поставке.
-
-      Например:
-      в ЧТ может приехать машина,
-      сформированная заказом ПН.
-    */
-
-    const generalSchedule =
-      deliveryScheduleByGroup.get(
-        "general"
-      ) || [];
-
-
-    return (
-      generalSchedule.find(
-        function (item) {
-
-          return (
-
-            item.is_active ===
-              true &&
-
-            Number(
-              item.weekday
-            ) ===
-              weekday
-
-          );
-
-        }
-      ) ||
-      null
-    );
+    return item;
 
   }
 
@@ -1053,212 +589,16 @@
 
 
   /* =====================================================
-     DELIVERY PLAN PREVIEW
-  ===================================================== */
-
-  function getPlannedDeliveries(
-    group
-  ) {
-
-    if (
-      !selectedOrderDate ||
-      !selectedOrderDay
-    ) {
-
-      return [];
-
-    }
-
-
-    const schedule =
-      deliveryScheduleByGroup.get(
-        group
-      ) || [];
-
-
-    return schedule
-
-      .filter(
-        function (item) {
-
-          return (
-
-            item.is_active ===
-              true &&
-
-            item.source_order_day ===
-              selectedOrderDay
-
-          );
-
-        }
-      )
-
-      .map(
-        function (item) {
-
-          return {
-
-            ...item,
-
-            date:
-              nextWeekdayDate(
-                selectedOrderDate,
-                item.weekday
-              )
-
-          };
-
-        }
-      )
-
-      .filter(
-        function (item) {
-
-          return Boolean(
-            item.date
-          );
-
-        }
-      )
-
-      .sort(
-        function (a, b) {
-
-          return (
-            a.date.localeCompare(
-              b.date
-            )
-          );
-
-        }
-      );
-
-  }
-
-
-  function renderDeliveryPlanItems(
-    deliveries
-  ) {
-
-    if (
-      !deliveries.length
-    ) {
-
-      return `
-        <span class="stock-delivery-plan-empty">
-          Нет поставок по графику
-        </span>
-      `;
-
-    }
-
-
-    return deliveries
-
-      .map(
-        function (delivery) {
-
-          return `
-            <div class="stock-delivery-date-chip">
-
-              <strong>
-                ${
-                  WEEKDAY_SHORT[
-                    delivery.weekday
-                  ] ||
-                  ""
-                }
-              </strong>
-
-              <span>
-                ${escapeHTML(
-                  formatOrderDate(
-                    delivery.date
-                  )
-                )}
-              </span>
-
-            </div>
-          `;
-
-        }
-      )
-
-      .join("");
-
-  }
-
-
-  function renderDeliveryPlan() {
-
-    const colaElement =
-      root?.querySelector(
-        "#stock-delivery-plan-cola"
-      );
-
-
-    const generalElement =
-      root?.querySelector(
-        "#stock-delivery-plan-general"
-      );
-
-
-    if (
-      !colaElement ||
-      !generalElement
-    ) {
-
-      return;
-
-    }
-
-
-    const colaDeliveries =
-      getPlannedDeliveries(
-        "cola"
-      );
-
-
-    const generalDeliveries =
-      getPlannedDeliveries(
-        "general"
-      );
-
-
-    colaElement.innerHTML =
-      renderDeliveryPlanItems(
-        colaDeliveries
-      );
-
-
-    generalElement.innerHTML =
-      renderDeliveryPlanItems(
-        generalDeliveries
-      );
-
-  }
-
-
-  /* =====================================================
      ORDER SESSION
   ===================================================== */
 
-  async function normalizeWeeklyOrder(
-    order
-  ) {
+  async function normalizeWeeklyOrder(order) {
 
     const patch = {};
-
 
     const sameDayDelivery =
       getSameDayDelivery();
 
-
-    /*
-      order_day должен соответствовать
-      выбранной дате.
-    */
 
     if (
       order.order_day !==
@@ -1270,11 +610,6 @@
 
     }
 
-
-    /*
-      Если в этот день машины нет —
-      статус машины не нужен.
-    */
 
     if (
       !sameDayDelivery &&
@@ -1288,13 +623,6 @@
     }
 
 
-    /*
-      Если машина есть,
-      а раньше было none —
-      просим пользователя выбрать
-      arrived / pending.
-    */
-
     if (
       sameDayDelivery &&
       order.same_day_delivery_status ===
@@ -1306,13 +634,6 @@
 
     }
 
-
-    /*
-      Пока сохраняем существующую
-      логику проекта:
-
-      count_date = order_date.
-    */
 
     if (
       order.count_date !==
@@ -1342,9 +663,7 @@
     } =
       await supabaseClient
 
-        .from(
-          "weekly_orders"
-        )
+        .from("weekly_orders")
 
         .update(
           patch
@@ -1360,12 +679,8 @@
         .single();
 
 
-    if (
-      error
-    ) {
-
+    if (error) {
       throw error;
-
     }
 
 
@@ -1376,20 +691,10 @@
 
   async function ensureWeeklyOrder() {
 
-    if (
-      !selectedOrderDate ||
-      !selectedOrderDay
-    ) {
-
-      throw new Error(
-        "Выберите дату заказа: понедельник или четверг."
-      );
-
-    }
-
-
     const orderDate =
-      selectedOrderDate;
+      getOrderDateForDay(
+        selectedOrderDay
+      );
 
 
     const {
@@ -1398,9 +703,7 @@
     } =
       await supabaseClient
 
-        .from(
-          "weekly_orders"
-        )
+        .from("weekly_orders")
 
         .select(`
           id,
@@ -1428,23 +731,12 @@
         .maybeSingle();
 
 
-    if (
-      error
-    ) {
-
+    if (error) {
       throw error;
-
     }
 
 
-    /*
-      Такой заказ уже существует.
-      Просто открываем его.
-    */
-
-    if (
-      data
-    ) {
+    if (data) {
 
       weeklyOrder =
         await normalizeWeeklyOrder(
@@ -1454,15 +746,10 @@
 
       updateOrderHeader();
 
-
       return;
 
     }
 
-
-    /*
-      Новый weekly_order.
-    */
 
     const sameDayDelivery =
       getSameDayDelivery();
@@ -1502,9 +789,7 @@
     } =
       await supabaseClient
 
-        .from(
-          "weekly_orders"
-        )
+        .from("weekly_orders")
 
         .insert(
           insertPayload
@@ -1514,12 +799,6 @@
 
         .single();
 
-
-    /*
-      Защита от duplicate:
-      если другой запрос успел создать
-      этот order_date раньше.
-    */
 
     if (
       createError &&
@@ -1533,9 +812,7 @@
       } =
         await supabaseClient
 
-          .from(
-            "weekly_orders"
-          )
+          .from("weekly_orders")
 
           .select("*")
 
@@ -1552,12 +829,8 @@
           .single();
 
 
-      if (
-        retryError
-      ) {
-
+      if (retryError) {
         throw retryError;
-
       }
 
 
@@ -1568,9 +841,7 @@
 
     }
 
-    else if (
-      createError
-    ) {
+    else if (createError) {
 
       throw createError;
 
@@ -1599,38 +870,45 @@
       !root ||
       !weeklyOrder
     ) {
-
       return;
-
     }
 
 
-    /*
-      DATE INPUT
-    */
+    root
+      .querySelectorAll(
+        "[data-stock-order-day]"
+      )
 
-    const dateInput =
-      root.querySelector(
-        "#stock-order-date-input"
+      .forEach(
+        function (button) {
+
+          button.classList.toggle(
+            "is-active",
+
+            button.dataset
+              .stockOrderDay ===
+              selectedOrderDay
+          );
+
+        }
       );
 
 
-    if (
-      dateInput
-    ) {
+    const dateElement =
+      root.querySelector(
+        "#stock-order-date"
+      );
 
-      dateInput.value =
-        selectedOrderDate ||
-        weeklyOrder.order_date ||
-        "";
+
+    if (dateElement) {
+
+      dateElement.textContent =
+        formatOrderDate(
+          weeklyOrder.order_date
+        );
 
     }
 
-
-    /*
-      ПН · Понедельник
-      ЧТ · Четверг
-    */
 
     const dayElement =
       root.querySelector(
@@ -1638,62 +916,16 @@
       );
 
 
-    if (
-      dayElement
-    ) {
-
-      const config =
-        ORDER_DAYS[
-          selectedOrderDay
-        ];
-
+    if (dayElement) {
 
       dayElement.textContent =
-        config
-
-          ? (
-              `${config.short} · ${config.label}`
-            )
-
-          : "—";
+        ORDER_DAYS[
+          selectedOrderDay
+        ]?.label ||
+        "—";
 
     }
 
-
-    /*
-      MESSAGE
-    */
-
-    const message =
-      root.querySelector(
-        "#stock-order-date-message"
-      );
-
-
-    if (
-      message
-    ) {
-
-      message.className =
-        "stock-order-date-message";
-
-
-      message.textContent =
-        "Поставки рассчитаны по графику ресторана";
-
-    }
-
-
-    /*
-      DELIVERY PREVIEW
-    */
-
-    renderDeliveryPlan();
-
-
-    /*
-      SAME DAY DELIVERY
-    */
 
     updateSameDayDeliveryUI();
 
@@ -1702,12 +934,8 @@
 
   function updateSameDayDeliveryUI() {
 
-    if (
-      !root
-    ) {
-
+    if (!root) {
       return;
-
     }
 
 
@@ -1731,15 +959,11 @@
       !panel ||
       !noDelivery
     ) {
-
       return;
-
     }
 
 
-    if (
-      delivery
-    ) {
+    if (delivery) {
 
       panel.hidden =
         false;
@@ -1755,16 +979,13 @@
         );
 
 
-      if (
-        title
-      ) {
+      if (title) {
 
         title.textContent =
           `${
             ORDER_DAYS[
               selectedOrderDay
-            ]?.label ||
-            "Этот день"
+            ].label
           }: по графику есть поставка`;
 
       }
@@ -1818,9 +1039,7 @@
     } =
       await supabaseClient
 
-        .from(
-          "order_products"
-        )
+        .from("order_products")
 
         .select(`
           id,
@@ -1861,12 +1080,8 @@
         );
 
 
-    if (
-      error
-    ) {
-
+    if (error) {
       throw error;
-
     }
 
 
@@ -1882,13 +1097,10 @@
 
   async function loadStock() {
 
-    if (
-      !weeklyOrder
-    ) {
+    if (!weeklyOrder) {
 
       stockMap =
         new Map();
-
 
       return;
 
@@ -1922,12 +1134,8 @@
         );
 
 
-    if (
-      error
-    ) {
-
+    if (error) {
       throw error;
-
     }
 
 
@@ -2086,7 +1294,6 @@
 
   }
 
-
   async function flushFreshLots() {
 
     const moduleObject =
@@ -2133,16 +1340,11 @@
      COUNT LOGIC
   ===================================================== */
 
-  function getStockRecord(
-    productId
-  ) {
+  function getStockRecord(productId) {
 
     return (
-      stockMap.get(
-        productId
-      ) ||
+      stockMap.get(productId) ||
       {
-
         product_id:
           productId,
 
@@ -2157,27 +1359,21 @@
 
         base_qty:
           0
-
       }
     );
 
   }
 
 
-  function isCountedRecord(
-    record
-  ) {
+  function isCountedRecord(record) {
 
     return (
 
-      record.case_qty !==
-        null ||
+      record.case_qty !== null ||
 
-      record.slv_qty !==
-        null ||
+      record.slv_qty !== null ||
 
-      record.pcs_qty !==
-        null
+      record.pcs_qty !== null
 
     );
 
@@ -2191,56 +1387,47 @@
 
     const caseQty =
       Number(
-        record.case_qty ||
-        0
+        record.case_qty || 0
       );
 
 
     const slvQty =
       Number(
-        record.slv_qty ||
-        0
+        record.slv_qty || 0
       );
 
 
     const pcsQty =
       Number(
-        record.pcs_qty ||
-        0
+        record.pcs_qty || 0
       );
 
 
     const caseSize =
       Number(
-        product.case_to_base ||
-        0
+        product.case_to_base || 0
       );
 
 
     const slvSize =
       Number(
-        product.slv_to_base ||
-        0
+        product.slv_to_base || 0
       );
 
 
     const pcsSize =
       Number(
-        product.pcs_to_base ||
-        0
+        product.pcs_to_base || 0
       );
 
 
     return (
 
-      caseQty *
-        caseSize +
+      caseQty * caseSize +
 
-      slvQty *
-        slvSize +
+      slvQty * slvSize +
 
-      pcsQty *
-        pcsSize
+      pcsQty * pcsSize
 
     );
 
@@ -2251,18 +1438,14 @@
      PACKAGING TEXT
   ===================================================== */
 
-  function getPackagingText(
-    product
-  ) {
+  function getPackagingText(product) {
 
     const parts = [];
 
 
     if (
-      product.case_to_base !==
-        null &&
-      product.case_to_base !==
-        undefined
+      product.case_to_base !== null &&
+      product.case_to_base !== undefined
     ) {
 
       parts.push(
@@ -2275,10 +1458,8 @@
 
 
     if (
-      product.slv_to_base !==
-        null &&
-      product.slv_to_base !==
-        undefined
+      product.slv_to_base !== null &&
+      product.slv_to_base !== undefined
     ) {
 
       parts.push(
@@ -2295,9 +1476,7 @@
     );
 
 
-    return parts.join(
-      " · "
-    );
+    return parts.join(" · ");
 
   }
 
@@ -2366,9 +1545,7 @@
   }
 
 
-  function renderBaseInput(
-    product
-  ) {
+  function renderBaseInput(product) {
 
     const record =
       getStockRecord(
@@ -2426,86 +1603,60 @@
       );
 
 
-    if (
-      !tbody
-    ) {
-
+    if (!tbody) {
       return;
-
     }
 
 
     const search =
-      productSearch
-        .trim()
-        .toLowerCase();
+  productSearch
+    .trim()
+    .toLowerCase();
 
 
-    const categoryProducts =
-      products.filter(
-        function (product) {
+const categoryProducts =
+  products.filter(
+    function (product) {
 
-          if (
-            product.category !==
-            currentCategory
-          ) {
-
-            return false;
-
-          }
+      if (
+        product.category !==
+        currentCategory
+      ) {
+        return false;
+      }
 
 
-          if (
-            !search
-          ) {
-
-            return true;
-
-          }
+      if (!search) {
+        return true;
+      }
 
 
-          const name =
-            String(
-              product.name ||
-              ""
-            )
-              .toLowerCase();
+      const name =
+        String(
+          product.name || ""
+        ).toLowerCase();
 
 
-          const iikoCode =
-            String(
-              product.iiko_code ||
-              ""
-            )
-              .toLowerCase();
+      const iikoCode =
+        String(
+          product.iiko_code || ""
+        ).toLowerCase();
 
 
-          const iikoName =
-            String(
-              product.iiko_name ||
-              ""
-            )
-              .toLowerCase();
+      const iikoName =
+        String(
+          product.iiko_name || ""
+        ).toLowerCase();
 
 
-          return (
-
-            name.includes(
-              search
-            ) ||
-
-            iikoCode.includes(
-              search
-            ) ||
-
-            iikoName.includes(
-              search
-            )
-
-          );
-
-        }
+      return (
+        name.includes(search) ||
+        iikoCode.includes(search) ||
+        iikoName.includes(search)
       );
+
+    }
+  );
 
 
     const categoryTitle =
@@ -2514,9 +1665,7 @@
       );
 
 
-    if (
-      categoryTitle
-    ) {
+    if (categoryTitle) {
 
       categoryTitle.textContent =
         CATEGORY_NAMES[
@@ -2533,56 +1682,51 @@
       );
 
 
-    if (
-      productCount
-    ) {
+    if (productCount) {
 
       productCount.textContent =
-        `${categoryProducts.length} ${
-          getProductsWord(
-            categoryProducts.length
-          )
-        }`;
+        `${categoryProducts.length} ${getProductsWord(
+          categoryProducts.length
+        )}`;
 
     }
 
 
-    if (
-      !categoryProducts.length
-    ) {
+    if (!categoryProducts.length) {
 
-      tbody.innerHTML = `
-        <tr class="stock-empty-row">
+  tbody.innerHTML = `
+    <tr class="stock-empty-row">
 
-          <td colspan="6">
+      <td colspan="6">
 
-            <div class="stock-empty">
+        <div class="stock-empty">
 
-              <strong>
-                ${
-                  productSearch
-                    ? "Товар не найден"
-                    : "В этой категории пока нет товаров"
-                }
-              </strong>
+          <strong>
+            ${
+              productSearch
+                ? "Товар не найден"
+                : "В этой категории пока нет товаров"
+            }
+          </strong>
 
-              <p>
-                ${
-                  productSearch
-                    ? "Попробуйте изменить поисковый запрос."
-                    : "Используйте кнопку «Добавить товар»."
-                }
-              </p>
+          <p>
+            ${
+              productSearch
+                ? "Попробуйте изменить поисковый запрос."
+                : "Используйте кнопку «Добавить товар»."
+            }
+          </p>
 
-            </div>
+        </div>
 
-          </td>
+      </td>
 
-        </tr>
-      `;
+    </tr>
+  `;
 
 
       updateProgress();
+
 
       renderFreshLots();
 
@@ -2626,8 +1770,7 @@
 
             const safety =
               Number(
-                product.safety_stock ||
-                0
+                product.safety_stock || 0
               );
 
 
@@ -2814,6 +1957,7 @@
 
     updateProgress();
 
+
     renderFreshLots();
 
   }
@@ -2849,9 +1993,7 @@
       );
 
 
-    if (
-      progress
-    ) {
+    if (progress) {
 
       progress.textContent =
         `${counted} / ${total}`;
@@ -2868,8 +2010,7 @@
         function (button) {
 
           const category =
-            button.dataset
-              .category;
+            button.dataset.category;
 
 
           const categoryProducts =
@@ -2902,8 +2043,7 @@
           button.classList.toggle(
             "is-complete",
 
-            categoryProducts.length >
-              0 &&
+            categoryProducts.length > 0 &&
 
             categoryCounted ===
               categoryProducts.length
@@ -2919,9 +2059,15 @@
       );
 
 
-    if (
-      nextButton
-    ) {
+    if (nextButton) {
+
+      /*
+        Теперь неполный подсчет
+        не блокирует кнопку "Далее".
+
+        Проверка непросчитанных товаров
+        выполняется после нажатия.
+      */
 
       nextButton.disabled = !(
         total > 0 &&
@@ -2956,12 +2102,8 @@
       );
 
 
-    if (
-      !product
-    ) {
-
+    if (!product) {
       return;
-
     }
 
 
@@ -2997,8 +2139,7 @@
       (
         editVersions.get(
           productId
-        ) ||
-        0
+        ) || 0
       ) + 1;
 
 
@@ -3033,9 +2174,7 @@
   }
 
 
-  function updateVisibleRow(
-    productId
-  ) {
+  function updateVisibleRow(productId) {
 
     const product =
       products.find(
@@ -3050,12 +2189,8 @@
       );
 
 
-    if (
-      !product
-    ) {
-
+    if (!product) {
       return;
-
     }
 
 
@@ -3071,9 +2206,7 @@
       );
 
 
-    if (
-      row
-    ) {
+    if (row) {
 
       row.classList.toggle(
         "is-counted",
@@ -3091,9 +2224,7 @@
       );
 
 
-    if (
-      total
-    ) {
+    if (total) {
 
       total.textContent =
         formatNumber(
@@ -3112,9 +2243,7 @@
      ZERO STOCK
   ===================================================== */
 
-  function setZeroStock(
-    productId
-  ) {
+  function setZeroStock(productId) {
 
     const product =
       products.find(
@@ -3129,12 +2258,8 @@
       );
 
 
-    if (
-      !product
-    ) {
-
+    if (!product) {
       return;
-
     }
 
 
@@ -3147,10 +2272,8 @@
 
     record.case_qty =
 
-      product.case_to_base !==
-        null &&
-      product.case_to_base !==
-        undefined
+      product.case_to_base !== null &&
+      product.case_to_base !== undefined
 
         ? 0
 
@@ -3159,10 +2282,8 @@
 
     record.slv_qty =
 
-      product.slv_to_base !==
-        null &&
-      product.slv_to_base !==
-        undefined
+      product.slv_to_base !== null &&
+      product.slv_to_base !== undefined
 
         ? 0
 
@@ -3187,8 +2308,7 @@
       (
         editVersions.get(
           productId
-        ) ||
-        0
+        ) || 0
       ) + 1;
 
 
@@ -3269,9 +2389,7 @@
       !status ||
       !statusText
     ) {
-
       return;
-
     }
 
 
@@ -3279,9 +2397,7 @@
       "stock-save-status";
 
 
-    if (
-      type
-    ) {
+    if (type) {
 
       status.classList.add(
         `is-${type}`
@@ -3300,9 +2416,7 @@
      AUTOSAVE
   ===================================================== */
 
-  function scheduleSave(
-    productId
-  ) {
+  function scheduleSave(productId) {
 
     const oldTimer =
       saveTimers.get(
@@ -3310,9 +2424,7 @@
       );
 
 
-    if (
-      oldTimer
-    ) {
+    if (oldTimer) {
 
       clearTimeout(
         oldTimer
@@ -3361,9 +2473,7 @@
   }
 
 
-  function saveImmediately(
-    productId
-  ) {
+  function saveImmediately(productId) {
 
     const timer =
       saveTimers.get(
@@ -3371,9 +2481,7 @@
       );
 
 
-    if (
-      timer
-    ) {
+    if (timer) {
 
       clearTimeout(
         timer
@@ -3394,16 +2502,10 @@
   }
 
 
-  async function saveProductCount(
-    productId
-  ) {
+  async function saveProductCount(productId) {
 
-    if (
-      !weeklyOrder
-    ) {
-
+    if (!weeklyOrder) {
       return;
-
     }
 
 
@@ -3420,12 +2522,8 @@
       );
 
 
-    if (
-      !product
-    ) {
-
+    if (!product) {
       return;
-
     }
 
 
@@ -3438,8 +2536,7 @@
     const version =
       editVersions.get(
         productId
-      ) ||
-      0;
+      ) || 0;
 
 
     const baseQty =
@@ -3506,20 +2603,15 @@
           .single();
 
 
-      if (
-        error
-      ) {
-
+      if (error) {
         throw error;
-
       }
 
 
       const currentVersion =
         editVersions.get(
           productId
-        ) ||
-        0;
+        ) || 0;
 
 
       if (
@@ -3604,12 +2696,8 @@
       );
 
 
-    if (
-      !productIds.length
-    ) {
-
+    if (!productIds.length) {
       return;
-
     }
 
 
@@ -3632,18 +2720,14 @@
      CATEGORY
   ===================================================== */
 
-  function setCategory(
-    category
-  ) {
+  function setCategory(category) {
 
     if (
       !CATEGORY_NAMES[
         category
       ]
     ) {
-
       return;
-
     }
 
 
@@ -3662,8 +2746,7 @@
           button.classList.toggle(
             "is-active",
 
-            button.dataset
-              .category ===
+            button.dataset.category ===
               category
           );
 
@@ -3677,105 +2760,29 @@
 
 
   /* =====================================================
-     ORDER DATE SWITCH
+     ORDER DAY SWITCH
   ===================================================== */
 
-  async function switchOrderDate(
-    orderDate
-  ) {
-
-    const orderDay =
-      getOrderDayFromDate(
-        orderDate
-      );
-
-
-    const dateInput =
-      root.querySelector(
-        "#stock-order-date-input"
-      );
-
-
-    const message =
-      root.querySelector(
-        "#stock-order-date-message"
-      );
-
-
-    /*
-      Разрешены только:
-      ПН / ЧТ.
-    */
+  async function switchOrderDay(orderDay) {
 
     if (
-      !orderDay
+      !ORDER_DAYS[
+        orderDay
+      ]
     ) {
-
-      if (
-        message
-      ) {
-
-        message.className =
-          "stock-order-date-message is-error";
-
-
-        message.textContent =
-          "Выберите понедельник или четверг";
-
-      }
-
-
-      /*
-        Возвращаем предыдущую
-        корректную дату.
-      */
-
-      if (
-        dateInput
-      ) {
-
-        dateInput.value =
-          selectedOrderDate ||
-          "";
-
-      }
-
-
       return;
-
     }
 
 
-    /*
-      Уже открыта эта дата.
-    */
-
     if (
-      orderDate ===
-        selectedOrderDate &&
       orderDay ===
-        selectedOrderDay
+      selectedOrderDay
     ) {
-
-      updateOrderHeader();
-
-
       return;
-
     }
 
 
     try {
-
-      if (
-        dateInput
-      ) {
-
-        dateInput.disabled =
-          true;
-
-      }
-
 
       setSaveStatus(
         "saving",
@@ -3783,32 +2790,14 @@
       );
 
 
-      /*
-        Сначала сохраняем
-        предыдущий заказ.
-      */
-
       await flushAllSaves();
 
       await flushFreshLots();
 
 
-      /*
-        Новая дата / день.
-      */
-
-      selectedOrderDate =
-        orderDate;
-
-
       selectedOrderDay =
         orderDay;
 
-
-      /*
-        Обнуляем state,
-        относящийся к старой сессии.
-      */
 
       weeklyOrder =
         null;
@@ -3830,32 +2819,20 @@
         new Map();
 
 
-      /*
-        Находим или создаем
-        weekly_order новой даты.
-      */
-
       await ensureWeeklyOrder();
 
-
-      /*
-        Остатки новой сессии.
-      */
 
       await loadStock();
 
 
       /*
-        Fresh Lots тоже должны
-        перейти на новый weekly_order_id.
+        ПН / ЧТ ауысқанда Fresh lots
+        жаңа weekly_order_id бойынша
+        қайта жүктелуі керек.
       */
 
       await refreshFreshLots();
 
-
-      /*
-        UI.
-      */
 
       updateOrderHeader();
 
@@ -3871,7 +2848,7 @@
     } catch (error) {
 
       console.error(
-        "Order date switch:",
+        "Order day switch:",
         error
       );
 
@@ -3879,34 +2856,8 @@
       setSaveStatus(
         "error",
         error.message ||
-        "Не удалось изменить дату заказа"
+        "Не удалось переключить день заказа"
       );
-
-
-      if (
-        message
-      ) {
-
-        message.className =
-          "stock-order-date-message is-error";
-
-
-        message.textContent =
-          error.message ||
-          "Не удалось открыть заказ";
-
-      }
-
-    } finally {
-
-      if (
-        dateInput
-      ) {
-
-        dateInput.disabled =
-          false;
-
-      }
 
     }
 
@@ -3917,17 +2868,13 @@
      DELIVERY STATUS
   ===================================================== */
 
-  async function setDeliveryStatus(
-    status
-  ) {
+  async function setDeliveryStatus(status) {
 
     if (
       !weeklyOrder ||
       !requiresDeliveryStatus()
     ) {
-
       return;
-
     }
 
 
@@ -3935,9 +2882,7 @@
       status !== "arrived" &&
       status !== "pending"
     ) {
-
       return;
-
     }
 
 
@@ -3976,19 +2921,16 @@
           .single();
 
 
-      if (
-        error
-      ) {
-
+      if (error) {
         throw error;
-
       }
 
 
-      weeklyOrder = {
-        ...weeklyOrder,
-        ...data
-      };
+      weeklyOrder =
+        {
+          ...weeklyOrder,
+          ...data
+        };
 
 
       updateSameDayDeliveryUI();
@@ -4064,27 +3006,20 @@
       );
 
 
-    if (
-      !element
-    ) {
-
+    if (!element) {
       return;
-
     }
 
 
     element.textContent =
-      text ||
-      "";
+      text || "";
 
 
     element.className =
       "stock-form-message";
 
 
-    if (
-      type
-    ) {
+    if (type) {
 
       element.classList.add(
         `is-${type}`
@@ -4095,9 +3030,7 @@
   }
 
 
-  function openProductModal(
-    product = null
-  ) {
+  function openProductModal(product = null) {
 
     const modal =
       root.querySelector(
@@ -4115,25 +3048,20 @@
       !modal ||
       !form
     ) {
-
       return;
-
     }
 
 
     form.reset();
 
 
-    setFormMessage(
-      ""
-    );
+    setFormMessage("");
 
 
     root.querySelector(
       "#stock-product-id"
     ).value =
-      product?.id ||
-      "";
+      product?.id || "";
 
 
     root.querySelector(
@@ -4146,22 +3074,19 @@
     root.querySelector(
       "#stock-product-name"
     ).value =
-      product?.name ||
-      "";
+      product?.name || "";
 
 
     root.querySelector(
       "#stock-product-iiko-code"
     ).value =
-      product?.iiko_code ||
-      "";
+      product?.iiko_code || "";
 
 
     root.querySelector(
       "#stock-product-iiko-name"
     ).value =
-      product?.iiko_name ||
-      "";
+      product?.iiko_name || "";
 
 
     root.querySelector(
@@ -4246,12 +3171,8 @@
       );
 
 
-    if (
-      !modal
-    ) {
-
+    if (!modal) {
       return;
-
     }
 
 
@@ -4279,9 +3200,7 @@
      SAVE PRODUCT CONFIG
   ===================================================== */
 
-  async function saveProduct(
-    event
-  ) {
+  async function saveProduct(event) {
 
     event.preventDefault();
 
@@ -4289,9 +3208,7 @@
     const id =
       root.querySelector(
         "#stock-product-id"
-      )
-        .value
-        .trim();
+      ).value.trim();
 
 
     const category =
@@ -4308,9 +3225,7 @@
 
       /*
         Cola = отдельный delivery group.
-
-        Остальные категории =
-        general.
+        Остальные категории = general.
       */
 
       delivery_group:
@@ -4322,25 +3237,19 @@
       name:
         root.querySelector(
           "#stock-product-name"
-        )
-          .value
-          .trim(),
+        ).value.trim(),
 
 
       iiko_code:
         root.querySelector(
           "#stock-product-iiko-code"
-        )
-          .value
-          .trim(),
+        ).value.trim(),
 
 
       iiko_name:
         root.querySelector(
           "#stock-product-iiko-name"
-        )
-          .value
-          .trim() ||
+        ).value.trim() ||
         null,
 
 
@@ -4371,8 +3280,7 @@
           root.querySelector(
             "#stock-product-pcs"
           ).value
-        ) ??
-        1,
+        ) ?? 1,
 
 
       safety_stock:
@@ -4380,8 +3288,7 @@
           root.querySelector(
             "#stock-product-safety-stock"
           ).value
-        ) ??
-        0
+        ) ?? 0
 
     };
 
@@ -4408,9 +3315,7 @@
       );
 
 
-    if (
-      button
-    ) {
+    if (button) {
 
       button.disabled =
         true;
@@ -4426,9 +3331,7 @@
 
     try {
 
-      if (
-        id
-      ) {
+      if (id) {
 
         const {
           error
@@ -4454,12 +3357,8 @@
             );
 
 
-        if (
-          error
-        ) {
-
+        if (error) {
           throw error;
-
         }
 
       }
@@ -4504,12 +3403,8 @@
             });
 
 
-        if (
-          error
-        ) {
-
+        if (error) {
           throw error;
-
         }
 
       }
@@ -4523,9 +3418,9 @@
 
 
       /*
-        Если товар стал Fresh
-        или добавлен новый Fresh —
-        обновляем Fresh module.
+        Егер товар Fresh-қа ауыстырылса
+        немесе жаңа Fresh қосылса,
+        Fresh module state жаңартамыз.
       */
 
       await refreshFreshLots();
@@ -4548,8 +3443,7 @@
 
       setFormMessage(
 
-        error.code ===
-          "23505"
+        error.code === "23505"
 
           ? "Такой код IIKO уже существует."
 
@@ -4564,9 +3458,7 @@
 
     } finally {
 
-      if (
-        button
-      ) {
+      if (button) {
 
         button.disabled =
           false;
@@ -4577,10 +3469,9 @@
 
   }
 
-
   /* =====================================================
-     UNCOUNTED PRODUCTS WARNING
-  ===================================================== */
+   UNCOUNTED PRODUCTS WARNING
+===================================================== */
 
   function getUncountedProducts() {
 
@@ -4599,118 +3490,108 @@
   }
 
 
-  function openUncountedModal(
-    uncountedProducts
+function openUncountedModal(
+  uncountedProducts
+) {
+
+  const modal =
+    root.querySelector(
+      "#stock-uncounted-modal"
+    );
+
+
+  const list =
+    root.querySelector(
+      "#stock-uncounted-list"
+    );
+
+
+  if (
+    !modal ||
+    !list
   ) {
-
-    const modal =
-      root.querySelector(
-        "#stock-uncounted-modal"
-      );
+    return;
+  }
 
 
-    const list =
-      root.querySelector(
-        "#stock-uncounted-list"
-      );
+  list.innerHTML =
+    uncountedProducts
+      .map(
+        function (product) {
 
+          return `
+            <div class="stock-warning-item">
 
-    if (
-      !modal ||
-      !list
-    ) {
+              <strong>
+                ${escapeHTML(
+                  product.name
+                )}
+              </strong>
 
-      return;
-
-    }
-
-
-    list.innerHTML =
-      uncountedProducts
-        .map(
-          function (product) {
-
-            return `
-              <div class="stock-warning-item">
-
-                <strong>
-                  ${escapeHTML(
-                    product.name
-                  )}
-                </strong>
-
-                <span>
-                  ${escapeHTML(
-                    CATEGORY_NAMES[
-                      product.category
-                    ] ||
+              <span>
+                ${escapeHTML(
+                  CATEGORY_NAMES[
                     product.category
-                  )}
-                </span>
+                  ] ||
+                  product.category
+                )}
+              </span>
 
-              </div>
-            `;
+            </div>
+          `;
 
-          }
-        )
-        .join("");
+        }
+      )
+      .join("");
 
 
-    modal.classList.add(
-      "is-open"
+  modal.classList.add(
+    "is-open"
+  );
+
+
+  modal.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+
+  document.body.classList.add(
+    "stock-modal-open"
+  );
+
+}
+
+
+function closeUncountedModal() {
+
+  const modal =
+    root.querySelector(
+      "#stock-uncounted-modal"
     );
 
 
-    modal.setAttribute(
-      "aria-hidden",
-      "false"
-    );
-
-
-    document.body
-      .classList
-      .add(
-        "stock-modal-open"
-      );
-
+  if (!modal) {
+    return;
   }
 
 
-  function closeUncountedModal() {
-
-    const modal =
-      root.querySelector(
-        "#stock-uncounted-modal"
-      );
+  modal.classList.remove(
+    "is-open"
+  );
 
 
-    if (
-      !modal
-    ) {
-
-      return;
-
-    }
+  modal.setAttribute(
+    "aria-hidden",
+    "true"
+  );
 
 
-    modal.classList.remove(
-      "is-open"
-    );
+  document.body.classList.remove(
+    "stock-modal-open"
+  );
 
-
-    modal.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
-
-    document.body
-      .classList
-      .remove(
-        "stock-modal-open"
-      );
-
-  }
+}
 
 
   /* =====================================================
@@ -4718,16 +3599,60 @@
   ===================================================== */
 
   async function goNext(
-    forceContinue = false
+  forceContinue = false
+) {
+
+  if (
+    !deliveryStatusIsReady()
   ) {
 
+    setSaveStatus(
+      "error",
+      "Укажите, приехала ли поставка"
+    );
+
+
+    return;
+
+  }
+
+
+  /*
+    Fresh сроктары бөлек validation.
+    Оны өткізіп жіберуге болмайды.
+  */
+
+  if (
+    !freshLotsIsReady()
+  ) {
+
+    setSaveStatus(
+      "error",
+      "Распределите остатки Fresh по срокам"
+    );
+
+
+    return;
+
+  }
+
+
+  /*
+    Проверяем непросчитанные товары.
+  */
+
+  if (!forceContinue) {
+
+    const uncountedProducts =
+      getUncountedProducts();
+
+
     if (
-      !deliveryStatusIsReady()
+      uncountedProducts.length
     ) {
 
-      setSaveStatus(
-        "error",
-        "Укажите, приехала ли поставка"
+      openUncountedModal(
+        uncountedProducts
       );
 
 
@@ -4735,158 +3660,104 @@
 
     }
 
-
-    /*
-      Fresh сроки:
-      пропустить нельзя.
-    */
-
-    if (
-      !freshLotsIsReady()
-    ) {
-
-      setSaveStatus(
-        "error",
-        "Распределите остатки Fresh по срокам"
-      );
+  }
 
 
-      return;
+  const button =
+    root.querySelector(
+      "#stock-next-button"
+    );
 
+
+  if (button) {
+
+    button.disabled =
+      true;
+
+  }
+
+
+  try {
+
+    closeUncountedModal();
+
+
+    await flushAllSaves();
+
+    await flushFreshLots();
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+
+        .from(
+          "weekly_orders"
+        )
+
+        .update({
+          status:
+            "sales"
+        })
+
+        .eq(
+          "id",
+          weeklyOrder.id
+        )
+
+        .select()
+
+        .single();
+
+
+    if (error) {
+      throw error;
     }
 
 
-    /*
-      Непросчитанные товары.
-    */
+    weeklyOrder = {
+      ...weeklyOrder,
+      ...data
+    };
+
 
     if (
-      !forceContinue
+      appContext &&
+      typeof appContext.goToStep ===
+        "function"
     ) {
 
-      const uncountedProducts =
-        getUncountedProducts();
-
-
-      if (
-        uncountedProducts.length
-      ) {
-
-        openUncountedModal(
-          uncountedProducts
-        );
-
-
-        return;
-
-      }
+      await appContext.goToStep(
+        2
+      );
 
     }
 
+  } catch (error) {
 
-    const button =
-      root.querySelector(
-        "#stock-next-button"
-      );
+    console.error(
+      "Next step:",
+      error
+    );
 
 
-    if (
-      button
-    ) {
+    setSaveStatus(
+      "error",
+      error.message ||
+      "Не удалось перейти дальше"
+    );
+
+
+    if (button) {
 
       button.disabled =
-        true;
+        false;
 
     }
 
-
-    try {
-
-      closeUncountedModal();
-
-
-      await flushAllSaves();
-
-      await flushFreshLots();
-
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-
-          .from(
-            "weekly_orders"
-          )
-
-          .update({
-            status:
-              "sales"
-          })
-
-          .eq(
-            "id",
-            weeklyOrder.id
-          )
-
-          .select()
-
-          .single();
-
-
-      if (
-        error
-      ) {
-
-        throw error;
-
-      }
-
-
-      weeklyOrder = {
-        ...weeklyOrder,
-        ...data
-      };
-
-
-      if (
-        appContext &&
-        typeof appContext.goToStep ===
-          "function"
-      ) {
-
-        await appContext.goToStep(
-          2
-        );
-
-      }
-
-    } catch (error) {
-
-      console.error(
-        "Next step:",
-        error
-      );
-
-
-      setSaveStatus(
-        "error",
-        error.message ||
-        "Не удалось перейти дальше"
-      );
-
-
-      if (
-        button
-      ) {
-
-        button.disabled =
-          false;
-
-      }
-
-    }
+  }
 
   }
 
@@ -4897,13 +3768,32 @@
 
   function bindEvents() {
 
-    /*
-      ROOT CLICK EVENTS
-    */
-
     root.addEventListener(
       "click",
       function (event) {
+
+        /*
+          ПН / ЧТ
+        */
+
+        const orderDayButton =
+          event.target.closest(
+            "[data-stock-order-day]"
+          );
+
+
+        if (orderDayButton) {
+
+          switchOrderDay(
+            orderDayButton.dataset
+              .stockOrderDay
+          );
+
+
+          return;
+
+        }
+
 
         /*
           Машина приехала / нет
@@ -4915,9 +3805,7 @@
           );
 
 
-        if (
-          deliveryStatusButton
-        ) {
+        if (deliveryStatusButton) {
 
           setDeliveryStatus(
             deliveryStatusButton.dataset
@@ -4940,9 +3828,7 @@
           );
 
 
-        if (
-          categoryButton
-        ) {
+        if (categoryButton) {
 
           setCategory(
             categoryButton.dataset
@@ -4983,9 +3869,7 @@
           );
 
 
-        if (
-          editButton
-        ) {
+        if (editButton) {
 
           const product =
             products.find(
@@ -5001,9 +3885,7 @@
             );
 
 
-          if (
-            product
-          ) {
+          if (product) {
 
             openProductModal(
               product
@@ -5027,9 +3909,7 @@
           );
 
 
-        if (
-          zeroButton
-        ) {
+        if (zeroButton) {
 
           setZeroStock(
             zeroButton.dataset
@@ -5043,7 +3923,7 @@
 
 
         /*
-          PRODUCT MODAL CLOSE
+          MODAL CLOSE
         */
 
         if (
@@ -5058,7 +3938,6 @@
           return;
 
         }
-
 
         /*
           UNCOUNTED MODAL CLOSE
@@ -5115,124 +3994,73 @@
       }
     );
 
+    /*
+  PRODUCT SEARCH
+*/
 
-    /* =================================================
-       ORDER DATE
-    ================================================= */
-
-    const orderDateInput =
-      root.querySelector(
-        "#stock-order-date-input"
-      );
-
-
-    orderDateInput
-      ?.addEventListener(
-        "change",
-        function () {
-
-          const value =
-            orderDateInput.value;
+const searchInput =
+  root.querySelector(
+    "#stock-product-search"
+  );
 
 
-          if (
-            !value
-          ) {
-
-            orderDateInput.value =
-              selectedOrderDate ||
-              "";
+const searchClear =
+  root.querySelector(
+    "#stock-search-clear"
+  );
 
 
-            return;
+searchInput?.addEventListener(
+  "input",
+  function () {
 
-          }
-
-
-          switchOrderDate(
-            value
-          );
-
-        }
-      );
+    productSearch =
+      searchInput.value;
 
 
-    /* =================================================
-       PRODUCT SEARCH
-    ================================================= */
+    if (searchClear) {
 
-    const searchInput =
-      root.querySelector(
-        "#stock-product-search"
-      );
+      searchClear.hidden =
+        !productSearch;
+
+    }
 
 
-    const searchClear =
-      root.querySelector(
-        "#stock-search-clear"
-      );
+    renderProducts();
+
+  }
+);
 
 
-    searchInput
-      ?.addEventListener(
-        "input",
-        function () {
+searchClear?.addEventListener(
+  "click",
+  function () {
 
-          productSearch =
-            searchInput.value;
+    productSearch = "";
 
 
-          if (
-            searchClear
-          ) {
+    if (searchInput) {
 
-            searchClear.hidden =
-              !productSearch;
+      searchInput.value = "";
 
-          }
+      searchInput.focus();
 
-
-          renderProducts();
-
-        }
-      );
+    }
 
 
-    searchClear
-      ?.addEventListener(
-        "click",
-        function () {
-
-          productSearch =
-            "";
+    searchClear.hidden =
+      true;
 
 
-          if (
-            searchInput
-          ) {
+    renderProducts();
 
-            searchInput.value =
-              "";
+  }
+);
 
 
-            searchInput.focus();
-
-          }
-
-
-          searchClear.hidden =
-            true;
-
-
-          renderProducts();
-
-        }
-      );
-
-
-    /* =================================================
-       COUNT INPUT
-    ================================================= */
+    /*
+      COUNT INPUT
+    */
 
     root.addEventListener(
       "input",
@@ -5244,22 +4072,16 @@
           );
 
 
-        if (
-          !input
-        ) {
-
+        if (!input) {
           return;
-
         }
 
 
         updateLocalCount(
 
-          input.dataset
-            .productId,
+          input.dataset.productId,
 
-          input.dataset
-            .countType,
+          input.dataset.countType,
 
           input.value
 
@@ -5284,18 +4106,13 @@
           );
 
 
-        if (
-          !input
-        ) {
-
+        if (!input) {
           return;
-
         }
 
 
         saveImmediately(
-          input.dataset
-            .productId
+          input.dataset.productId
         ).catch(
           function () {
 
@@ -5310,9 +4127,9 @@
     );
 
 
-    /* =================================================
-       PRODUCT FORM
-    ================================================= */
+    /*
+      PRODUCT FORM
+    */
 
     root
       .querySelector(
@@ -5324,9 +4141,9 @@
       );
 
 
-    /* =================================================
-       IIKO UNIT
-    ================================================= */
+    /*
+      IIKO UNIT
+    */
 
     root
       .querySelector(
@@ -5355,9 +4172,7 @@
       );
 
 
-    if (
-      !root
-    ) {
+    if (!root) {
 
       throw new Error(
         "Step 1 root не найден."
@@ -5367,39 +4182,21 @@
 
 
     appContext =
-      context ||
-      null;
-
-
-    /*
-      Ближайший допустимый
-      день заказа.
-    */
-
-    selectedOrderDate =
-      getDefaultOrderDate();
+      context || null;
 
 
     selectedOrderDay =
-      getOrderDayFromDate(
-        selectedOrderDate
-      ) ||
-      "monday";
+      getDefaultOrderDay();
 
 
     currentCategory =
       "cola";
 
 
-    productSearch =
-      "";
+    products = [];
 
 
-    products =
-      [];
-
-
-    deliveryScheduleByGroup =
+    deliverySchedule =
       new Map();
 
 
@@ -5435,32 +4232,28 @@
 
 
       /*
-        1.
-        Пользователь + ресторан
+        1. Пользователь + ресторан
       */
 
       await loadUserContext();
 
 
       /*
-        2.
-        General + Cola графики.
+        2. Основной график поставок
       */
 
       await loadDeliverySchedule();
 
 
       /*
-        3.
-        Weekly order выбранной даты.
+        3. Weekly order ПН / ЧТ
       */
 
       await ensureWeeklyOrder();
 
 
       /*
-        4.
-        Товары + физический остаток.
+        4. Товары + физический остаток
       */
 
       await Promise.all([
@@ -5473,16 +4266,15 @@
 
 
       /*
-        5.
-        Fresh Lots.
+        5. Запускаем отдельный
+           Fresh Lots module.
       */
 
       await initFreshLots();
 
 
       /*
-        6.
-        UI.
+        6. UI
       */
 
       updateOrderHeader();
@@ -5512,9 +4304,7 @@
         );
 
 
-      if (
-        tbody
-      ) {
+      if (tbody) {
 
         tbody.innerHTML = `
           <tr class="stock-error-row">
@@ -5556,41 +4346,16 @@
 
   window.OrderStep1Stock = {
 
-    getNotesContext:
-      () => ({
-
-        order:
-          weeklyOrder,
-
-        userId,
-
-        restaurantId,
-
-        products
-
-      }),
-
-
     init,
 
 
     reload:
       async function () {
 
-        if (
-          !root
-        ) {
-
+        if (!root) {
           return;
-
         }
 
-
-        /*
-          Обновляем график —
-          если Settings поменяли,
-          preview тоже обновится.
-        */
 
         await loadDeliverySchedule();
 
@@ -5615,10 +4380,5 @@
       }
 
   };
-
-
-  console.log(
-    "[Step 1 Stock] date selector + delivery preview loaded"
-  );
 
 })();

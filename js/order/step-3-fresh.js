@@ -654,320 +654,353 @@
   ===================================================== */
 
   function simulatePeriod(
-    options
-  ) {
-
-    const Core =
-      getCore();
-
-
-    const startDate =
-      options.startDate;
-
-
-    const endDate =
-      options.endDate;
-
-
-    Core.parseDate(
-      startDate
-    );
-
-
-    Core.parseDate(
-      endDate
-    );
-
-
-    if (
-      startDate >
-      endDate
+      options
     ) {
+
+      const Core =
+        getCore();
+
+
+      const startDate =
+        options.startDate;
+
+
+      const endDate =
+        options.endDate;
+
+
+      Core.parseDate(
+        startDate
+      );
+
+
+      Core.parseDate(
+        endDate
+      );
+
+
+      if (
+        startDate >
+        endDate
+      ) {
+
+        const endingLots =
+          cloneLots(
+            options.startLots
+          );
+
+
+        return {
+
+          forecast:
+            [],
+
+          endingLots,
+
+          shortageTotal:
+            0,
+
+          expiredTotal:
+            0,
+
+          endingStock:
+            getTotalQty(
+              endingLots
+            )
+
+        };
+
+      }
+
+
+      const dailyUsage =
+        Core.requireNumber(
+          options.dailyUsage,
+          "dailyUsage",
+          {
+            min: 0
+          }
+        );
+
+
+      const knownMap =
+        options.knownMap ||
+        new Map();
+
+
+      const recommendedMap =
+        options.recommendedMap ||
+        new Map();
+
+
+      const lots =
+        cloneLots(
+          options.startLots
+        );
+
+
+      let shortageTotal =
+        0;
+
+
+      let expiredTotal =
+        0;
+
+
+      const forecast =
+        [];
+
+
+      const dates =
+        Core.getDateRange(
+          startDate,
+          endDate
+        );
+
+
+      dates.forEach(
+        function (date) {
+
+          /*
+            Если почему-то осталась партия
+            со сроком раньше текущего дня,
+            использовать ее уже нельзя.
+          */
+
+          const expiredBeforeDay =
+            removeOldExpired(
+              lots,
+              date
+            );
+
+
+          expiredTotal =
+            Core.roundNumber(
+              expiredTotal +
+              expiredBeforeDay
+            );
+
+
+          /*
+            1. Остаток на начало дня.
+          */
+
+          const openingStock =
+            getTotalQty(
+              lots
+            );
+
+
+          /*
+            2. СНАЧАЛА расход дня.
+
+            FEFO:
+            сначала используется партия
+            с самым ранним сроком.
+          */
+
+          const usage =
+            consumeFEFO(
+              lots,
+              dailyUsage
+            );
+
+
+          shortageTotal =
+            Core.roundNumber(
+              shortageTotal +
+              usage.shortageQty
+            );
+
+
+          const stockAfterUsage =
+            getTotalQty(
+              lots
+            );
+
+
+          /*
+            3. Срок действует включительно.
+
+            Товар можно использовать
+            в день expiry_date.
+
+            После расхода дня остаток
+            с expiry_date = сегодня
+            списывается.
+          */
+
+          const expiry =
+            expireEndOfDay(
+              lots,
+              date
+            );
+
+
+          expiredTotal =
+            Core.roundNumber(
+              expiredTotal +
+              expiry.expiredQty
+            );
+
+
+          const stockAfterExpiry =
+            getTotalQty(
+              lots
+            );
+
+
+          /*
+            4. ПОСЛЕ расхода дня
+            приходит поставка.
+
+            Это относится и к:
+            - already expected / known
+            - новому recommended заказу
+          */
+
+          const knownDeliveryQty =
+            Core.roundNumber(
+              Number(
+                knownMap.get(date) || 0
+              )
+            );
+
+
+          const recommendedDeliveryQty =
+            Core.roundNumber(
+              Number(
+                recommendedMap.get(date) || 0
+              )
+            );
+
+
+          addDeliveryLot(
+            lots,
+            {
+              id:
+                `known-${date}`,
+
+              date,
+
+              qty:
+                knownDeliveryQty,
+
+              source:
+                "known"
+            }
+          );
+
+
+          addDeliveryLot(
+            lots,
+            {
+              id:
+                `recommended-${date}`,
+
+              date,
+
+              qty:
+                recommendedDeliveryQty,
+
+              source:
+                "recommended"
+            }
+          );
+
+
+          /*
+            5. Остаток после поставок.
+          */
+
+          const closingStock =
+            getTotalQty(
+              lots
+            );
+
+
+          forecast.push({
+
+            date,
+
+            openingStock,
+
+            /*
+              Для совместимости UI.
+              До дневного расхода доступен
+              именно openingStock.
+            */
+
+            availableStock:
+              openingStock,
+
+            usageQty:
+              dailyUsage,
+
+            consumedLots:
+              usage.consumed,
+
+            stockAfterUsage,
+
+            shortageQty:
+              usage.shortageQty,
+
+            isShortage:
+              usage.shortageQty >
+              Core.EPSILON,
+
+            expiredQty:
+              expiry.expiredQty,
+
+            expiredLots:
+              expiry.expired,
+
+            stockAfterExpiry,
+
+            knownDeliveryQty,
+
+            recommendedDeliveryQty,
+
+            deliveryQty:
+              Core.roundNumber(
+                knownDeliveryQty +
+                recommendedDeliveryQty
+              ),
+
+            closingStock,
+
+            lotsAfter:
+              cloneLots(
+                lots
+              )
+
+          });
+
+        }
+      );
+
 
       return {
 
-        forecast:
-          [],
+        forecast,
 
         endingLots:
           cloneLots(
-            options.startLots
+            lots
           ),
 
-        shortageTotal:
-          0,
+        shortageTotal,
 
-        expiredTotal:
-          0,
+        expiredTotal,
 
         endingStock:
           getTotalQty(
-            cloneLots(
-              options.startLots
-            )
+            lots
           )
 
       };
 
     }
-
-
-    const dailyUsage =
-      Core.requireNumber(
-        options.dailyUsage,
-        "dailyUsage",
-        {
-          min: 0
-        }
-      );
-
-
-    const knownMap =
-      options.knownMap ||
-      new Map();
-
-
-    const recommendedMap =
-      options.recommendedMap ||
-      new Map();
-
-
-    const lots =
-      cloneLots(
-        options.startLots
-      );
-
-
-    let shortageTotal =
-      0;
-
-
-    let expiredTotal =
-      0;
-
-
-    const forecast =
-      [];
-
-
-    const dates =
-      Core.getDateRange(
-        startDate,
-        endDate
-      );
-
-
-    dates.forEach(
-      function (date) {
-
-        /*
-          Старые просроченные партии
-          на начало дня использовать нельзя.
-        */
-
-        const expiredBeforeDay =
-          removeOldExpired(
-            lots,
-            date
-          );
-
-
-        expiredTotal =
-          Core.roundNumber(
-
-            expiredTotal +
-            expiredBeforeDay
-
-          );
-
-
-        const openingStock =
-          getTotalQty(
-            lots
-          );
-
-
-        /*
-          Поставка приходит ДО расхода.
-        */
-
-        const knownDeliveryQty =
-          Core.roundNumber(
-            Number(
-              knownMap.get(date) || 0
-            )
-          );
-
-
-        const recommendedDeliveryQty =
-          Core.roundNumber(
-            Number(
-              recommendedMap.get(date) || 0
-            )
-          );
-
-
-        addDeliveryLot(
-          lots,
-          {
-            id:
-              `known-${date}`,
-
-            date,
-
-            qty:
-              knownDeliveryQty,
-
-            source:
-              "known"
-          }
-        );
-
-
-        addDeliveryLot(
-          lots,
-          {
-            id:
-              `recommended-${date}`,
-
-            date,
-
-            qty:
-              recommendedDeliveryQty,
-
-            source:
-              "recommended"
-          }
-        );
-
-
-        const availableStock =
-          getTotalQty(
-            lots
-          );
-
-
-        /*
-          FEFO расход.
-        */
-
-        const usage =
-          consumeFEFO(
-            lots,
-            dailyUsage
-          );
-
-
-        shortageTotal =
-          Core.roundNumber(
-
-            shortageTotal +
-            usage.shortageQty
-
-          );
-
-
-        /*
-          Срок включительно.
-
-          То есть сначала расход,
-          ПОТОМ списываем остаток,
-          срок которого = сегодня.
-        */
-
-        const expiry =
-          expireEndOfDay(
-            lots,
-            date
-          );
-
-
-        expiredTotal =
-          Core.roundNumber(
-
-            expiredTotal +
-            expiry.expiredQty
-
-          );
-
-
-        const closingStock =
-          getTotalQty(
-            lots
-          );
-
-
-        forecast.push({
-
-          date,
-
-          openingStock,
-
-          knownDeliveryQty,
-
-          recommendedDeliveryQty,
-
-          deliveryQty:
-            Core.roundNumber(
-              knownDeliveryQty +
-              recommendedDeliveryQty
-            ),
-
-          availableStock,
-
-          usageQty:
-            dailyUsage,
-
-          consumedLots:
-            usage.consumed,
-
-          shortageQty:
-            usage.shortageQty,
-
-          isShortage:
-            usage.shortageQty >
-            Core.EPSILON,
-
-          expiredQty:
-            expiry.expiredQty,
-
-          expiredLots:
-            expiry.expired,
-
-          closingStock,
-
-          lotsAfter:
-            cloneLots(
-              lots
-            )
-
-        });
-
-      }
-    );
-
-
-    return {
-
-      forecast,
-
-      endingLots:
-        cloneLots(
-          lots
-        ),
-
-      shortageTotal,
-
-      expiredTotal,
-
-      endingStock:
-        getTotalQty(
-          lots
-        )
-
-    };
-
-  }
 
 
   /* =====================================================
@@ -1039,184 +1072,376 @@
   }
 
   function calculateProduct(
-    options
-  ) {
-
-    const Core =
-      getCore();
-
-
-    const General =
-      getGeneral();
-
-
-    /* =================================================
-       DATES / PLAN
-    ================================================= */
-
-    const countDate =
-      options.countDate ||
-      options.orderDate;
-
-
-    Core.parseDate(
-      countDate
-    );
-
-
-    Core.parseDate(
-      options.orderDate
-    );
-
-
-    if (
-      countDate >
-      options.orderDate
+      options
     ) {
 
-      throw new Error(
-        "countDate не может быть позже orderDate"
-      );
-
-    }
+      const Core =
+        getCore();
 
 
-    /*
-      Fresh использует тот же
-      delivery schedule, что General.
-    */
-
-    const plan =
-      General.resolvePlan({
-
-        orderDate:
-          options.orderDate,
-
-        orderDay:
-          options.orderDay,
-
-        deliverySchedule:
-          options.deliverySchedule,
-
-        coverageIncludesNextDeliveryDay:
-          false
-
-      });
+      const General =
+        getGeneral();
 
 
-    /* =================================================
-       INPUT
-    ================================================= */
+      /* =================================================
+        DATES
+      ================================================= */
 
-    const dailyUsage =
-      Core.requireNumber(
-        options.dailyUsage,
-        "dailyUsage",
-        {
-          min: 0
-        }
+      const countDate =
+        options.countDate ||
+        options.orderDate;
+
+
+      Core.parseDate(
+        countDate
       );
 
 
-    const safetyStock =
-      Core.requireNumber(
-        options.safetyStock || 0,
-        "safetyStock",
-        {
-          min: 0
-        }
+      Core.parseDate(
+        options.orderDate
       );
 
 
-    const caseToBase =
-      Core.requireNumber(
-        options.caseToBase,
-        "caseToBase"
-      );
-
-
-    if (
-      caseToBase <=
-      Core.EPSILON
-    ) {
-
-      throw new Error(
-        "Не указан case_to_base"
-      );
-
-    }
-
-
-    const startLots =
-      cloneLots(
-        options.lots
-      );
-
-
-    const startStock =
-      getTotalQty(
-        startLots
-      );
-
-
-    const knownMap =
-      buildQtyMap(
-        options.knownDeliveries
-      );
-
-
-    const recommendedMap =
-      new Map();
-
-
-    /* =================================================
-       STOCK BEFORE FIRST DELIVERY
-    ================================================= */
-
-    let currentLots =
-      cloneLots(
-        startLots
-      );
-
-
-    let cursorDate =
-      countDate;
-
-
-    const calculatedDeliveries =
-      [];
-
-
-    plan.deliveries.forEach(
-      function (
-        plannedDelivery,
-        deliveryIndex
+      if (
+        countDate >
+        options.orderDate
       ) {
 
-        /*
-          1. Симулируем дни ДО этой машины.
-        */
+        throw new Error(
+          "countDate не может быть позже orderDate"
+        );
 
-        const dayBeforeDelivery =
+      }
+
+
+      /*
+        Fresh использует тот же
+        график поставок, что General.
+
+        ВАЖНО:
+        НЕ ставим
+        coverageIncludesNextDeliveryDay: false
+
+        Значит:
+        ПН заказ:
+        ЧТ → следующая текущая машина СБ
+        СБ → следующая машина ВТ
+
+        ЧТ заказ:
+        ВТ → следующая машина ЧТ
+      */
+
+      const plan =
+        General.resolvePlan({
+
+          orderDate:
+            options.orderDate,
+
+          orderDay:
+            options.orderDay,
+
+          deliverySchedule:
+            options.deliverySchedule
+
+        });
+
+
+      /* =================================================
+        INPUT
+      ================================================= */
+
+      const dailyUsage =
+        Core.requireNumber(
+          options.dailyUsage,
+          "dailyUsage",
+          {
+            min: 0
+          }
+        );
+
+
+      const safetyStock =
+        Core.requireNumber(
+          options.safetyStock || 0,
+          "safetyStock",
+          {
+            min: 0
+          }
+        );
+
+
+      const caseToBase =
+        Core.requireNumber(
+          options.caseToBase,
+          "caseToBase"
+        );
+
+
+      if (
+        caseToBase <=
+        Core.EPSILON
+      ) {
+
+        throw new Error(
+          "Не указан case_to_base"
+        );
+
+      }
+
+
+      const startLots =
+        cloneLots(
+          options.lots
+        );
+
+
+      const startStock =
+        getTotalQty(
+          startLots
+        );
+
+
+      /*
+        Уже ожидаемые поставки,
+        например:
+
+        ПН заказ жасаймыз,
+        бірақ ВТ бұрынғы ЧТ заказынан
+        машина келе жатыр.
+      */
+
+      const knownMap =
+        buildQtyMap(
+          options.knownDeliveries
+        );
+
+
+      /*
+        Здесь будут рекомендации
+        текущего заказа.
+
+        Например:
+        17.09 → 24 кг
+        19.09 → 42 кг
+      */
+
+      const recommendedMap =
+        new Map();
+
+
+      /* =================================================
+        CURRENT STATE
+      ================================================= */
+
+      let currentLots =
+        cloneLots(
+          startLots
+        );
+
+
+      /*
+        cursorDate = следующий день,
+        который еще НЕ просимулирован.
+      */
+
+      let cursorDate =
+        countDate;
+
+
+      const calculatedDeliveries =
+        [];
+
+
+      /*
+        Прогоняем состояние
+        от cursorDate до endDate
+        включительно.
+
+        Здесь recommendations уже
+        НЕ передаем:
+        ранее рассчитанную поставку
+        мы физически добавляем в currentLots.
+      */
+
+      function advanceThrough(
+        endDate
+      ) {
+
+        if (
+          cursorDate >
+          endDate
+        ) {
+
+          return {
+
+            forecast:
+              [],
+
+            endingLots:
+              cloneLots(
+                currentLots
+              ),
+
+            shortageTotal:
+              0,
+
+            expiredTotal:
+              0,
+
+            endingStock:
+              getTotalQty(
+                currentLots
+              )
+
+          };
+
+        }
+
+
+        const result =
+          simulatePeriod({
+
+            startDate:
+              cursorDate,
+
+            endDate,
+
+            startLots:
+              currentLots,
+
+            dailyUsage,
+
+            knownMap,
+
+            recommendedMap:
+              new Map()
+
+          });
+
+
+        currentLots =
+          result.endingLots;
+
+
+        cursorDate =
           Core.addDays(
-            plannedDelivery.date,
-            -1
+            endDate,
+            1
           );
 
 
-        if (
-          cursorDate <=
-          dayBeforeDelivery
+        return result;
+
+      }
+
+
+      /* =================================================
+        EACH DELIVERY
+      ================================================= */
+
+      plan.deliveries.forEach(
+        function (
+          plannedDelivery,
+          deliveryIndex
         ) {
 
-          const before =
+          /*
+            Сначала просчитываем сам
+            ДЕНЬ поставки.
+
+            Потому что бизнес-порядок:
+
+            opening
+            → расход
+            → срок
+            → known delivery
+            → НОВАЯ поставка
+
+            То есть новая поставка
+            НЕ может закрыть дефицит,
+            который уже возник в этот день.
+          */
+
+          if (
+            cursorDate <=
+            plannedDelivery.date
+          ) {
+
+            advanceThrough(
+              plannedDelivery.date
+            );
+
+          }
+
+
+          /*
+            Это реальный остаток
+            ПОСЛЕ расхода дня,
+            срока и уже ожидаемых поставок,
+            но ДО нашей новой поставки.
+          */
+
+          const stockBeforeDelivery =
+            getTotalQty(
+              currentLots
+            );
+
+
+          /*
+            Какая следующая машина?
+
+            ПН заказ:
+            ЧТ 17 → СБ 19
+            СБ 19 → ВТ 22
+
+            Поэтому Fresh покрытие:
+
+            ЧТ поставка:
+            ПТ 18 → СБ 19
+
+            СБ поставка:
+            ВС 20 → ВТ 22
+          */
+
+          const nextCurrentDelivery =
+            plan.deliveries[
+              deliveryIndex + 1
+            ];
+
+
+          const coverageStartDate =
+            Core.addDays(
+              plannedDelivery.date,
+              1
+            );
+
+
+          const coverageEndDate =
+            nextCurrentDelivery
+
+              ? nextCurrentDelivery.date
+
+              : plan.nextDeliveryDate;
+
+
+          /*
+            Проверяем:
+            сколько будет не хватать,
+            ЕСЛИ эту поставку вообще
+            не заказать.
+
+            CurrentLots сейчас находится
+            в состоянии после дня поставки.
+          */
+
+          const withoutCurrentOrder =
             simulatePeriod({
 
               startDate:
-                cursorDate,
+                coverageStartDate,
 
               endDate:
-                dayBeforeDelivery,
+                coverageEndDate,
 
               startLots:
                 currentLots,
@@ -1225,500 +1450,496 @@
 
               knownMap,
 
-              recommendedMap
+              recommendedMap:
+                new Map()
 
             });
 
 
-          currentLots =
-            before.endingLots;
+          /*
+            shortageTotal здесь показывает,
+            сколько товара нужно добавить
+            после текущей поставки,
+            чтобы пройти весь период
+            без нехватки.
+          */
+
+          const shortageNeed =
+            withoutCurrentOrder
+              .shortageTotal;
+
+
+          /*
+            Safety stock нужен только
+            после ПОСЛЕДНЕГО сегмента.
+
+            Для ПН заказа:
+            после ВТ.
+
+            Для ЧТ заказа:
+            после следующего ЧТ.
+          */
+
+          const isLast =
+            deliveryIndex ===
+            plan.deliveries.length - 1;
+
+
+          const safetyNeed =
+            isLast
+
+              ? Math.max(
+                  0,
+
+                  safetyStock -
+                  withoutCurrentOrder
+                    .endingStock
+                )
+
+              : 0;
+
+
+          const rawRequiredBaseQty =
+            Core.roundNumber(
+              shortageNeed +
+              safetyNeed
+            );
+
+
+          /*
+            Fresh всегда округляется
+            вверх до полного CASE.
+          */
+
+          const automaticRounded =
+            Core.roundToCases(
+              rawRequiredBaseQty,
+              caseToBase
+            );
+
+
+          const overriddenCases =
+            getDeliveryCaseOverride(
+              options.deliveryCaseOverrides,
+              plannedDelivery.date
+            );
+
+
+          const isManualOverride =
+            overriddenCases !==
+            null;
+
+
+          const rounded =
+            isManualOverride
+
+              ? {
+
+                  cases:
+                    overriddenCases,
+
+                  baseQty:
+                    Core.roundNumber(
+                      overriddenCases *
+                      caseToBase
+                    )
+
+                }
+
+              : automaticRounded;
+
+
+          /*
+            Сохраняем recommendation
+            для полного forecast UI.
+          */
+
+          recommendedMap.set(
+            plannedDelivery.date,
+            rounded.baseQty
+          );
+
+
+          /*
+            Текущая поставка приходит
+            СЕЙЧАС — после расхода
+            plannedDelivery.date.
+
+            Поэтому физически добавляем
+            ее в currentLots.
+          */
+
+          addDeliveryLot(
+            currentLots,
+            {
+
+              id:
+                `recommended-${plannedDelivery.date}`,
+
+              date:
+                plannedDelivery.date,
+
+              qty:
+                rounded.baseQty,
+
+              source:
+                "recommended"
+
+            }
+          );
+
+
+          calculatedDeliveries.push({
+
+            date:
+              plannedDelivery.date,
+
+            weekday:
+              plannedDelivery.weekday,
+
+            /*
+              Для Fresh показываем
+              фактический период,
+              который должна закрыть
+              ЭТА поставка.
+            */
+
+            coverageStartDate,
+
+            coverageEndDate,
+
+            stockBeforeDelivery,
+
+            rawRecommendedBaseQty:
+              rawRequiredBaseQty,
+
+            automaticRecommendedCases:
+              automaticRounded.cases,
+
+            automaticRecommendedBaseQty:
+              automaticRounded.baseQty,
+
+            isManualOverride,
+
+            recommendedCases:
+              rounded.cases,
+
+            recommendedBaseQty:
+              rounded.baseQty
+
+          });
+
+
+          /*
+            Теперь реально прогоняем
+            период после этой поставки.
+
+            Первый сегмент:
+            ПТ → СБ
+
+            Второй:
+            ВС → ВТ
+
+            В конце первой итерации
+            мы уже проживем СБ,
+            поэтому СБ во второй раз
+            НЕ считается.
+          */
+
+          advanceThrough(
+            coverageEndDate
+          );
 
         }
+      );
 
 
-        const stockBeforeDelivery =
-          getTotalQty(
-            currentLots
-          );
+      /* =================================================
+        FULL FORECAST
+      ================================================= */
 
+      /*
+        Теперь строим forecast с нуля,
+        чтобы UI получил все дни:
 
-        /*
-          2. Рассчитываем этот сегмент
-          БЕЗ текущей новой рекомендации.
+        countDate
+        →
+        nextDeliveryDate
+      */
 
-          Known incoming учитывается.
-        */
+      const full =
+        simulatePeriod({
 
-        const withoutNewOrder =
-          simulatePeriod({
+          startDate:
+            countDate,
 
-            startDate:
-              plannedDelivery
-                .coverageStartDate,
+          endDate:
+            plan.coverageEndDate,
 
-            endDate:
-              plannedDelivery
-                .coverageEndDate,
+          startLots,
 
-            startLots:
-              currentLots,
+          dailyUsage,
 
-            dailyUsage,
+          knownMap,
 
-            knownMap,
-
-            recommendedMap
-
-          });
-
-
-        const isLast =
-          deliveryIndex ===
-          plan.deliveries.length - 1;
-
-
-        /*
-          Сколько товара не хватило
-          для фактического расхода.
-        */
-
-        const shortageNeed =
-          withoutNewOrder
-            .shortageTotal;
-
-
-        /*
-          Safety stock нужен только
-          после последнего периода.
-        */
-
-        const safetyNeed =
-          isLast
-
-            ? Math.max(
-                0,
-
-                safetyStock -
-                withoutNewOrder
-                  .endingStock
-              )
-
-            : 0;
-
-
-        const rawRequiredBaseQty =
-          Core.roundNumber(
-
-            shortageNeed +
-            safetyNeed
-
-          );
-
-
-        /*
-          Только полный CASE.
-        */
-
-        const automaticRounded =
-          Core.roundToCases(
-            rawRequiredBaseQty,
-            caseToBase
-          );
-
-
-        const overriddenCases =
-          getDeliveryCaseOverride(
-            options.deliveryCaseOverrides,
-            plannedDelivery.date
-          );
-
-
-        const isManualOverride =
-          overriddenCases !==
-          null;
-
-
-        const rounded =
-          isManualOverride
-
-            ? {
-
-                cases:
-                  overriddenCases,
-
-                baseQty:
-                  Core.roundNumber(
-
-                    overriddenCases *
-                    caseToBase
-
-                  )
-
-              }
-
-            : automaticRounded;
-
-
-        recommendedMap.set(
-
-          plannedDelivery.date,
-
-          Core.roundNumber(
-
-            Number(
-              recommendedMap.get(
-                plannedDelivery.date
-              ) || 0
-            ) +
-
-            rounded.baseQty
-
-          )
-
-        );
-
-
-        /*
-          3. Теперь прогоняем сегмент
-          уже С нашей рекомендацией,
-          чтобы получить реальные
-          партии для следующей машины.
-        */
-
-        const actualSegment =
-          simulatePeriod({
-
-            startDate:
-              plannedDelivery
-                .coverageStartDate,
-
-            endDate:
-              plannedDelivery
-                .coverageEndDate,
-
-            startLots:
-              currentLots,
-
-            dailyUsage,
-
-            knownMap,
-
-            recommendedMap
-
-          });
-
-
-        calculatedDeliveries.push({
-
-          date:
-            plannedDelivery.date,
-
-          weekday:
-            plannedDelivery.weekday,
-
-          coverageStartDate:
-            plannedDelivery
-              .coverageStartDate,
-
-          coverageEndDate:
-            plannedDelivery
-              .coverageEndDate,
-
-          stockBeforeDelivery,
-
-          rawRecommendedBaseQty:
-            rawRequiredBaseQty,
-
-          automaticRecommendedCases:
-            automaticRounded.cases,
-
-          automaticRecommendedBaseQty:
-            automaticRounded.baseQty,
-
-          isManualOverride,
-
-          recommendedCases:
-            rounded.cases,
-
-          recommendedBaseQty:
-            rounded.baseQty
+          recommendedMap
 
         });
 
 
-        currentLots =
-          actualSegment
-            .endingLots;
+      const recommendationByDate =
+        new Map();
 
 
-        cursorDate =
-          Core.addDays(
-            plannedDelivery
-              .coverageEndDate,
-            1
-          );
+      calculatedDeliveries
+        .forEach(
+          function (delivery) {
 
-      }
-    );
+            recommendationByDate.set(
+              delivery.date,
+              delivery
+            );
+
+          }
+        );
 
 
-    /* =================================================
-       FULL FORECAST
-    ================================================= */
+      const forecast =
+        full.forecast.map(
+          function (row) {
 
-    const full =
-      simulatePeriod({
+            const recommendation =
+              recommendationByDate.get(
+                row.date
+              );
 
-        startDate:
-          countDate,
 
-        endDate:
+            return {
+
+              ...row,
+
+              recommendedCases:
+                recommendation
+                  ?.recommendedCases ||
+                0
+
+            };
+
+          }
+        );
+
+
+      /* =================================================
+        RISKS
+      ================================================= */
+
+      const shortageDays =
+        forecast.filter(
+          function (row) {
+
+            return row.isShortage;
+
+          }
+        );
+
+
+      const expiryDays =
+        forecast.filter(
+          function (row) {
+
+            return (
+              row.expiredQty >
+              Core.EPSILON
+            );
+
+          }
+        );
+
+
+      const firstDeliveryDate =
+        calculatedDeliveries[0]
+          ?.date ||
+        null;
+
+
+      /*
+        Маңызды:
+
+        Поставка сол күннің расходынан
+        КЕЙІН келеді.
+
+        Сондықтан shortage
+        дәл бірінші delivery күні болса да,
+        ол "до первой поставки".
+
+        Бұрын тек < қолданылған.
+        Енді <=.
+      */
+
+      const shortageBeforeFirstDelivery =
+        firstDeliveryDate
+
+          ? shortageDays.filter(
+              function (row) {
+
+                return (
+                  row.date <=
+                  firstDeliveryDate
+                );
+
+              }
+            )
+
+          : [];
+
+
+      /* =================================================
+        TOTAL
+      ================================================= */
+
+      const totalRecommendedCases =
+        calculatedDeliveries.reduce(
+          function (
+            total,
+            delivery
+          ) {
+
+            return (
+              total +
+              Number(
+                delivery
+                  .recommendedCases ||
+                0
+              )
+            );
+
+          },
+          0
+        );
+
+
+      const totalRecommendedBaseQty =
+        calculatedDeliveries.reduce(
+          function (
+            total,
+            delivery
+          ) {
+
+            return Core.roundNumber(
+
+              total +
+
+              Number(
+                delivery
+                  .recommendedBaseQty ||
+                0
+              )
+
+            );
+
+          },
+          0
+        );
+
+
+      /* =================================================
+        RESULT
+      ================================================= */
+
+      return {
+
+        type:
+          "fresh",
+
+        countDate,
+
+        orderDate:
+          options.orderDate,
+
+        orderDay:
+          options.orderDay,
+
+        /*
+          Общий расчет идет
+          до следующей машины включительно.
+        */
+
+        coverageEndDate:
           plan.coverageEndDate,
+
+        nextDeliveryDate:
+          plan.nextDeliveryDate,
+
+
+        /* INPUT */
 
         startLots,
 
+        startStock,
+
         dailyUsage,
 
-        knownMap,
+        safetyStock,
 
-        recommendedMap
+        caseToBase,
 
-      });
 
+        /* ORDER */
 
-    const recommendationByDate =
-      new Map();
+        deliveries:
+          calculatedDeliveries,
 
+        totalRecommendedCases,
 
-    calculatedDeliveries
-      .forEach(
-        function (delivery) {
+        totalRecommendedBaseQty,
 
-          recommendationByDate.set(
-            delivery.date,
-            delivery
-          );
 
-        }
-      );
+        /* FORECAST */
 
+        forecast,
 
-    const forecast =
-      full.forecast.map(
-        function (row) {
+        endingLots:
+          full.endingLots,
 
-          const recommendation =
-            recommendationByDate.get(
-              row.date
-            );
+        endingStock:
+          full.endingStock,
 
 
-          return {
+        /* EXPIRY */
 
-            ...row,
+        totalExpiredQty:
+          full.expiredTotal,
 
-            recommendedCases:
-              recommendation
-                ?.recommendedCases ||
-              0
+        hasExpiry:
+          expiryDays.length > 0,
 
-          };
+        firstExpiryDate:
+          expiryDays[0]
+            ?.date ||
+          null,
 
-        }
-      );
+        expiryDays,
 
 
-    /* =================================================
-       RISKS
-    ================================================= */
+        /* SHORTAGE */
 
-    const shortageDays =
-      forecast.filter(
-        function (row) {
+        hasShortage:
+          shortageDays.length > 0,
 
-          return row.isShortage;
+        hasShortageBeforeFirstDelivery:
+          shortageBeforeFirstDelivery
+            .length > 0,
 
-        }
-      );
+        firstShortageDate:
+          shortageDays[0]
+            ?.date ||
+          null,
 
+        shortageDays
 
-    const expiryDays =
-      forecast.filter(
-        function (row) {
+      };
 
-          return (
-            row.expiredQty >
-            Core.EPSILON
-          );
-
-        }
-      );
-
-
-    const firstDeliveryDate =
-      calculatedDeliveries[0]
-        ?.date ||
-      null;
-
-
-    const shortageBeforeFirstDelivery =
-      firstDeliveryDate
-
-        ? shortageDays.filter(
-            function (row) {
-
-              return (
-                row.date <
-                firstDeliveryDate
-              );
-
-            }
-          )
-
-        : [];
-
-
-    /* =================================================
-       TOTAL ORDER
-    ================================================= */
-
-    const totalRecommendedCases =
-      calculatedDeliveries.reduce(
-        function (
-          total,
-          delivery
-        ) {
-
-          return (
-            total +
-            Number(
-              delivery
-                .recommendedCases ||
-              0
-            )
-          );
-
-        },
-        0
-      );
-
-
-    const totalRecommendedBaseQty =
-      calculatedDeliveries.reduce(
-        function (
-          total,
-          delivery
-        ) {
-
-          return Core.roundNumber(
-
-            total +
-            Number(
-              delivery
-                .recommendedBaseQty ||
-              0
-            )
-
-          );
-
-        },
-        0
-      );
-
-
-    /* =================================================
-       RESULT
-    ================================================= */
-
-    return {
-
-      type:
-        "fresh",
-
-      countDate,
-
-      orderDate:
-        options.orderDate,
-
-      orderDay:
-        options.orderDay,
-
-      coverageEndDate:
-        plan.coverageEndDate,
-
-      nextDeliveryDate:
-        plan.nextDeliveryDate,
-
-
-      /* INPUT */
-
-      startLots,
-
-      startStock,
-
-      dailyUsage,
-
-      safetyStock,
-
-      caseToBase,
-
-
-      /* ORDER */
-
-      deliveries:
-        calculatedDeliveries,
-
-      totalRecommendedCases,
-
-      totalRecommendedBaseQty,
-
-
-      /* FORECAST */
-
-      forecast,
-
-      endingLots:
-        full.endingLots,
-
-      endingStock:
-        full.endingStock,
-
-
-      /* EXPIRY */
-
-      totalExpiredQty:
-        full.expiredTotal,
-
-      hasExpiry:
-        expiryDays.length > 0,
-
-      firstExpiryDate:
-        expiryDays[0]
-          ?.date ||
-        null,
-
-      expiryDays,
-
-
-      /* SHORTAGE */
-
-      hasShortage:
-        shortageDays.length > 0,
-
-      hasShortageBeforeFirstDelivery:
-        shortageBeforeFirstDelivery
-          .length > 0,
-
-      firstShortageDate:
-        shortageDays[0]
-          ?.date ||
-        null,
-
-      shortageDays
-
-    };
-
-  }
+    }
 
 
   /* =====================================================

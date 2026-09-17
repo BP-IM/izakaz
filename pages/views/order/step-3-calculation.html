@@ -64,7 +64,7 @@
 
   <nav
     class="step3-tabs"
-    aria-label="Разделы расчета"
+    aria-label="Категории заказа"
   >
 
     <button
@@ -79,18 +79,36 @@
     <button
       class="step3-tab"
       type="button"
-      data-step3-tab="general"
+      data-step3-tab="fresh"
     >
-      Основные
+      Fresh
     </button>
 
 
     <button
       class="step3-tab"
       type="button"
-      data-step3-tab="fresh"
+      data-step3-tab="freezer"
     >
-      Fresh
+      Freezer
+    </button>
+
+
+    <button
+      class="step3-tab"
+      type="button"
+      data-step3-tab="cooler"
+    >
+      Cooler
+    </button>
+
+
+    <button
+      class="step3-tab"
+      type="button"
+      data-step3-tab="dry"
+    >
+      Сухой
     </button>
 
   </nav>
@@ -121,53 +139,20 @@
     <div
       id="step3-cola-summary"
       class="step3-cola-summary"
-    >
-    </div>
+    ></div>
 
 
     <div
       id="step3-cola-warning"
       class="step3-cola-warning"
       hidden
-    >
-    </div>
+    ></div>
 
 
     <div
       id="step3-cola-list"
       class="step3-cola-list"
-    >
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       GENERAL
-  ====================================================== -->
-
-  <section
-    id="step3-panel-general"
-    class="step3-panel"
-    data-step3-panel="general"
-    hidden
-  >
-
-    <div class="step3-coming-card">
-
-      <div class="step3-coming-icon">
-        ▦
-      </div>
-
-      <h3>
-        Основные товары
-      </h3>
-
-      <p>
-        Расчет основных товаров подключим следующим этапом.
-      </p>
-
-    </div>
+    ></div>
 
   </section>
 
@@ -182,23 +167,45 @@
     data-step3-panel="fresh"
     hidden
   >
+  </section>
 
-    <div class="step3-coming-card">
 
-      <div class="step3-coming-icon">
-        ◷
-      </div>
+  <!-- =====================================================
+       FREEZER
+  ====================================================== -->
 
-      <h3>
-        Fresh
-      </h3>
+  <section
+    id="step3-panel-freezer"
+    class="step3-panel"
+    data-step3-panel="freezer"
+    hidden
+  >
+  </section>
 
-      <p>
-        Здесь будет расчет по партиям и срокам годности FEFO.
-      </p>
 
-    </div>
+  <!-- =====================================================
+       COOLER
+  ====================================================== -->
 
+  <section
+    id="step3-panel-cooler"
+    class="step3-panel"
+    data-step3-panel="cooler"
+    hidden
+  >
+  </section>
+
+
+  <!-- =====================================================
+       DRY
+  ====================================================== -->
+
+  <section
+    id="step3-panel-dry"
+    class="step3-panel"
+    data-step3-panel="dry"
+    hidden
+  >
   </section>
 
 
@@ -218,7 +225,7 @@
 
 
     <div class="step3-footer-note">
-      Сейчас выполняется расчет Cola
+      Расчет Cola готов
     </div>
 
 
@@ -227,7 +234,6 @@
       class="step3-button is-primary"
       type="button"
       disabled
-      title="Сначала завершим Основные и Fresh"
     >
       Далее →
     </button>

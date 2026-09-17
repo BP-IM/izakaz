@@ -2503,7 +2503,7 @@
 
   async function handleGeneralDeliveryChange(
     change
-   ) {
+  ) {
 
     const productId =
       change?.productId;
@@ -2633,27 +2633,11 @@
     };
 
 
-    const activeTab =
-      (
-        window.OrderStep3UI &&
-        typeof window
-          .OrderStep3UI
-          .getActiveTab ===
-          "function"
-      )
-
-        ? window
-            .OrderStep3UI
-            .getActiveTab()
-
-        : "freezer";
-
-
     await saveResults();
 
 
     renderCalculation(
-      activeTab
+      "general"
     );
 
   }
@@ -3161,7 +3145,6 @@
   ===================================================== */
 
   window.OrderStep3Calculation = {
-    getNotesContext: () => ({ order: weeklyOrder, userId, restaurantId, products: [...colaProducts, ...generalProducts, ...freshProducts] }),
 
     init,
 

@@ -29,46 +29,39 @@
 
     <div class="stock-header-info">
 
-      <!-- DAY -->
+    <!-- ORDER DATE -->
 
-      <div class="stock-order-selector">
+    <div class="stock-order-selector">
 
-        <span class="stock-order-selector-label">
-          День заказа
-        </span>
-
-
-        <div class="stock-order-day-buttons">
-
-          <button
-            class="stock-order-day-button"
-            type="button"
-            data-stock-order-day="monday"
-          >
-            ПН
-          </button>
+      <span class="stock-order-selector-label">
+        Дата заказа
+      </span>
 
 
-          <button
-            class="stock-order-day-button"
-            type="button"
-            data-stock-order-day="thursday"
-          >
-            ЧТ
-          </button>
+      <div class="stock-order-date-field">
 
-        </div>
-
-
-        <strong id="stock-order-date">
-          —
-        </strong>
-
-        <small id="stock-order-date-day">
-          —
-        </small>
+        <input
+          id="stock-order-date-input"
+          class="stock-order-date-input"
+          type="date"
+        >
 
       </div>
+
+
+      <strong id="stock-order-date-day">
+        —
+      </strong>
+
+
+      <small
+        id="stock-order-date-message"
+        class="stock-order-date-message"
+      >
+        Заказ оформляется в ПН или ЧТ
+      </small>
+
+    </div>
 
 
       <!-- PROGRESS -->
@@ -89,6 +82,115 @@
 
   </div>
 
+  <!-- =====================================================
+     DELIVERY PLAN PREVIEW
+====================================================== -->
+
+  <div
+    class="stock-delivery-plan"
+    id="stock-delivery-plan"
+  >
+
+    <div class="stock-delivery-plan-head">
+
+      <div>
+
+        <span>
+          График поставок
+        </span>
+
+        <strong>
+          Этот заказ формирует
+        </strong>
+
+      </div>
+
+
+      <small>
+        Даты рассчитываются автоматически
+        по настройкам ресторана
+      </small>
+
+    </div>
+
+
+    <div class="stock-delivery-plan-grid">
+
+
+      <!-- COLA -->
+
+      <div class="stock-delivery-plan-card">
+
+        <div class="stock-delivery-plan-group">
+
+          <span class="stock-delivery-plan-icon">
+            C
+          </span>
+
+
+          <div>
+
+            <strong>
+              Cola
+            </strong>
+
+            <small>
+              Отдельная поставка
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="stock-delivery-plan-dates"
+          id="stock-delivery-plan-cola"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <!-- GENERAL -->
+
+      <div class="stock-delivery-plan-card">
+
+        <div class="stock-delivery-plan-group">
+
+          <span class="stock-delivery-plan-icon">
+            G
+          </span>
+
+
+          <div>
+
+            <strong>
+              Основной заказ
+            </strong>
+
+            <small>
+              Fresh · Freezer · Cooler · Сухой
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="stock-delivery-plan-dates"
+          id="stock-delivery-plan-general"
+        >
+          —
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
 
   <!-- =====================================================
        ПОСТАВКА В ДЕНЬ ЗАКАЗА

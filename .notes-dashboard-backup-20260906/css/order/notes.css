@@ -1,0 +1,549 @@
+/* =====================================================
+   ORDER NOTES
+===================================================== */
+
+.on-layout {
+  display: grid;
+
+  grid-template-columns:
+    320px
+    minmax(0, 1fr);
+
+  gap: 22px;
+
+  align-items: start;
+}
+
+
+.on-content {
+  min-width: 0;
+
+  grid-column: 2;
+}
+
+
+.on-panel {
+  position: sticky;
+
+  top: 20px;
+
+  grid-column: 1;
+  grid-row: 1;
+
+  max-height:
+    calc(100vh - 40px);
+
+  overflow: auto;
+
+  padding: 20px;
+
+  border: 1px solid
+    var(--line, #e3e5e8);
+  border-radius: 18px;
+
+  background:
+    var(--surface, #ffffff);
+}
+
+
+/* =====================================================
+   HEADING
+===================================================== */
+
+.on-heading,
+.on-section-heading {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+}
+
+
+.on-heading h2 {
+  margin: 0;
+
+  font-size: 18px;
+}
+
+
+.on-section-heading {
+  margin-bottom: 10px;
+}
+
+
+.on-section-heading h3 {
+  margin: 0;
+
+  font-size: 14px;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.on-panel button,
+.on-toggle,
+.on-product-button {
+  padding: 7px 9px;
+
+  border: 1px solid #e3e5e8;
+  border-radius: 8px;
+
+  color: #18191b;
+  background: #ffffff;
+
+  font: inherit;
+
+  cursor: pointer;
+}
+
+
+.on-panel button:disabled {
+  opacity: 0.45;
+
+  cursor: default;
+}
+
+
+.on-panel button:focus-visible,
+.on-toggle:focus-visible {
+  outline: 3px solid #dca900;
+
+  outline-offset: 2px;
+}
+
+
+/* =====================================================
+   TOGGLE
+===================================================== */
+
+.on-toggle {
+  display: inline-flex;
+
+  min-height: 42px;
+
+  align-items: center;
+  justify-content: center;
+
+  margin:
+    0 0
+    12px 0;
+
+  padding:
+    0 14px;
+
+  border-color: #e0e2e5;
+
+  background: #ffffff;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  box-shadow:
+    0 2px 8px
+    rgba(0, 0, 0, 0.04);
+}
+
+
+.on-toggle:hover {
+  border-color: #d4aa00;
+
+  background: #fffaf0;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.on-status,
+.on-empty {
+  color: #747880;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+.on-status {
+  margin:
+    12px 0
+    20px;
+}
+
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+
+.on-section {
+  margin-top: 20px;
+}
+
+
+.on-section-heading button {
+  padding: 4px;
+
+  border: 0;
+
+  background: transparent;
+
+  font-size: 12px;
+
+  white-space: nowrap;
+}
+
+
+.on-pinned {
+  padding: 12px;
+
+  border: 1px solid #f2e4a8;
+  border-radius: 12px;
+
+  background: #fff8db;
+}
+
+
+/* =====================================================
+   NOTE
+===================================================== */
+
+.on-note {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 7px;
+
+  margin: 8px 0;
+  padding: 10px;
+
+  border: 1px solid #e7e8eb;
+  border-radius: 10px;
+
+  background: #ffffff;
+}
+
+
+.on-note input {
+  margin-top: 4px;
+
+  accent-color: #a77e00;
+}
+
+
+.on-text {
+  min-width: 0;
+
+  flex: 1;
+
+  overflow-wrap: anywhere;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+}
+
+
+.on-text small {
+  display: block;
+
+  color: #747880;
+
+  font-weight: 700;
+
+  white-space: normal;
+}
+
+
+.on-note button {
+  padding: 0 3px;
+
+  border: 0;
+
+  color: #747880;
+}
+
+
+.on-done
+.on-text span {
+  color: #93979c;
+
+  text-decoration: line-through;
+}
+
+
+/* =====================================================
+   COLLAPSED
+===================================================== */
+
+.on-collapsed
+.on-layout {
+  grid-template-columns:
+    minmax(0, 1fr);
+}
+
+
+.on-collapsed
+.on-panel {
+  display: none;
+}
+
+
+.on-collapsed
+.on-content {
+  grid-column: 1;
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.on-summary {
+  margin-top: 20px;
+  padding: 20px;
+
+  border: 1px solid #eadb9c;
+  border-radius: 16px;
+
+  background: #fffbed;
+}
+
+
+.on-summary h3 {
+  margin-top: 0;
+
+  font-size: 16px;
+}
+
+
+.on-summary p {
+  overflow-wrap: anywhere;
+
+  font-size: 14px;
+
+  white-space: pre-wrap;
+}
+
+
+/* =====================================================
+   DIALOG
+===================================================== */
+
+.on-dialog {
+  width:
+    min(
+      460px,
+      calc(100vw - 32px)
+    );
+
+  max-height:
+    calc(100dvh - 32px);
+
+  overflow: auto;
+
+  padding: 24px;
+
+  border: 0;
+  border-radius: 18px;
+
+  box-shadow:
+    0 20px 70px
+    rgba(0, 0, 0, 0.2);
+}
+
+
+.on-dialog::backdrop {
+  background:
+    rgba(22, 24, 29, 0.4);
+}
+
+
+.on-dialog h3 {
+  margin:
+    0 0
+    20px;
+}
+
+
+.on-dialog label {
+  display: block;
+
+  margin: 14px 0;
+
+  font-size: 13px;
+}
+
+
+.on-dialog select,
+.on-dialog textarea {
+  display: block;
+
+  width: 100%;
+
+  margin-top: 6px;
+  padding: 10px;
+
+  border: 1px solid #d9dce1;
+  border-radius: 9px;
+
+  font: inherit;
+}
+
+
+.on-dialog textarea {
+  min-height: 120px;
+
+  resize: vertical;
+}
+
+
+.on-dialog
+.on-pin {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.on-dialog-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+}
+
+
+.on-dialog button {
+  padding: 7px 12px;
+
+  border: 1px solid #e3e5e8;
+  border-radius: 8px;
+
+  color: #18191b;
+  background: #ffffff;
+
+  font: inherit;
+
+  cursor: pointer;
+}
+
+
+.on-dialog
+button[type="submit"] {
+  border-color: #ffc400;
+
+  background: #ffc400;
+
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   PRODUCT NOTE BUTTON
+===================================================== */
+
+.on-product-button {
+  padding: 3px 6px;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   DESKTOP WIDTH
+===================================================== */
+
+@media (min-width: 1101px) {
+
+  .order-page:has(.on-layout) {
+    max-width: 1900px;
+  }
+
+}
+
+
+/* =====================================================
+   TABLET / MOBILE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+  .on-layout {
+    grid-template-columns:
+      minmax(0, 1fr);
+  }
+
+
+  .on-content {
+    grid-column: 1;
+  }
+
+
+  .on-panel {
+    position: fixed;
+
+    z-index: 90;
+
+    top: auto;
+    right: 16px;
+    bottom: 76px;
+    left: 16px;
+
+    width: auto;
+    max-height: 75vh;
+
+    box-shadow:
+      0 12px 50px
+      rgba(0, 0, 0, 0.2);
+  }
+
+
+  .on-toggle {
+    position: fixed;
+
+    z-index: 91;
+
+    right: 20px;
+    bottom: 20px;
+
+    margin: 0;
+
+    border-color: #ffc400;
+
+    background: #ffc400;
+
+    box-shadow:
+      0 4px 20px
+      rgba(0, 0, 0, 0.15);
+  }
+
+}
+
+
+/* =====================================================
+   PRINT
+===================================================== */
+
+@media print {
+
+  .on-panel,
+  .on-toggle,
+  .on-product-button {
+    display: none !important;
+  }
+
+
+  .on-layout {
+    display: block;
+  }
+
+}

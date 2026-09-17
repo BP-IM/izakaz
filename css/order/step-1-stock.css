@@ -2690,3 +2690,375 @@ body.stock-modal-open {
   }
 
 }
+
+/* =====================================================
+   STEP 1 — ORDER DATE SELECTOR
+===================================================== */
+
+.stock-order-selector {
+  min-width: 220px;
+}
+
+
+.stock-order-date-field {
+  margin-bottom: 8px;
+}
+
+
+.stock-order-date-input {
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 38px;
+
+  padding: 0 10px;
+
+  border: 1px solid #dfe2e5;
+  border-radius: 9px;
+
+  outline: none;
+
+  color: #202124;
+  background: #ffffff;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.stock-order-date-input:focus {
+  border-color: #d5aa00;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 196, 0, 0.12);
+}
+
+
+.stock-order-date-input:disabled {
+  opacity: 0.55;
+
+  cursor: wait;
+}
+
+
+.stock-order-selector
+#stock-order-date-day {
+  display: block;
+
+  color: #1c1d20;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+
+.stock-order-date-message {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #858990;
+
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+
+.stock-order-date-message.is-error {
+  color: #b42318;
+
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   DELIVERY PLAN
+===================================================== */
+
+.stock-delivery-plan {
+  margin:
+    0 28px
+    18px;
+
+  overflow: hidden;
+
+  border: 1px solid #e4e6e9;
+  border-radius: 15px;
+
+  background: #ffffff;
+}
+
+
+.stock-delivery-plan-head {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 13px 16px;
+
+  border-bottom: 1px solid #eceef0;
+
+  background: #fafafa;
+}
+
+
+.stock-delivery-plan-head > div > span,
+.stock-delivery-plan-head > div > strong {
+  display: block;
+}
+
+
+.stock-delivery-plan-head > div > span {
+  margin-bottom: 3px;
+
+  color: #8b8f96;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+
+.stock-delivery-plan-head > div > strong {
+  color: #202124;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+.stock-delivery-plan-head > small {
+  color: #92969d;
+
+  font-size: 8px;
+
+  text-align: right;
+}
+
+
+.stock-delivery-plan-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+}
+
+
+.stock-delivery-plan-card {
+  display: flex;
+
+  min-width: 0;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 15px 16px;
+}
+
+
+.stock-delivery-plan-card +
+.stock-delivery-plan-card {
+  border-left: 1px solid #eceef0;
+}
+
+
+.stock-delivery-plan-group {
+  display: flex;
+
+  min-width: 0;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.stock-delivery-plan-icon {
+  display: grid;
+
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 32px;
+
+  place-items: center;
+
+  border-radius: 9px;
+
+  color: #171717;
+  background: var(--accent);
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+
+.stock-delivery-plan-group strong,
+.stock-delivery-plan-group small {
+  display: block;
+}
+
+
+.stock-delivery-plan-group strong {
+  color: #26272a;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+.stock-delivery-plan-group small {
+  margin-top: 3px;
+
+  overflow: hidden;
+
+  color: #8a8e95;
+
+  font-size: 8px;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+.stock-delivery-plan-dates {
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+
+.stock-delivery-date-chip {
+  display: inline-flex;
+
+  min-height: 34px;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 0 9px;
+
+  border: 1px solid #e0e3e6;
+  border-radius: 9px;
+
+  background: #f8f9fa;
+
+  white-space: nowrap;
+}
+
+
+.stock-delivery-date-chip strong {
+  color: #242527;
+
+  font-size: 9px;
+  font-weight: 900;
+}
+
+
+.stock-delivery-date-chip span {
+  color: #72767e;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.stock-delivery-plan-empty {
+  color: #9a9da3;
+
+  font-size: 9px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .stock-order-selector {
+    min-width: 0;
+  }
+
+
+  .stock-order-date-input {
+    height: 40px;
+
+    font-size: 12px;
+  }
+
+
+  .stock-delivery-plan {
+    margin:
+      0 16px
+      16px;
+  }
+
+
+  .stock-delivery-plan-head {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding: 12px 13px;
+  }
+
+
+  .stock-delivery-plan-head > small {
+    text-align: left;
+  }
+
+
+  .stock-delivery-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .stock-delivery-plan-card {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 11px;
+
+    padding: 13px;
+  }
+
+
+  .stock-delivery-plan-card +
+  .stock-delivery-plan-card {
+    border-top: 1px solid #eceef0;
+    border-left: 0;
+  }
+
+
+  .stock-delivery-plan-dates {
+    width: 100%;
+
+    justify-content: flex-start;
+  }
+
+
+  .stock-delivery-date-chip {
+    min-height: 36px;
+  }
+
+}

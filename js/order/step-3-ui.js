@@ -430,38 +430,33 @@
     }
 
 
-    if (
-      tab === "cola"
-    ) {
+    const labels = {
 
-      note.textContent =
-        "Расчет Cola готов";
+      cola:
+        "Cola",
 
-      return;
+      fresh:
+        "Fresh",
 
-    }
+      freezer:
+        "Freezer",
 
+      cooler:
+        "Cooler",
 
-    if (
-      tab === "general"
-    ) {
+      dry:
+        "Сухой"
 
-      note.textContent =
-        "Расчет Основных товаров готов";
-
-      return;
-
-    }
+    };
 
 
-    if (
-      tab === "fresh"
-    ) {
+    const label =
+      labels[tab] ||
+      tab;
 
-      note.textContent =
-        "Fresh FEFO расчет готов";
 
-    }
+    note.textContent =
+      `Расчет ${label} готов`;
 
   }
 
@@ -1966,11 +1961,91 @@
   }
 
 
-  function renderGeneral() {
+  /* =====================================================
+   GENERAL — CATEGORY HELPERS
+===================================================== */
+
+function normalizeGeneralCategory(
+  value
+) {
+
+  const category =
+    String(
+      value || ""
+    )
+      .trim()
+      .toLowerCase();
+
+
+  if (
+    category === "freezer"
+  ) {
+
+    return "freezer";
+
+  }
+
+
+  if (
+    category === "cooler"
+  ) {
+
+    return "cooler";
+
+  }
+
+
+  if (
+    category === "сухой" ||
+    category === "сухие" ||
+    category === "dry"
+  ) {
+
+    return "dry";
+
+  }
+
+
+  return category;
+
+}
+
+
+/* =====================================================
+   GET CATEGORY RESULTS
+===================================================== */
+
+function getGeneralCategoryResults(
+  categoryKey
+) {
+
+  return state.generalResults.filter(
+    function (item) {
+
+      return (
+        normalizeGeneralCategory(
+          item.product?.category
+        ) === categoryKey
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   RENDER GENERAL CATEGORY
+===================================================== */
+
+function renderGeneralCategory(
+    categoryKey,
+    categoryLabel
+  ) {
 
     const panel =
       root.querySelector(
-        "#step3-panel-general"
+        `#step3-panel-${categoryKey}`
       );
 
 
@@ -1981,27 +2056,60 @@
     }
 
 
+    const results =
+      getGeneralCategoryResults(
+        categoryKey
+      );
+
+
+    if (!results.length) {
+
+      panel.innerHTML = `
+        <div class="step3-category-empty">
+          Нет товаров категории
+          ${escapeHTML(categoryLabel)}
+        </div>
+      `;
+
+
+      return;
+
+    }
+
+
     const successful =
-      state.generalResults.filter(
+      results.filter(
         item => item.ok
       );
 
 
+    const failed =
+      results.filter(
+        item => !item.ok
+      );
+
+
     const first =
-      successful[0];
+      successful[0] ||
+      null;
 
 
     const totalCases =
       successful.reduce(
-        (
+        function (
           total,
           item
-        ) =>
-          total +
-          Number(
-            item.totalRecommendedCases ||
-            0
-          ),
+        ) {
+
+          return (
+            total +
+            Number(
+              item.totalRecommendedCases ||
+              0
+            )
+          );
+
+        },
         0
       );
 
@@ -2020,7 +2128,9 @@
         <div class="step3-cola-summary-card">
 
           <span>
-            Основных позиций
+            Позиций ${escapeHTML(
+              categoryLabel
+            )}
           </span>
 
           <strong>
@@ -2028,7 +2138,11 @@
           </strong>
 
           <small>
-            Все рассчитаны
+            ${
+              failed.length
+                ? `Ошибок: ${failed.length}`
+                : "Все рассчитаны"
+            }
           </small>
 
         </div>
@@ -2066,27 +2180,35 @@
           </span>
 
           <strong>
+
             ${
               first?.deliveries?.[1]
+
                 ? escapeHTML(
                     getWeekdayShort(
                       first.deliveries[1].date
                     )
                   )
+
                 : "—"
             }
+
           </strong>
 
           <small>
+
             ${
               first?.deliveries?.[1]
+
                 ? escapeHTML(
                     formatDate(
                       first.deliveries[1].date
                     )
                   )
+
                 : "—"
             }
+
           </small>
 
         </div>
@@ -2109,7 +2231,9 @@
           </strong>
 
           <small>
-            всего Основные
+            всего ${escapeHTML(
+              categoryLabel
+            )}
           </small>
 
         </div>
@@ -2125,12 +2249,28 @@
           </span>
 
           <strong>
+
             ${
               risks.length
+
                 ? `${risks.length} риск`
+
                 : "OK"
             }
+
           </strong>
+
+          <small>
+
+            ${
+              risks.length
+
+                ? "могут закончиться"
+
+                : "товара хватает"
+            }
+
+          </small>
 
         </div>
 
@@ -2146,6 +2286,7 @@
               🔴 До первой поставки могут закончиться:
 
               <strong>
+
                 ${
                   risks
                     .map(
@@ -2156,6 +2297,7 @@
                     )
                     .join(", ")
                 }
+
               </strong>
 
             </div>
@@ -2165,9 +2307,18 @@
       }
 
 
-      <div class="step3-general-list">
-        ${renderGeneralGroups()}
+      <div class="step3-cola-list">
+
+        ${
+          results
+            .map(
+              renderGeneralCard
+            )
+            .join("")
+        }
+
       </div>
+
     `;
 
   }
@@ -3721,11 +3872,29 @@
 
     renderMeta();
 
+
     renderCola();
 
-    renderGeneral();
 
     renderFresh();
+
+
+    renderGeneralCategory(
+      "freezer",
+      "Freezer"
+    );
+
+
+    renderGeneralCategory(
+      "cooler",
+      "Cooler"
+    );
+
+
+    renderGeneralCategory(
+      "dry",
+      "Сухой"
+    );
 
 
     setActiveTab(
@@ -3758,7 +3927,15 @@
 
   }
 
+  /* =====================================================
+    GET ACTIVE TAB
+  ===================================================== */
 
+  function getActiveTab() {
+
+    return state.activeTab;
+
+  }
   /* =====================================================
      PUBLIC API
   ===================================================== */
@@ -3771,7 +3948,9 @@
 
     showError,
 
-    setActiveTab
+    setActiveTab,
+
+    getActiveTab
 
   };
 

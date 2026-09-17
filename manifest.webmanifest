@@ -1,0 +1,23 @@
+{
+  "name": "izakaz",
+  "short_name": "izakaz",
+  "description": "Система заказа и инвентаризации",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#17181a",
+  "theme_color": "#17181a",
+  "icons": [
+    {
+      "src": "assets/images/izakaz-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/izakaz-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
