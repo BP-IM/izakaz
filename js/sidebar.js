@@ -219,10 +219,19 @@
           Выйти
         </button>
 
+        <div
+          class="sidebar-version"
+          data-app-version
+        ></div>
+
       </div>
 
     </aside>
   `;
+
+  window.renderIzakazVersion?.(
+    sidebarContainer
+  );
 
 
   /* =====================================================
