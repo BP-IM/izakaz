@@ -2,7 +2,7 @@
    IZAKAZ VERSION
 ===================================================== */
 
-window.IZAKAZ_VERSION = "0.1.0";
+window.IZAKAZ_VERSION = "0.2.0";
 
 
 window.renderIzakazVersion = function (root = document) {
