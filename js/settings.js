@@ -1,21 +1,37 @@
 /* =====================================================
-   I’M | ЗАКАЗ
-   SETTINGS TAB LOADER
+   IZAKAZ v0.2.0
+   SETTINGS MODULE LOADER
+
+   Route:
+   #settings-delivery  -> delivery
+   #settings-products  -> products
+
+   Кейін:
+   #settings-sales     -> sales
+   #settings-profile   -> profile
 ===================================================== */
 
 (function () {
+  "use strict";
 
-  const TAB_CONFIG = {
+
+  /* =====================================================
+     SETTINGS MODULES
+  ===================================================== */
+
+  const SETTINGS_MODULES = {
 
     delivery: {
+      title: "График поставок",
+
       html:
-        "./views/settings/delivery-schedule.html",
+        "./views/settings/delivery-schedule/delivery-schedule.html",
 
       css:
-        "./views/settings/css/delivery-schedule.css",
+        "./views/settings/delivery-schedule/delivery-schedule.css",
 
       js:
-        "./views/settings/js/delivery-schedule.js",
+        "./views/settings/delivery-schedule/delivery-schedule.js",
 
       module:
         "DeliveryScheduleSettings"
@@ -23,32 +39,140 @@
 
 
     products: {
+      title: "Товары",
+
       html:
-        "./views/settings/order-products.html",
+        "./views/settings/products/products.html",
 
       css:
-        "./views/settings/css/order-products.css",
+        "./views/settings/products/products.css",
 
       js:
-        "./views/settings/js/order-products.js",
+        "./views/settings/products/products.js",
 
       module:
         "OrderProductsSettings"
+    },
+
+    profile: {
+      title: "Профиль",
+
+      html:
+        "./views/settings/profile/profile.html",
+
+      css:
+        "./views/settings/profile/profile.css",
+
+      js:
+        "./views/settings/profile/profile.js",
+
+      module:
+        "ProfileSettings"
+    }, 
+
+    sales: {
+      title: "Реализация",
+
+      html:
+        "./views/settings/sales/sales.html",
+
+      css:
+        "./views/settings/sales/sales.css",
+
+      js:
+        "./views/settings/sales/sales.js",
+
+      module:
+        "SalesSettings"
     }
 
   };
 
+  
 
-  let initializedRoot = null;
 
-  let activeTab =
-    "delivery";
+  /* =====================================================
+     STATE
+  ===================================================== */
 
   let loadVersion = 0;
 
 
   /* =====================================================
-     CSS
+     CURRENT SETTINGS TAB
+  ===================================================== */
+
+  function getCurrentSettingsTab() {
+
+    const currentPage =
+      window.IZAKAZ_CURRENT_PAGE;
+
+
+    const settingsTab =
+      currentPage
+        ?.config
+        ?.settingsTab;
+
+
+    if (
+      settingsTab &&
+      SETTINGS_MODULES[settingsTab]
+    ) {
+      return settingsTab;
+    }
+
+
+    /*
+      Fallback:
+      егер қандай да бір ескі кодпен
+      #settings ашылса.
+    */
+
+    return "delivery";
+  }
+
+
+  /* =====================================================
+     PAGE TITLE
+  ===================================================== */
+
+  function updateSettingsHeader(
+    tab
+  ) {
+
+    const config =
+      SETTINGS_MODULES[tab];
+
+
+    const label =
+      document.getElementById(
+        "settings-page-label"
+      );
+
+
+    const title =
+      document.getElementById(
+        "settings-page-title"
+      );
+
+
+    if (label) {
+      label.textContent =
+        "Настройки";
+    }
+
+
+    if (title) {
+      title.textContent =
+        config?.title ||
+        "Настройки";
+    }
+
+  }
+
+
+  /* =====================================================
+     CSS LOADER
   ===================================================== */
 
   function ensureStylesheet(
@@ -89,8 +213,39 @@
   }
 
 
+  function refreshThemeOverrides() {
+
+    document
+      .getElementById(
+        "dynamic-theme-overrides"
+      )
+      ?.remove();
+
+
+    const link =
+      document.createElement(
+        "link"
+      );
+
+
+    link.id =
+      "dynamic-theme-overrides";
+
+    link.rel =
+      "stylesheet";
+
+    link.href =
+      "../css/dynamic-theme.css";
+
+    document.head.appendChild(
+      link
+    );
+
+  }
+
+
   /* =====================================================
-     JS
+     JS LOADER
   ===================================================== */
 
   function ensureScript(
@@ -106,17 +261,25 @@
       document.getElementById(id);
 
 
-    if (existing) {
+    /*
+      Скрипт уже полностью загружен.
+    */
 
-      if (
-        existing.dataset.loaded ===
+    if (
+      existing &&
+      existing.dataset.loaded ===
         "true"
-      ) {
+    ) {
+      return Promise.resolve();
+    }
 
-        return Promise.resolve();
 
-      }
+    /*
+      Скрипт уже добавлен,
+      но еще загружается.
+    */
 
+    if (existing) {
 
       return new Promise(
         function (
@@ -147,6 +310,10 @@
     }
 
 
+    /*
+      Создаем новый script.
+    */
+
     return new Promise(
       function (
         resolve,
@@ -159,11 +326,14 @@
           );
 
 
-        script.id = id;
+        script.id =
+          id;
 
-        script.src = src;
+        script.src =
+          src;
 
-        script.async = true;
+        script.async =
+          true;
 
 
         script.addEventListener(
@@ -204,39 +374,64 @@
 
 
   /* =====================================================
-     ACTIVE TAB
+     LOADING STATE
   ===================================================== */
 
-  function updateTabs(
-    root,
-    tab
+  function showLoading(
+    container
   ) {
 
-    root
-      .querySelectorAll(
-        "[data-settings-tab]"
-      )
-      .forEach(
-        function (button) {
-
-          button.classList.toggle(
-            "is-active",
-
-            button.dataset
-              .settingsTab === tab
-          );
-
-        }
-      );
+    container.innerHTML = `
+      <div class="settings-loading" role="status" aria-live="polite">
+        <span class="app-module-loader" aria-hidden="true"></span>
+        <strong class="app-module-loading-title">Загрузка настроек…</strong>
+        <span class="app-module-loading-note">Подготавливаем раздел</span>
+      </div>
+    `;
 
   }
 
 
   /* =====================================================
-     LOAD TAB
+     ERROR STATE
   ===================================================== */
 
-  async function loadTab(
+  function showError(
+    container,
+    error
+  ) {
+
+    console.error(
+      "Settings module error:",
+      error
+    );
+
+
+    container.innerHTML = `
+      <div class="settings-error">
+
+        <strong>
+          Не удалось загрузить настройки
+        </strong>
+
+        <span>
+          ${String(
+            error?.message ||
+            error
+          )}
+        </span>
+
+      </div>
+    `;
+
+  }
+
+
+  /* =====================================================
+     LOAD SETTINGS MODULE
+  ===================================================== */
+
+  async function loadModule(
     tab
   ) {
 
@@ -246,10 +441,7 @@
       );
 
 
-    if (
-      !root ||
-      !TAB_CONFIG[tab]
-    ) {
+    if (!root) {
       return;
     }
 
@@ -265,28 +457,41 @@
     }
 
 
-    activeTab = tab;
+    const config =
+      SETTINGS_MODULES[tab];
 
 
-    updateTabs(
+    if (!config) {
+
+      showError(
+        container,
+        new Error(
+          `Неизвестный раздел настроек: ${tab}`
+        )
+      );
+
+      return;
+    }
+
+
+    window.IzakazPageLoading?.show(
       root,
+      `Загрузка: ${config.title}…`
+    );
+
+
+    updateSettingsHeader(
       tab
     );
 
 
-    const config =
-      TAB_CONFIG[tab];
-
-
-    const version =
+    const currentLoad =
       ++loadVersion;
 
 
-    container.innerHTML = `
-      <div class="settings-loading">
-        Загрузка...
-      </div>
-    `;
+    showLoading(
+      container
+    );
 
 
     try {
@@ -297,7 +502,16 @@
       );
 
 
-      const [html] =
+      refreshThemeOverrides();
+
+
+      /*
+        HTML + JS загружаем параллельно.
+      */
+
+      const [
+        html
+      ] =
         await Promise.all([
 
           fetch(
@@ -309,14 +523,10 @@
             .then(
               function (response) {
 
-                if (
-                  !response.ok
-                ) {
-
+                if (!response.ok) {
                   throw new Error(
                     `HTTP ${response.status}: ${config.html}`
                   );
-
                 }
 
 
@@ -334,8 +544,14 @@
         ]);
 
 
+      /*
+        Если пользователь успел перейти
+        на другой route — старый ответ
+        больше не вставляем.
+      */
+
       if (
-        version !==
+        currentLoad !==
         loadVersion
       ) {
         return;
@@ -345,6 +561,11 @@
       container.innerHTML =
         html;
 
+
+      /*
+        Инициализация конкретного
+        settings-модуля.
+      */
 
       const moduleObject =
         window[
@@ -364,30 +585,30 @@
 
       }
 
-    } catch (error) {
 
-      console.error(
-        "Settings tab error:",
-        error
+      window.IzakazPageLoading?.hide(
+        root
       );
 
 
-      container.innerHTML = `
-        <div class="settings-error">
+    } catch (error) {
 
-          <strong>
-            Не удалось загрузить настройки
-          </strong>
+      window.IzakazPageLoading?.hide(
+        root
+      );
 
-          <span>
-            ${String(
-              error.message ||
-              error
-            )}
-          </span>
+      if (
+        currentLoad !==
+        loadVersion
+      ) {
+        return;
+      }
 
-        </div>
-      `;
+
+      showError(
+        container,
+        error
+      );
 
     }
 
@@ -395,7 +616,7 @@
 
 
   /* =====================================================
-     INIT
+     INIT SETTINGS PAGE
   ===================================================== */
 
   function initSettingsPage() {
@@ -406,93 +627,105 @@
       );
 
 
-    if (
-      !root ||
-      root === initializedRoot
-    ) {
+    if (!root) {
       return;
     }
 
 
-    initializedRoot =
-      root;
+    const tab =
+      getCurrentSettingsTab();
 
 
-    activeTab =
-      "delivery";
-
-
-    root.addEventListener(
-      "click",
-      function (event) {
-
-        const button =
-          event.target.closest(
-            "[data-settings-tab]"
-          );
-
-
-        if (!button) {
-          return;
-        }
-
-
-        loadTab(
-          button.dataset
-            .settingsTab
-        );
-
-      }
-    );
-
-
-    loadTab(
-      "delivery"
+    loadModule(
+      tab
     );
 
   }
 
 
   /* =====================================================
-     SPA WATCH
+     SPA PAGE LOADED
+  ===================================================== */
+
+  document.addEventListener(
+    "app:page-loaded",
+    function (event) {
+
+      const route =
+        event.detail?.route;
+
+
+      if (
+        !route ||
+        !route.startsWith(
+          "settings-"
+        )
+      ) {
+        return;
+      }
+
+
+      initSettingsPage();
+
+    }
+  );
+
+
+  /* =====================================================
+     FALLBACK INITIALIZATION
+
+     Егер DOM дайын кезде settings-page
+     әлдеқашан бар болса.
   ===================================================== */
 
   document.addEventListener(
     "DOMContentLoaded",
-    initSettingsPage
-  );
-
-
-  window.addEventListener(
-    "hashchange",
     function () {
 
-      window.setTimeout(
-        initSettingsPage,
-        0
-      );
+      if (
+        document.getElementById(
+          "settings-page"
+        )
+      ) {
+        initSettingsPage();
+      }
 
     }
   );
 
 
-  const observer =
-    new MutationObserver(
-      initSettingsPage
-    );
-
-
-  observer.observe(
-    document.documentElement,
-    {
-      childList: true,
-      subtree: true
-    }
-  );
-
+  /* =====================================================
+     PUBLIC API
+  ===================================================== */
 
   window.SettingsApp = {
-    loadTab
+
+    load(tab) {
+
+      if (
+        !SETTINGS_MODULES[tab]
+      ) {
+        console.warn(
+          `Settings module not found: ${tab}`
+        );
+
+        return;
+      }
+
+
+      loadModule(
+        tab
+      );
+
+    },
+
+
+    getAvailableModules() {
+      return Object.keys(
+        SETTINGS_MODULES
+      );
+    }
+
   };
 
 })();

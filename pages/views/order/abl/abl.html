@@ -1,0 +1,403 @@
+
+<!-- ==========================================
+     IZAKAZ v0.2.0
+     ORDER ABL — 2 STEP WIZARD
+========================================== -->
+
+<!-- TOPBAR -->
+<header class="page-topbar order-topbar">
+  <div class="page-topbar-left">
+
+    <button
+      id="sidebar-open"
+      class="menu-button"
+      type="button"
+      aria-label="Открыть меню"
+    >
+      ☰
+    </button>
+
+    <div>
+      <p class="page-label">Заказы / ABL</p>
+      <h1>Заказ ABL</h1>
+    </div>
+
+  </div>
+</header>
+
+
+<!-- ORDER ABL PAGE -->
+<section
+  id="abl-order-page"
+  class="order-page abl-order-page ui-page"
+  data-order-type="abl"
+>
+
+  <!-- =====================================
+       DATE SELECTOR
+       Әрқашан жоғарыда тұрады
+  ====================================== -->
+
+  <div class="abl-date-bar">
+
+    <label class="abl-date-field">
+      <span>Дата заказа</span>
+
+      <input
+        id="abl-order-date"
+        type="date"
+        aria-label="Дата заказа ABL"
+      >
+
+      <small>
+        Выберите дату заказа
+      </small>
+    </label>
+
+    <div
+      class="abl-date-status"
+      id="abl-date-status"
+      aria-live="polite"
+    >
+      Загрузка заказа...
+    </div>
+
+  </div>
+
+
+  <!-- =====================================
+       CONFIRMED ORDER
+       Тек расталған заказ көрсетіледі
+  ====================================== -->
+
+  <section
+    id="abl-confirmed-view"
+    class="abl-confirmed-view"
+    hidden
+  >
+
+    <div
+      id="abl-confirmed-content"
+      class="abl-confirmed-content"
+    >
+      Загрузка списка заказа...
+    </div>
+
+  </section>
+
+
+  <!-- =====================================
+       STEPPER — 2 STEPS
+  ====================================== -->
+
+  <nav
+    class="order-stepper abl-stepper"
+    aria-label="Этапы заказа ABL"
+  >
+
+    <!-- STEP 1 -->
+    <button
+      class="order-step is-active"
+      type="button"
+      data-abl-step="1"
+      aria-current="step"
+    >
+
+      <span class="order-step-number">
+        1
+      </span>
+
+      <span class="order-step-text">
+        <strong>Остаток</strong>
+        <small>Фактический подсчёт</small>
+      </span>
+
+    </button>
+
+    <div class="order-step-line"></div>
+
+    <!-- STEP 2 -->
+    <button
+      class="order-step"
+      type="button"
+      data-abl-step="2"
+    >
+
+      <span class="order-step-number">
+        2
+      </span>
+
+      <span class="order-step-text">
+        <strong>Заказ</strong>
+        <small>Расчёт и подтверждение</small>
+      </span>
+
+    </button>
+
+  </nav>
+
+
+  <!-- =====================================
+       STEP 1 — STOCK
+  ====================================== -->
+
+  <section
+    id="abl-stock-view"
+    class="abl-step-panel"
+    data-abl-panel="1"
+  >
+
+    <header class="abl-panel-header">
+
+      <p class="abl-panel-kicker">
+        ШАГ 1 ИЗ 2
+      </p>
+
+      <h2>
+        Подсчёт остатков
+      </h2>
+
+      <p>
+        Укажите фактические остатки товаров
+        ABL по категориям.
+        Все данные сохраняются в Supabase.
+      </p>
+
+    </header>
+
+
+    <!-- DELIVERY PLAN -->
+    <div
+      id="abl-delivery-plan"
+      class="abl-delivery-plan"
+    >
+      Загрузка графика поставок...
+    </div>
+
+
+    <!-- CATEGORY TABS -->
+    <nav
+      id="abl-stock-categories"
+      class="abl-stock-categories"
+      aria-label="Категории товаров ABL"
+    >
+
+      <button
+        class="abl-category is-active"
+        type="button"
+        data-abl-category="freezer"
+      >
+        Freezer
+      </button>
+
+      <button
+        class="abl-category"
+        type="button"
+        data-abl-category="cooler"
+      >
+        Cooler
+      </button>
+
+      <button
+        class="abl-category"
+        type="button"
+        data-abl-category="fresh"
+      >
+        Fresh
+      </button>
+
+      <button
+        class="abl-category"
+        type="button"
+        data-abl-category="dry"
+      >
+        Сухой
+      </button>
+
+    </nav>
+
+
+    <!-- COUNT PROGRESS -->
+    <div
+      id="abl-stock-summary"
+      class="abl-stock-summary"
+    >
+
+      <div class="abl-summary-card">
+        <span>Всего товаров</span>
+        <strong id="abl-stock-total">0</strong>
+      </div>
+
+      <div class="abl-summary-card">
+        <span>Подсчитано</span>
+        <strong id="abl-stock-counted">0 / 0</strong>
+      </div>
+
+      <div class="abl-summary-card">
+        <span>Текущая категория</span>
+        <strong id="abl-current-category">Freezer</strong>
+      </div>
+
+    </div>
+
+
+    <!-- AUTOSAVE STATUS -->
+    <div
+      id="abl-stock-status"
+      class="abl-stock-status"
+      aria-live="polite"
+    >
+      Загрузка товаров...
+    </div>
+
+
+    <!-- STOCK TABLE -->
+    <div
+      id="abl-stock-content"
+      class="abl-stock-content"
+    >
+
+      <div class="abl-stock-table-wrap">
+
+        <table class="abl-stock-table">
+
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Наименование</th>
+              <th>CASE</th>
+              <th>SLV</th>
+              <th>Ед.</th>
+              <th>Итого</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody id="abl-stock-products">
+            <tr>
+              <td colspan="7">
+                Загрузка товаров из Supabase...
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+    <!-- FRESH LOTS -->
+    <div
+      id="abl-fresh-lots-content"
+      class="abl-fresh-lots-content"
+      hidden
+    >
+      <!-- Fresh партиялары мен
+           жарамдылық мерзімдері
+           бөлек JS модулінен жүктеледі -->
+    </div>
+
+
+    <!-- STEP 1 FOOTER -->
+    <footer class="abl-panel-footer">
+
+      <span class="abl-footer-note">
+        Шаг 1 — Остаток
+      </span>
+
+      <button
+        type="button"
+        class="abl-button is-primary"
+        data-abl-next
+        disabled
+      >
+        Далее →
+      </button>
+
+    </footer>
+
+  </section>
+
+
+  <!-- =====================================
+       STEP 2 — ORDER CALCULATION
+  ====================================== -->
+
+  <section
+    id="abl-order-view"
+    class="abl-step-panel"
+    data-abl-panel="2"
+    hidden
+  >
+
+    <header class="abl-panel-header">
+
+      <p class="abl-panel-kicker">
+        ШАГ 2 ИЗ 2
+      </p>
+
+      <h2>
+        Расчёт заказа
+      </h2>
+
+      <p>
+        Автоматический расчёт заказа
+        по фактическим остаткам,
+        реализации ПН–ВС и графику
+        поставок ABL.
+      </p>
+
+    </header>
+
+
+    <!-- CALCULATION SUMMARY -->
+    <div
+      id="abl-calculation-summary"
+      class="abl-calculation-summary"
+    ></div>
+
+
+    <!-- ORDER RESULT -->
+    <div
+      id="abl-result-content"
+      class="abl-result-content"
+    >
+
+      <div class="abl-placeholder">
+
+        <strong>
+          Заказ ABL
+        </strong>
+
+        <p>
+          После завершения подсчёта
+          здесь появится расчёт заказа.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- STEP 2 FOOTER -->
+    <footer class="abl-panel-footer">
+
+      <button
+        type="button"
+        class="abl-button is-secondary"
+        data-abl-back
+      >
+        ← Назад
+      </button>
+
+      <span class="abl-footer-note">
+        Шаг 2 — Заказ
+      </span>
+
+    </footer>
+
+  </section>
+
+</section>

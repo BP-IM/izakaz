@@ -1,29 +1,46 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="ru">
 
 <head>
-
   <meta charset="UTF-8">
-
 
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
 
-
   <meta
     name="description"
-    content="Система заказа и инвентаризации"
+    content="IZAKAZ — система заказов и инвентаризации"
   >
 
+  <title>IZAKAZ</title>
 
-  <title>
-    Izakaz
-  </title>
-  <link rel="manifest" href="../manifest.webmanifest">
-  <meta name="theme-color" content="#17181a">
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem("izakaz-theme") === "dark") {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      } catch (_) {
+        // Theme.js will use the default light theme when storage is unavailable.
+      }
+    })();
+  </script>
+
+  <!-- PWA -->
+  <link
+    rel="manifest"
+    href="../manifest.webmanifest"
+  >
+
+  <meta
+    name="theme-color"
+    content="#17181a"
+  >
+
+  <!-- ICONS -->
   <link
     rel="icon"
     type="image/png"
@@ -35,14 +52,11 @@
     href="../assets/images/izakaz-icon.png"
   >
 
-
-  <!-- GOOGLE FONT -->
-
+  <!-- FONT -->
   <link
     rel="preconnect"
     href="https://fonts.googleapis.com"
   >
-
 
   <link
     rel="preconnect"
@@ -50,58 +64,49 @@
     crossorigin
   >
 
-
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
 
-
-
-  <!-- =====================================================
-       CSS
-  ====================================================== -->
+  <!-- =====================================
+       GLOBAL STYLES
+  ====================================== -->
 
   <link
     rel="stylesheet"
     href="../css/sidebar.css"
   >
 
-
   <link
     rel="stylesheet"
     href="../css/dashboard.css"
   >
-
 
   <link
     rel="stylesheet"
     href="../css/home.css"
   >
 
+  <!-- =====================================
+       ORDER STYLES
+  ====================================== -->
 
+  <!-- ORDER COLA -->
   <link
     rel="stylesheet"
-    href="../css/temporary-page.css"
+    href="./views/order/cola/cola.css"
   >
 
-
+  <!-- ORDER ABL -->
   <link
     rel="stylesheet"
-    href="../css/inventory.css"
+    href="./views/order/abl/abl.css"
   >
 
-
-  <link
-    rel="stylesheet"
-    href="../css/inventory-lists.css"
-  >
-
-
-  <link
-    rel="stylesheet"
-    href="../css/order.css"
-  >
+  <!-- =====================================
+       DELIVERY STYLES
+  ====================================== -->
 
   <link
     rel="stylesheet"
@@ -110,136 +115,229 @@
 
   <link
     rel="stylesheet"
-    href="../css/delivery-sheet.css"
+    href="./views/deliveries/abl/abl.css"
   >
+
+  <link
+    rel="stylesheet"
+    href="./views/deliveries/cola/cola.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./views/deliveries/shared/delivery-sheet.css"
+  >
+
+  <!-- =====================================
+       DARK THEME
+  ====================================== -->
 
   <link
     rel="stylesheet"
     href="../css/theme-dark.css"
   >
 
+  <link
+    rel="stylesheet"
+    href="../css/design-system.css"
+  >
+
 </head>
-
-
 
 <body>
 
+  <!-- =====================================
+       APPLICATION LAYOUT
+  ====================================== -->
 
   <div class="app-layout">
 
-
-    <!-- =====================================================
-         SIDEBAR
-         Создается через sidebar.js
-    ====================================================== -->
-
+    <!-- SIDEBAR -->
     <div id="sidebar-container"></div>
 
-
-
-    <!-- =====================================================
-         ОСНОВНОЙ КОНТЕНТ
-    ====================================================== -->
-
+    <!-- MAIN CONTENT -->
     <main class="main-content">
 
-
-      <!--
-        Через page-loader.js сюда
-        загружаются страницы SPA
-      -->
-
+      <!-- SPA PAGE CONTAINER -->
       <div
         id="page-container"
         class="dynamic-page-container"
       >
 
-        <div class="page-loading">
-          Загрузка страницы...
+        <div class="page-loading" role="status" aria-live="polite">
+          <span class="app-module-loader" aria-hidden="true"></span>
+          <strong class="app-module-loading-title">Загрузка страницы…</strong>
+          <span class="app-module-loading-note">Подготавливаем раздел</span>
         </div>
 
       </div>
-
 
     </main>
 
   </div>
 
-
-
-  <!-- =====================================================
+  <!-- =====================================
        SUPABASE
-  ====================================================== -->
+  ====================================== -->
 
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
   ></script>
 
-
   <script
     src="../js/supabase-config.js"
   ></script>
 
+  <!-- =====================================
+       APP CONFIGURATION
+  ====================================== -->
 
-
-  <!-- =====================================================
-       APP JS
-  ====================================================== -->
   <script
     src="../js/version.js"
   ></script>
 
   <script
+    src="../js/navigation-config.js"
+  ></script>
+
+  <!-- =====================================
+       SIDEBAR
+  ====================================== -->
+
+  <script
     src="../js/sidebar.js"
   ></script>
 
+  <!-- =====================================
+       HOME
+  ====================================== -->
 
   <script
     src="../js/home.js"
   ></script>
 
+  <!-- =====================================
+       INVENTORY
+  ====================================== -->
 
   <script
     src="../js/inventory.js"
   ></script>
 
+  <!-- =====================================
+       ORDERS — SHARED
+  ====================================== -->
 
   <script
-    src="../js/inventory-lists.js"
+    src="./views/order/shared/order-shell.js"
   ></script>
-
 
   <script
-    src="../js/order.js"
+    src="./views/order/shared/schedule-service.js"
   ></script>
 
-  <script src="../js/order/notes.js"></script>
-  <link rel="stylesheet" href="../css/order/notes.css">
-  <script src="../js/order/step-3-core.js"></script>
-  <script src="../js/order/step-3-cola.js"></script>
+  <script 
+    src="./views/order/shared/usage-service.js">
+  </script>
+
+  <script 
+    src="./views/order/cola/js/calculation.js">
+  </script>
+
+  <script 
+    src="./views/order/cola/js/result.js">
+  </script>
+
+  <script 
+    src="./views/order/cola/js/save.js">
+  </script>
+
+  <!-- =====================================
+       ORDER COLA
+  ====================================== -->
+
+  <script
+    src="./views/order/cola/cola.js"
+  ></script>
+
+  <script
+    src="./views/order/cola/js/stock.js"
+  ></script>
+
+  <!-- =====================================
+       ORDER ABL
+  ====================================== -->
+
+  <script
+    src="./views/order/abl/abl.js"
+  ></script>
+
+  <script 
+    src="./views/order/abl/js/stock.js">
+  </script>
+
+  <script 
+    src="./views/order/abl/js/calculation.js">
+  </script>
+
+  <script 
+    src="./views/order/abl/js/result.js">
+  </script>
+
+  <script 
+    src="./views/order/abl/js/save.js">
+  </script>
+
+  <!-- =====================================
+       DELIVERIES
+  ====================================== -->
 
   <script
     src="../js/deliveries.js"
   ></script>
 
+  <Script
+    src="./views/deliveries/shared/delivery-service.js">
+  </script>
   <script
-    src="../js/delivery-sheet.js"
-  ></script>
-
-  <script 
-    src="../js/settings.js">
+    src="./views/deliveries/abl/abl.js">
+  </script>
+  <script
+    src="./views/deliveries/cola/cola.js">
   </script>
 
+  <script
+    src="./views/deliveries/shared/delivery-print.js">
+  </script>
+
+  <script
+    src="./views/deliveries/shared/delivery-sheet.js">
+  </script>
+
+  <!-- =====================================
+       SETTINGS
+  ====================================== -->
+
+  <script
+    src="../js/settings.js"
+  ></script>
+
+  <!-- =====================================
+       SPA ROUTER
+       Load after all modules
+  ====================================== -->
 
   <script
     src="../js/page-loader.js"
   ></script>
 
+  <!-- =====================================
+       THEME
+  ====================================== -->
+
   <script
     src="../js/theme.js"
   ></script>
 
-  
 </body>
-
 </html>

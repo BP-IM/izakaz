@@ -1,0 +1,301 @@
+<div class="profile-settings ui-page" id="profile-settings">
+
+  <div
+    class="profile-message"
+    id="profile-message"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <!-- ==================================================
+       ЛИЧНЫЕ ДАННЫЕ
+  =================================================== -->
+
+  <section class="profile-card">
+
+    <div class="profile-card-header">
+
+      <div>
+        <h2>Личные данные</h2>
+
+        <p>
+          Основная информация вашего аккаунта.
+        </p>
+      </div>
+
+    </div>
+
+
+    <form
+      class="profile-form"
+      id="profile-personal-form"
+    >
+
+      <div class="profile-form-grid">
+
+        <label class="profile-field">
+
+          <span>
+            Имя и фамилия
+          </span>
+
+          <input
+            id="profile-full-name"
+            type="text"
+            autocomplete="name"
+            placeholder="Введите имя и фамилию"
+            required
+          >
+
+        </label>
+
+
+        <label class="profile-field">
+
+          <span>
+            Номер телефона
+          </span>
+
+          <input
+            id="profile-phone"
+            type="tel"
+            autocomplete="tel"
+            placeholder="+7 700 000 00 00"
+          >
+
+        </label>
+
+
+        <label class="profile-field profile-field-full">
+
+          <span>
+            Электронная почта
+          </span>
+
+          <input
+            id="profile-email"
+            type="email"
+            autocomplete="email"
+            placeholder="example@email.com"
+            required
+          >
+
+          <small>
+            При изменении email может потребоваться подтверждение нового адреса.
+          </small>
+
+        </label>
+
+      </div>
+
+
+      <div class="profile-actions">
+
+        <button
+          class="profile-button profile-button-primary"
+          id="profile-save-button"
+          type="submit"
+        >
+          Сохранить изменения
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <!-- ==================================================
+       РАБОЧИЕ ДАННЫЕ
+  =================================================== -->
+
+  <section class="profile-card">
+
+    <div class="profile-card-header">
+
+      <div>
+        <h2>Рабочие данные</h2>
+
+        <p>
+          Информация о ресторане и уровне доступа.
+        </p>
+      </div>
+
+    </div>
+
+
+    <div class="profile-work-grid">
+
+      <div class="profile-info-item">
+
+        <span class="profile-info-label">
+          Ресторан
+        </span>
+
+        <strong
+          class="profile-info-value"
+          id="profile-restaurant-name"
+        >
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="profile-info-item">
+
+        <span class="profile-info-label">
+          Код ресторана
+        </span>
+
+        <strong
+          class="profile-info-value"
+          id="profile-restaurant-code"
+        >
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="profile-info-item">
+
+        <span class="profile-info-label">
+          Роль
+        </span>
+
+        <strong
+          class="profile-info-value"
+          id="profile-role"
+        >
+          —
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       БЕЗОПАСНОСТЬ
+  =================================================== -->
+
+  <section class="profile-card">
+
+    <div class="profile-card-header">
+
+      <div>
+        <h2>Безопасность</h2>
+
+        <p>
+          Изменение пароля текущего аккаунта.
+        </p>
+      </div>
+
+    </div>
+
+
+    <form
+      class="profile-form"
+      id="profile-password-form"
+    >
+
+      <div class="profile-form-grid">
+
+        <label class="profile-field">
+
+          <span>
+            Новый пароль
+          </span>
+
+          <div class="profile-password-wrap">
+
+            <input
+              id="profile-new-password"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Минимум 6 символов"
+            >
+
+            <button
+              class="profile-password-toggle"
+              type="button"
+              data-target="profile-new-password"
+            >
+              Показать
+            </button>
+
+          </div>
+
+        </label>
+
+
+        <label class="profile-field">
+
+          <span>
+            Повторите пароль
+          </span>
+
+          <div class="profile-password-wrap">
+
+            <input
+              id="profile-confirm-password"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Повторите новый пароль"
+            >
+
+            <button
+              class="profile-password-toggle"
+              type="button"
+              data-target="profile-confirm-password"
+            >
+              Показать
+            </button>
+
+          </div>
+
+        </label>
+
+      </div>
+
+
+      <div class="profile-actions">
+
+        <button
+          class="profile-button"
+          id="profile-password-button"
+          type="submit"
+        >
+          Изменить пароль
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <!-- ==================================================
+       LOADING
+  =================================================== -->
+
+  <div
+    class="profile-loading"
+    id="profile-loading"
+  >
+
+    <div class="profile-spinner"></div>
+
+    <span>
+      Загрузка профиля...
+    </span>
+
+  </div>
+
+</div>

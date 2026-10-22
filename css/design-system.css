@@ -1,0 +1,186 @@
+/* =====================================================
+   IZAKAZ DESIGN SYSTEM
+   Shared tokens and page-shell rules. New UI should use
+   these variables rather than hard-coded light colours.
+===================================================== */
+
+:root {
+  --ui-page: #f4f5f7;
+  --ui-surface: #ffffff;
+  --ui-surface-soft: #f7f8fa;
+  --ui-text: #18191b;
+  --ui-muted: #747880;
+  --ui-line: #e3e5e8;
+  --ui-accent: #ffc400;
+  --ui-radius: 16px;
+  --ui-shadow: 0 14px 40px rgba(18, 20, 23, 0.08);
+}
+
+html[data-theme="dark"] {
+  --ui-page: #171b21;
+  --ui-surface: #20242c;
+  --ui-surface-soft: #292e38;
+  --ui-text: #f1f3f5;
+  --ui-muted: #aab2bf;
+  --ui-line: #343a43;
+  --ui-shadow: 0 14px 40px rgba(0, 0, 0, 0.24);
+}
+
+/* One visual contract for the headers used by routed pages. */
+.page-topbar,
+.home-topbar,
+.dcola-topbar,
+.delivery-sheet-topbar {
+  border-bottom: 1px solid var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+
+.page-topbar h1,
+.home-topbar h1,
+.dcola-topbar h1,
+.delivery-sheet-topbar h1 {
+  color: var(--ui-text);
+  letter-spacing: -0.03em;
+}
+
+.page-topbar .page-label,
+.home-topbar .page-label,
+.dcola-topbar .dcola-eyebrow {
+  color: var(--ui-muted);
+}
+
+/* Reusable primitives for every new screen or component. */
+.ui-page {
+  min-height: 100%;
+  color: var(--ui-text);
+  background: var(--ui-page);
+}
+
+.ui-card {
+  border: 1px solid var(--ui-line);
+  border-radius: var(--ui-radius);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow);
+}
+
+.ui-field {
+  border: 1px solid var(--ui-line);
+  border-radius: 10px;
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+
+.ui-field::placeholder {
+  color: var(--ui-muted);
+}
+
+.ui-button-secondary {
+  border: 1px solid var(--ui-line);
+  border-radius: 10px;
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+
+.ui-button-primary {
+  border: 0;
+  border-radius: 10px;
+  color: #171717;
+  background: var(--ui-accent);
+}
+
+/* Route/module loading always uses the same readable full-page state. */
+.page-loading,
+.settings-loading,
+.inventory-loading {
+  display: grid;
+  min-height: min(58vh, 560px);
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 32px;
+  color: var(--ui-text);
+  background: var(--ui-page);
+  text-align: center;
+}
+
+.app-module-loader {
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--ui-line);
+  border-top-color: var(--ui-accent);
+  border-radius: 50%;
+  animation: app-module-spin 0.7s linear infinite;
+}
+
+.app-module-loading-title {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.app-module-loading-note {
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+
+/* Data overlay: the shell header stays available while a page waits for its
+   own data. It deliberately covers the full content area, not one card. */
+.app-page-loading-host {
+  position: relative;
+  min-height: min(58vh, 720px);
+}
+
+.app-page-data-loading {
+  position: absolute;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  min-height: 100%;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 32px;
+  color: var(--ui-text);
+  background: color-mix(in srgb, var(--ui-page) 91%, transparent);
+  backdrop-filter: blur(1px);
+  text-align: center;
+}
+
+/* Cola deliveries owns its page header inside the page root. */
+#deliveries-cola-page.app-page-loading-host > .app-page-data-loading {
+  top: 112px;
+}
+
+@media (max-width: 650px) {
+  #deliveries-cola-page.app-page-loading-host > .app-page-data-loading {
+    top: 100px;
+  }
+}
+
+@keyframes app-module-spin {
+  to { transform: rotate(360deg); }
+}
+
+html[data-theme="dark"] #deliveries-cola-page .dcola-topbar {
+  border-color: var(--ui-line) !important;
+  color: var(--ui-text) !important;
+  background: rgba(23, 27, 33, 0.96) !important;
+}
+
+html[data-theme="dark"] #deliveries-cola-page .dcola-topbar :is(h1, .dcola-eyebrow, .dcola-subtitle) {
+  color: var(--ui-text) !important;
+}
+
+html[data-theme="dark"] #deliveries-cola-page .dcola-topbar :is(.dcola-eyebrow, .dcola-subtitle) {
+  color: var(--ui-muted) !important;
+}
+
+@media (max-width: 650px) {
+  .page-topbar,
+  .home-topbar,
+  .dcola-topbar,
+  .delivery-sheet-topbar {
+    padding-inline: 20px;
+  }
+}

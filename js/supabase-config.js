@@ -5,3 +5,7 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
+
+// Some independently loaded page modules (for example, the delivery sheet)
+// access the shared client through window. Keep one explicit public reference.
+window.supabaseClient = supabaseClient;

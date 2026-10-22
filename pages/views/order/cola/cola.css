@@ -1,0 +1,1235 @@
+
+/* ==========================================
+   IZAKAZ v0.2.0
+   ORDER COLA
+========================================== */
+
+#cola-order-page {
+  --cola-accent: #ffc400;
+  --cola-text: #202124;
+  --cola-muted: #81868e;
+  --cola-border: #e6e8eb;
+  --cola-surface: #ffffff;
+  --cola-soft: #f7f8f9;
+
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+  color: var(--cola-text);
+}
+
+#cola-order-page * {
+  box-sizing: border-box;
+}
+
+/* HEADER */
+
+#cola-order-page .cola-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+
+#cola-order-page .cola-header-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+#cola-order-page .cola-kicker,
+#cola-order-page .cola-panel-kicker {
+  margin: 0 0 7px;
+  color: #a47a00;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+}
+
+#cola-order-page .cola-header h1 {
+  margin: 0;
+  color: var(--cola-text);
+  font-size: 27px;
+  font-weight: 800;
+}
+
+#cola-order-page .cola-description {
+  margin: 8px 0 0;
+  color: var(--cola-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+#cola-order-page .cola-header-status {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 145px;
+  padding: 14px 17px;
+  border: 1px solid var(--cola-border);
+  border-radius: 13px;
+  background: var(--cola-surface);
+}
+
+#cola-order-page .cola-header-status span {
+  color: var(--cola-muted);
+  font-size: 10px;
+}
+
+#cola-order-page .cola-header-status strong {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* STEPPER */
+
+#cola-order-page .cola-stepper {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 24px;
+  padding: 15px 20px;
+  border: 1px solid var(--cola-border);
+  border-radius: 18px;
+  background: var(--cola-surface);
+}
+
+#cola-order-page .cola-step {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+#cola-order-page .cola-step.is-active {
+  background: rgba(255, 196, 0, 0.12);
+  border-color: rgba(255, 196, 0, 0.4);
+}
+
+#cola-order-page .cola-step-number {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--cola-soft);
+  color: var(--cola-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+#cola-order-page .cola-step.is-active
+.cola-step-number {
+  background: var(--cola-accent);
+  color: #171717;
+}
+
+#cola-order-page .cola-step-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#cola-order-page .cola-step-info strong {
+  color: var(--cola-text);
+  font-size: 13px;
+}
+
+#cola-order-page .cola-step-info small {
+  color: var(--cola-muted);
+  font-size: 10px;
+}
+
+#cola-order-page .cola-step-line {
+  flex: 0 0 55px;
+  height: 2px;
+  background: var(--cola-border);
+}
+
+/* PANELS */
+
+#cola-order-page .cola-step-panel {
+  overflow: hidden;
+  border: 1px solid var(--cola-border);
+  border-radius: 18px;
+  background: var(--cola-surface);
+}
+
+#cola-order-page .cola-step-panel[hidden] {
+  display: none !important;
+}
+
+#cola-order-page .cola-panel-header {
+  padding: 24px 27px;
+  border-bottom: 1px solid var(--cola-border);
+}
+
+#cola-order-page .cola-panel-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+#cola-order-page .cola-panel-header p:not(
+  .cola-panel-kicker
+) {
+  margin: 8px 0 0;
+  color: var(--cola-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* MODULE CONTENT */
+
+#cola-order-page .cola-module-content {
+  min-height: 260px;
+  padding: 25px 27px;
+}
+
+#cola-order-page
+.cola-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 250px;
+  padding: 28px;
+  border: 1px dashed var(--cola-border);
+  border-radius: 14px;
+  background: var(--cola-soft);
+  text-align: center;
+}
+
+#cola-order-page .cola-placeholder-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: rgba(255, 196, 0, 0.2);
+  color: #8f6a00;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+#cola-order-page .cola-placeholder h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+#cola-order-page .cola-placeholder p {
+  max-width: 400px;
+  margin: 0;
+  color: var(--cola-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+#cola-order-page .cola-placeholder > span {
+  color: #a47a00;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* FOOTER */
+
+#cola-order-page .cola-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 17px 27px;
+  border-top: 1px solid var(--cola-border);
+}
+
+#cola-order-page .cola-footer-note {
+  color: var(--cola-muted);
+  font-size: 11px;
+}
+
+#cola-order-page .cola-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 41px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#cola-order-page .cola-button.is-primary {
+  border: 0;
+  background: var(--cola-accent);
+  color: #171717;
+}
+
+#cola-order-page .cola-button.is-secondary {
+  border: 1px solid var(--cola-border);
+  background: var(--cola-surface);
+  color: var(--cola-text);
+}
+
+/* DARK THEME */
+
+html[data-theme="dark"] #cola-order-page {
+  --cola-text: #f1f2f3;
+  --cola-muted: #a1a6ad;
+  --cola-border: #383b41;
+  --cola-surface: #24262a;
+  --cola-soft: #2b2d32;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+  #cola-order-page {
+    padding: 17px 12px 32px;
+  }
+
+  #cola-order-page .cola-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #cola-order-page .cola-header h1 {
+    font-size: 23px;
+  }
+
+  #cola-order-page .cola-header-status {
+    width: 100%;
+  }
+
+  #cola-order-page .cola-stepper {
+    gap: 5px;
+    padding: 9px;
+  }
+
+  #cola-order-page .cola-step {
+    gap: 7px;
+    padding: 9px 7px;
+  }
+
+  #cola-order-page .cola-step-number {
+    width: 29px;
+    height: 29px;
+  }
+
+  #cola-order-page .cola-step-info strong {
+    font-size: 11px;
+  }
+
+  #cola-order-page .cola-step-info small {
+    font-size: 9px;
+  }
+
+  #cola-order-page .cola-step-line {
+    flex-basis: 12px;
+  }
+
+  #cola-order-page .cola-panel-header,
+  #cola-order-page .cola-module-content,
+  #cola-order-page .cola-panel-footer {
+    padding: 18px 15px;
+  }
+}
+
+
+/* ==========================================
+   COLA — STEP 1 STOCK
+========================================== */
+
+#cola-order-page .cola-stock-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+#cola-order-page .cola-stock-date-field,
+#cola-order-page .cola-stock-plan {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 220px;
+  padding: 15px;
+  border: 1px solid var(--cola-border);
+  border-radius: 12px;
+  background: var(--cola-soft);
+}
+
+#cola-order-page .cola-stock-toolbar span {
+  color: var(--cola-muted);
+  font-size: 11px;
+}
+
+#cola-order-page .cola-stock-date-field input {
+  min-height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--cola-border);
+  border-radius: 9px;
+  background: var(--cola-surface);
+  color: var(--cola-text);
+  font: inherit;
+}
+
+#cola-order-page .cola-stock-toolbar small {
+  color: var(--cola-muted);
+  font-size: 10px;
+}
+
+#cola-order-page .cola-stock-plan strong {
+  font-size: 15px;
+}
+
+#cola-order-page .cola-stock-summary {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+#cola-order-page .cola-stock-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  padding: 15px;
+  border: 1px solid var(--cola-border);
+  border-radius: 12px;
+}
+
+#cola-order-page .cola-stock-summary span {
+  font-size: 10px;
+  color: var(--cola-muted);
+}
+
+#cola-order-page .cola-stock-summary strong {
+  font-size: 20px;
+}
+
+#cola-order-page .cola-stock-status {
+  margin-bottom: 15px;
+  color: var(--cola-muted);
+  font-size: 11px;
+}
+
+#cola-order-page .cola-stock-status.is-error {
+  color: #c44747;
+}
+
+#cola-order-page .cola-stock-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--cola-border);
+  border-radius: 12px;
+}
+
+#cola-order-page .cola-stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+
+#cola-order-page .cola-stock-table th {
+  padding: 13px 11px;
+  background: var(--cola-soft);
+  color: var(--cola-muted);
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+#cola-order-page .cola-stock-table td {
+  padding: 12px 11px;
+  border-top: 1px solid var(--cola-border);
+  vertical-align: middle;
+  font-size: 12px;
+}
+
+#cola-order-page .cola-stock-table tr.is-counted {
+  background: rgba(255, 196, 0, 0.045);
+}
+
+#cola-order-page .cola-stock-name,
+#cola-order-page .cola-stock-code {
+  display: block;
+}
+
+#cola-order-page .cola-stock-code {
+  margin-top: 5px;
+  color: var(--cola-muted);
+  font-size: 10px;
+}
+
+#cola-order-page .cola-stock-input {
+  width: 75px;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--cola-border);
+  border-radius: 8px;
+  background: var(--cola-surface);
+  color: var(--cola-text);
+  font-size: 12px;
+  text-align: center;
+}
+
+#cola-order-page .cola-stock-input:focus {
+  outline: 2px solid var(--cola-accent);
+  outline-offset: 1px;
+}
+
+#cola-order-page .cola-stock-na {
+  color: var(--cola-muted);
+}
+
+#cola-order-page .cola-stock-zero {
+  width: 31px;
+  height: 31px;
+  border: 1px solid var(--cola-border);
+  border-radius: 8px;
+  background: var(--cola-soft);
+  color: var(--cola-text);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  #cola-order-page .cola-stock-toolbar,
+  #cola-order-page .cola-stock-summary {
+    flex-direction: column;
+  }
+
+  #cola-order-page .cola-stock-date-field,
+  #cola-order-page .cola-stock-plan {
+    min-width: 0;
+  }
+}
+
+
+/* ==========================================
+   COLA — COUNTED PRODUCTS
+========================================== */
+
+/* Саналған тауар — жасыл фон */
+#cola-order-page
+.cola-stock-table tbody tr.is-counted td {
+  background-color: #e5f6e9;
+  border-top-color: #c7e8cf;
+}
+
+/* Сол жағындағы жасыл белгі */
+#cola-order-page
+.cola-stock-table tbody tr.is-counted td:first-child {
+  border-left: 4px solid #22a55a;
+}
+
+/* Итого — жасыл */
+#cola-order-page
+.cola-stock-table tbody tr.is-counted
+[data-cola-stock-total] {
+  color: #16803d;
+  font-weight: 800;
+}
+
+/* Енгізілген сан өрістері */
+#cola-order-page
+.cola-stock-table tbody tr.is-counted
+.cola-stock-input {
+  border-color: #b5dfc0;
+  background-color: #ffffff;
+}
+
+/* DARK THEME */
+html[data-theme="dark"] #cola-order-page
+.cola-stock-table tbody tr.is-counted td {
+  background-color: #1e382a;
+  border-top-color: #315b3f;
+}
+
+html[data-theme="dark"] #cola-order-page
+.cola-stock-table tbody tr.is-counted
+[data-cola-stock-total] {
+  color: #65d991;
+}
+
+/* Counted rows used a hard-coded white input. Keep the input editable and
+   readable without breaking the dark surface of the stock table. */
+html[data-theme="dark"] #cola-order-page .cola-stock-input,
+html[data-theme="dark"] #cola-order-page
+.cola-stock-table tbody tr.is-counted .cola-stock-input {
+  border-color: #477359;
+  background-color: #19261f;
+  color: #f1f3f5;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-stock-input::placeholder {
+  color: #aab2bf;
+  opacity: 1;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-stock-input::-webkit-inner-spin-button,
+html[data-theme="dark"] #cola-order-page .cola-stock-input::-webkit-outer-spin-button {
+  filter: invert(0.85);
+}
+
+
+/* ==========================================
+   COLA STEP 2 — DARK RESULT PALETTE
+
+   The calculation is rendered dynamically by result.js, so these selectors
+   intentionally override its legacy light status colours.
+========================================== */
+
+html[data-theme="dark"] #cola-order-page .cola-result-notice {
+  border-color: #786321 !important;
+  background: #332d18 !important;
+  color: #f2d77a !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-product-safety {
+  background: #3a3117 !important;
+  color: #f3d77b !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-order-quantity {
+  border-color: #d7a900 !important;
+  background: #362d10 !important;
+  color: #f5f7fa !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-order-quantity > span,
+html[data-theme="dark"] #cola-order-page .cola-order-quantity > small,
+html[data-theme="dark"] #cola-order-page .cola-reset-case {
+  color: #f2d77a !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-order-number input {
+  border-bottom-color: #d7a900 !important;
+  color: #f5f7fa !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-metric.is-accent {
+  border-color: #806a22 !important;
+  background: #302b1b !important;
+  color: #f1f3f5 !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-metric.is-accent > span {
+  color: #c4b36e !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-metric.is-accent strong {
+  color: #f3d77b !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-product-alert {
+  border: 1px solid #82454a;
+  background: #3b2427;
+  color: #ffb5b5;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-day-card.is-delivery {
+  border-color: #d7a900 !important;
+  background: #362d10 !important;
+  color: #f5f7fa !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-day-card.is-shortage,
+html[data-theme="dark"] #cola-order-page .cola-day-card.is-low {
+  border-color: #a84f55 !important;
+  background: #3b2427 !important;
+  color: #f5f7fa !important;
+}
+
+html[data-theme="dark"] #cola-order-page :is(
+  .cola-day-card.is-delivery,
+  .cola-day-card.is-shortage,
+  .cola-day-card.is-low
+) :is(.cola-day-top small, .cola-day-label, .cola-day-usage) {
+  color: #c5cad2 !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-day-card.is-delivery .cola-day-incoming {
+  color: #f3d77b !important;
+}
+
+html[data-theme="dark"] #cola-order-page .cola-day-card.is-shortage .cola-day-alert,
+html[data-theme="dark"] #cola-order-page .cola-day-card.is-low .cola-day-alert {
+  color: #ffb5b5 !important;
+}
+
+
+/* ==========================================
+   COLA HEADER — MATCH ABL
+========================================== */
+
+#cola-order-page {
+  padding-top: 18px;
+}
+
+/* Шапка */
+#cola-order-page .cola-header {
+  display: block;
+  margin-bottom: 26px;
+}
+
+#cola-order-page .cola-header-main {
+  display: block;
+}
+
+#cola-order-page .cola-kicker {
+  margin: 0 0 5px;
+  color: #7f838b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+}
+
+#cola-order-page .cola-header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* Ескі элементтер қалған жағдайда */
+#cola-order-page .sidebar-open,
+#cola-order-page .cola-header-status,
+#cola-order-page .cola-description {
+  display: none !important;
+}
+
+/* Мобильная версия */
+@media (max-width: 700px) {
+  #cola-order-page {
+    padding-top: 14px;
+  }
+
+  #cola-order-page .cola-header h1 {
+    font-size: 23px;
+  }
+}
+
+
+/* ==========================================
+   COLA — SAME LAYOUT AS ABL
+========================================== */
+
+#cola-order-page {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* HEADER COMES FROM GLOBAL page-topbar */
+
+/* STEPPER */
+#cola-order-page .cola-stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 0 0 5px;
+
+  overflow-x: auto;
+
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* STEP CARD */
+#cola-order-page .cola-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  flex: 1 0 155px;
+  min-height: 70px;
+  padding: 12px 16px;
+
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+
+  background: var(--surface, #fff);
+  color: var(--text, #17181a);
+
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+#cola-order-page .cola-step:hover {
+  border-color: var(--cola-accent);
+}
+
+#cola-order-page .cola-step.is-active {
+  border-color: var(--cola-accent);
+  background: var(--surface, #fff);
+  box-shadow: 0 0 0 1px var(--cola-accent);
+}
+
+/* STEP NUMBER */
+#cola-order-page .cola-step-number {
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+
+  border-radius: 10px;
+
+  background: var(--background, #f4f5f6);
+  color: var(--text, #17181a);
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+#cola-order-page .cola-step.is-active
+.cola-step-number {
+  background: var(--cola-accent);
+  color: #17181a;
+}
+
+/* STEP TEXT */
+#cola-order-page .cola-step-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#cola-order-page .cola-step-info strong {
+  color: inherit;
+  font-size: 12px;
+}
+
+#cola-order-page .cola-step-info small {
+  color: var(--muted, #777);
+  font-size: 10px;
+}
+
+/* CONNECTOR */
+#cola-order-page .cola-step-line {
+  flex: 0 0 16px;
+  height: 2px;
+  background: var(--line, #e5e7eb);
+}
+
+/* PANELS */
+#cola-order-page .cola-step-panel {
+  width: 100%;
+}
+
+/* DISABLED BUTTONS */
+#cola-order-page .cola-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* MOBILE */
+@media (max-width: 800px) {
+  #cola-order-page {
+    padding: 0;
+  }
+
+  #cola-order-page .cola-stepper {
+    gap: 8px;
+  }
+
+  #cola-order-page .cola-step {
+    flex-basis: 145px;
+    padding: 10px;
+  }
+
+  #cola-order-page .cola-step-line {
+    display: none;
+  }
+}
+
+
+/* ==========================================
+   COLA STEPPER — SAME AS ABL
+========================================== */
+
+#cola-order-page .cola-stepper {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+
+  width: 100%;
+  margin-bottom: 20px;
+
+  padding: 17px 22px;
+
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 18px;
+
+  background: var(--surface, #ffffff);
+  overflow-x: auto;
+}
+
+/* Қадамдар контейнер ішінде */
+#cola-order-page .cola-step {
+  flex: 1 1 0;
+  min-width: 155px;
+  min-height: 70px;
+}
+
+/* Екі карточканың арасындағы сызық */
+#cola-order-page .cola-step-line {
+  flex: 0 0 25px;
+  height: 2px;
+  background: var(--line, #e5e7eb);
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+  #cola-order-page .cola-stepper {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  #cola-order-page .cola-step {
+    min-width: 130px;
+  }
+
+  #cola-order-page .cola-step-line {
+    flex-basis: 12px;
+  }
+}
+
+/* ==========================================
+   IZAKAZ v0.2.0
+   COLA — DATE SELECTOR + CONFIRMED ORDER
+========================================== */
+
+/* Дата выбора заказа */
+
+#cola-order-page .cola-date-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+#cola-order-page .cola-date-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--cola-border, #e5e7eb);
+  border-radius: 14px;
+  background: var(--cola-surface, #fff);
+}
+
+#cola-order-page .cola-date-picker > span {
+  color: var(--cola-muted, #777);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+#cola-order-page .cola-date-picker input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--cola-border, #e5e7eb);
+  border-radius: 10px;
+  outline: none;
+  background: var(--cola-soft, #f7f8f9);
+  color: var(--cola-text, #171717);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#cola-order-page .cola-date-picker input:focus {
+  border-color: #ffc400;
+  box-shadow: 0 0 0 2px rgba(255, 196, 0, 0.15);
+}
+
+#cola-order-page .cola-date-picker small {
+  color: var(--cola-muted, #777);
+  font-size: 10px;
+}
+
+#cola-order-page .cola-date-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  padding: 16px 20px;
+  border: 1px solid var(--cola-border, #e5e7eb);
+  border-radius: 14px;
+  background: var(--cola-surface, #fff);
+  color: var(--cola-muted, #777);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Статус подтверждения */
+
+#cola-order-page[data-cola-mode="confirmed"]
+.cola-date-indicator {
+  border-color: #b7dec4;
+  background: #e8f7ed;
+  color: #18723b;
+}
+
+/* Жёстко скрываем шаги подтверждённого заказа */
+
+#cola-order-page[data-cola-mode="confirmed"]
+.cola-stepper,
+#cola-order-page[data-cola-mode="confirmed"]
+[data-cola-panel] {
+  display: none !important;
+}
+
+#cola-order-page .cola-confirmed-view[hidden] {
+  display: none !important;
+}
+
+/* Основной блок подтверждённого заказа */
+
+#cola-order-page .cola-confirmed-view {
+  overflow: hidden;
+  border: 1px solid var(--cola-border, #e5e7eb);
+  border-radius: 18px;
+  background: var(--cola-surface, #fff);
+}
+
+#cola-order-page .cola-confirmed-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 24px 27px;
+  border-bottom: 1px solid var(--cola-border, #e5e7eb);
+}
+
+#cola-order-page .cola-confirmed-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  border-radius: 7px;
+  background: #e4f5e9;
+  color: #16813e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+#cola-order-page .cola-confirmed-heading h2 {
+  margin: 0;
+  color: var(--cola-text, #171717);
+  font-size: 21px;
+  font-weight: 800;
+}
+
+#cola-order-page .cola-confirmed-heading p {
+  margin: 9px 0 0;
+  color: var(--cola-muted, #777);
+  font-size: 12px;
+}
+
+#cola-order-page .cola-confirmed-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  min-width: 130px;
+  padding: 13px 18px;
+  border: 1px solid #efc84b;
+  border-radius: 12px;
+  background: #fff7d7;
+}
+
+#cola-order-page .cola-confirmed-total span {
+  color: #806400;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+#cola-order-page .cola-confirmed-total strong {
+  color: #171717;
+  font-size: 26px;
+  font-weight: 900;
+}
+
+/* Таблица заказа */
+
+#cola-order-page .cola-confirmed-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#cola-order-page .cola-confirmed-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+}
+
+#cola-order-page .cola-confirmed-table thead {
+  background: var(--cola-soft, #f7f8f9);
+}
+
+#cola-order-page .cola-confirmed-table th {
+  padding: 14px 17px;
+  color: var(--cola-muted, #777);
+  font-size: 10px;
+  font-weight: 800;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#cola-order-page .cola-confirmed-table td {
+  padding: 15px 17px;
+  border-top: 1px solid var(--cola-border, #e5e7eb);
+  color: var(--cola-text, #171717);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+#cola-order-page .cola-confirmed-table td strong {
+  font-weight: 800;
+}
+
+#cola-order-page .cola-confirmed-table td:nth-child(4) strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 32px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fff2bb;
+  color: #765700;
+  font-size: 13px;
+}
+
+#cola-order-page .cola-confirmed-table tbody tr:hover {
+  background: var(--cola-soft, #f7f8f9);
+}
+
+/* Нижняя часть списка */
+
+#cola-order-page .cola-confirmed-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 17px 27px;
+  border-top: 1px solid var(--cola-border, #e5e7eb);
+  color: var(--cola-muted, #777);
+  font-size: 11px;
+}
+
+/* Dark theme */
+
+html[data-theme="dark"] #cola-order-page
+.cola-confirmed-tag {
+  background: #1e402d;
+  color: #7ae3a0;
+}
+
+html[data-theme="dark"] #cola-order-page
+.cola-date-indicator {
+  color: var(--cola-text, #f1f2f3);
+}
+
+html[data-theme="dark"] #cola-order-page[data-cola-mode="confirmed"]
+.cola-date-indicator {
+  border-color: #315c40;
+  background: #1c3929;
+  color: #8be3a8;
+}
+
+html[data-theme="dark"] #cola-order-page
+.cola-confirmed-total {
+  background: #4b3b16;
+  border-color: #7a601a;
+}
+
+html[data-theme="dark"] #cola-order-page
+.cola-confirmed-total span {
+  color: #f8d77c;
+}
+
+html[data-theme="dark"] #cola-order-page
+.cola-confirmed-total strong {
+  color: #fff;
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  #cola-order-page .cola-date-bar {
+    flex-direction: column;
+  }
+
+  #cola-order-page .cola-date-indicator {
+    min-width: 0;
+    min-height: 45px;
+  }
+
+  #cola-order-page .cola-confirmed-heading {
+    padding: 18px 15px;
+  }
+
+  #cola-order-page .cola-confirmed-heading h2 {
+    font-size: 18px;
+  }
+
+  #cola-order-page .cola-confirmed-total {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  #cola-order-page .cola-confirmed-footer {
+    padding: 16px 15px;
+  }
+}
+
+
+
+/* PAGE SPACING — ORDER COLA */
+
+#cola-order-page {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 24px 24px 40px;
+}
+
+@media (max-width: 650px) {
+  #cola-order-page {
+    padding: 16px 16px 28px;
+  }
+}
+  

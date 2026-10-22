@@ -1,0 +1,103 @@
+
+<section id="delivery-sheet-page" class="delivery-sheet-page">
+
+  <header class="delivery-sheet-topbar sheet-screen-only">
+    <div>
+      <p class="delivery-sheet-eyebrow">ПОСТАВКИ</p>
+      <h1>Лист поставки</h1>
+    </div>
+
+    <div class="delivery-sheet-actions">
+      <button id="delivery-sheet-back" type="button">
+        ← К поставкам
+      </button>
+      <button id="delivery-sheet-print" type="button">
+        Печать / PDF
+      </button>
+    </div>
+  </header>
+
+  <main class="delivery-sheet-content">
+
+    <div id="delivery-sheet-loading" class="delivery-sheet-notice">
+      Загрузка листа поставки...
+    </div>
+
+    <article id="delivery-sheet-paper" class="delivery-sheet-paper" hidden>
+
+      <header class="delivery-sheet-document-header">
+        <div>
+          <div class="delivery-sheet-logo">
+            I’M <span>Заказ</span>
+          </div>
+          <p class="delivery-sheet-document-label">ЛИСТ ПОСТАВКИ</p>
+        </div>
+
+        <div class="delivery-sheet-document-number">
+          <span>Дата поставки</span>
+          <strong id="sheet-delivery-date">—</strong>
+          <small id="sheet-delivery-weekday">—</small>
+        </div>
+      </header>
+
+      <div class="delivery-sheet-info-grid">
+        <div class="delivery-sheet-info">
+          <span>Ресторан</span>
+          <strong id="sheet-restaurant-name">—</strong>
+          <small id="sheet-restaurant-code">—</small>
+        </div>
+
+        <div class="delivery-sheet-info">
+          <span>Группа</span>
+          <strong id="sheet-delivery-group">—</strong>
+          <small>Группа поставки</small>
+        </div>
+
+        <div class="delivery-sheet-info">
+          <span>Статус</span>
+          <strong id="sheet-delivery-status">—</strong>
+          <small id="sheet-delivery-source">—</small>
+        </div>
+
+        <div class="delivery-sheet-info">
+          <span>Позиций</span>
+          <strong id="sheet-position-count">0</strong>
+          <small>товаров в поставке</small>
+        </div>
+      </div>
+
+      <div id="sheet-note-block" class="delivery-sheet-note" hidden>
+        <strong>Примечание:</strong>
+        <span id="sheet-note"></span>
+      </div>
+
+      <table class="delivery-sheet-table">
+        <colgroup>
+          <col class="sheet-col-number">
+          <col class="sheet-col-code">
+          <col>
+          <col class="sheet-col-qty">
+          <col class="sheet-col-qty">
+          <col class="sheet-col-qty">
+          <col class="sheet-col-total">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>IIKO</th>
+            <th>Наименование</th>
+            <th>CASE</th>
+            <th>SLV</th>
+            <th>Ед.</th>
+            <th>Итого</th>
+          </tr>
+        </thead>
+        <tbody id="delivery-sheet-body"></tbody>
+      </table>
+
+    </article>
+
+    <div id="delivery-sheet-error" class="delivery-sheet-notice is-error" hidden></div>
+
+  </main>
+</section>

@@ -1,12 +1,9 @@
-<section
-  id="home-page"
-  class="home-page"
->
 
+<section id="home-page" class="home-page ui-page">
+
+  <!-- PAGE HEADER -->
   <header class="home-topbar">
-
     <div class="home-topbar-left">
-
       <button
         id="sidebar-open"
         class="menu-button"
@@ -16,43 +13,24 @@
         ☰
       </button>
 
-
       <div>
-
-        <p class="page-label">
-          РАБОЧИЙ ДЕНЬ
-        </p>
-
-        <h1>
-          Главная
-        </h1>
-
+        <p class="page-label">РАБОЧИЙ ДЕНЬ</p>
+        <h1>Главная</h1>
       </div>
-
     </div>
-
 
     <div class="home-current-date">
-
-      <span>
-        Сегодня
-      </span>
-
-      <strong id="home-current-date">
-        —
-      </strong>
-
+      <span>Сегодня</span>
+      <strong id="home-current-date">—</strong>
     </div>
-
   </header>
 
-
+  <!-- PAGE CONTENT -->
   <div class="home-content">
 
+    <!-- WELCOME -->
     <section class="home-welcome">
-
       <div>
-
         <p class="home-welcome-label">
           I’M ЗАКАЗ
         </p>
@@ -62,219 +40,137 @@
         </h2>
 
         <p>
-          Инвентаризация, недельный заказ и заметки — в одном месте.
+          Инвентаризация, заказы и поставки —
+          в одном месте.
         </p>
-
       </div>
-
 
       <div class="home-welcome-mark">
         IM
       </div>
-
     </section>
 
-
+    <!-- QUICK ACCESS -->
     <section class="home-quick-section">
-
       <div class="home-section-heading">
-
         <div>
-
-          <span>
-            БЫСТРЫЙ ДОСТУП
-          </span>
-
-          <h2>
-            Что нужно сделать?
-          </h2>
-
+          <span>БЫСТРЫЙ ДОСТУП</span>
+          <h2>Что нужно сделать?</h2>
         </div>
-
       </div>
-
 
       <div class="home-quick-grid">
 
-        <button
+        <!-- INVENTORY -->
+        <a
           class="home-quick-card is-accent"
-          type="button"
-          data-home-inventory-open
+          href="#inventory-count"
         >
-
           <span class="home-quick-icon">
             ▦
           </span>
 
-
           <span class="home-quick-copy">
-
             <strong>
               Начать инвентаризацию
             </strong>
 
             <small>
-              Выбрать день недели и распечатать готовый бланк
+              Перейти к подсчёту товаров
             </small>
-
           </span>
-
 
           <span class="home-quick-arrow">
             →
           </span>
+        </a>
 
-        </button>
-
-
+        <!-- ORDER COLA -->
         <a
           class="home-quick-card"
-          href="#order"
+          href="#order-cola"
         >
-
           <span class="home-quick-icon">
             +
           </span>
 
-
           <span class="home-quick-copy">
-
-            <strong>
-              Еженедельный заказ
-            </strong>
-
+            <strong>Заказ Cola</strong>
             <small>
-              Остатки, расход и поставки → рекомендация заказа в CASE
+              Остатки и расчёт заказа Cola
             </small>
-
           </span>
-
 
           <span class="home-quick-arrow">
             →
           </span>
+        </a>
 
+        <!-- ORDER ABL -->
+        <a
+          class="home-quick-card"
+          href="#order-abl"
+        >
+          <span class="home-quick-icon">
+            +
+          </span>
+
+          <span class="home-quick-copy">
+            <strong>Заказ ABL</strong>
+            <small>
+              Fresh, Freezer, Cooler и другие
+            </small>
+          </span>
+
+          <span class="home-quick-arrow">
+            →
+          </span>
+        </a>
+
+        <!-- DELIVERIES COLA -->
+        <a
+          class="home-quick-card"
+          href="#deliveries-cola"
+        >
+          <span class="home-quick-icon">
+            ↓
+          </span>
+
+          <span class="home-quick-copy">
+            <strong>Поставки Cola</strong>
+            <small>
+              Ожидаемые и полученные поставки
+            </small>
+          </span>
+
+          <span class="home-quick-arrow">
+            →
+          </span>
+        </a>
+
+        <!-- DELIVERIES ABL -->
+        <a
+          class="home-quick-card"
+          href="#deliveries-abl"
+        >
+          <span class="home-quick-icon">
+            ↓
+          </span>
+
+          <span class="home-quick-copy">
+            <strong>Поставки ABL</strong>
+            <small>
+              Контроль поступления товаров
+            </small>
+          </span>
+
+          <span class="home-quick-arrow">
+            →
+          </span>
         </a>
 
       </div>
-
-    </section>
-
-
-    <section class="home-notes-section" aria-labelledby="home-notes-title">
-      <div class="home-section-heading">
-        <div><span>НАПОМИНАНИЯ</span><h2 id="home-notes-title">Заметки к заказу</h2></div>
-        <div id="home-notes-count" class="home-notes-count">0 невыполненных</div>
-      </div>
-      <div class="home-notes-toolbar">
-        <label for="home-notes-order">Заказ</label>
-        <select id="home-notes-order" disabled><option>Загрузка заказов…</option></select>
-        <a href="#order" class="home-notes-link">Перейти к заказам →</a>
-      </div>
-      <div id="home-notes-host"><div class="home-loading">Загрузка заметок…</div></div>
     </section>
 
   </div>
-
-
-  <div
-    id="home-inventory-modal"
-    class="home-modal"
-    aria-hidden="true"
-  >
-
-    <div
-      class="home-modal-backdrop"
-      data-home-inventory-close
-    ></div>
-
-
-    <div
-      class="home-inventory-dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="home-inventory-title"
-    >
-
-      <div class="home-modal-header">
-
-        <div>
-
-          <span>
-            ИНВЕНТАРИЗАЦИЯ
-          </span>
-
-          <h2 id="home-inventory-title">
-            Какой день распечатать?
-          </h2>
-
-          <p>
-            Выберите день текущей недели. Откроется готовый бланк для печати.
-          </p>
-
-        </div>
-
-
-        <button
-          class="home-modal-close"
-          type="button"
-          data-home-inventory-close
-          aria-label="Закрыть"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <div
-        id="home-weekday-grid"
-        class="home-weekday-grid"
-      ></div>
-
-
-      <div class="home-selected-day">
-
-        <span>
-          Выбранная дата
-        </span>
-
-        <strong id="home-selected-date">
-          —
-        </strong>
-
-      </div>
-
-
-      <div
-        id="home-inventory-message"
-        class="home-inventory-message"
-      ></div>
-
-
-      <div class="home-modal-actions">
-
-        <button
-          class="home-secondary-button"
-          type="button"
-          data-home-inventory-close
-        >
-          Отмена
-        </button>
-
-
-        <button
-          id="home-inventory-print"
-          class="home-primary-button"
-          type="button"
-        >
-          Печать бланка
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
 </section>

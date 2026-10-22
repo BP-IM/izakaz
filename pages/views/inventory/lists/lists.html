@@ -1,0 +1,611 @@
+<section
+  class="inventory-lists-page ui-page"
+  id="inventory-lists-page"
+  data-page="inventory-lists"
+>
+  <!-- =====================================================
+       CONTENT
+  ====================================================== -->
+
+  <div class="inventory-lists-content">
+
+
+    <!-- ===================================================
+         HEADER CARD
+    ==================================================== -->
+
+    <section class="inventory-lists-header-card">
+
+      <div class="inventory-lists-header-main">
+
+        <span class="inventory-lists-kicker">
+          Настройка списков
+        </span>
+
+        <h2>
+          Товары для инвентаризации
+        </h2>
+
+        <p>
+          Выберите товары, которые необходимо считать
+          в ежедневной и еженедельной инвентаризации.
+          Список товаров загружается из раздела
+          «Настройки → Товары».
+        </p>
+
+      </div>
+
+
+      <div class="inventory-lists-schedule">
+
+        <div class="inventory-lists-schedule-item">
+
+          <span>
+            Ежедневная
+          </span>
+
+          <strong>
+            Пн–Сб
+          </strong>
+
+        </div>
+
+
+        <div class="inventory-lists-schedule-item">
+
+          <span>
+            Еженедельная
+          </span>
+
+          <strong>
+            Вс
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         STATS
+    ==================================================== -->
+
+    <section class="inventory-lists-stats">
+
+      <article class="inventory-lists-stat">
+
+        <span>
+          Активные товары
+        </span>
+
+        <strong id="inventory-lists-total-count">
+          0
+        </strong>
+
+      </article>
+
+
+      <article class="inventory-lists-stat is-daily">
+
+        <span>
+          Ежедневная
+        </span>
+
+        <strong id="inventory-lists-daily-count">
+          0
+        </strong>
+
+        <small>
+          Понедельник – Суббота
+        </small>
+
+      </article>
+
+
+      <article class="inventory-lists-stat is-weekly">
+
+        <span>
+          Еженедельная
+        </span>
+
+        <strong id="inventory-lists-weekly-count">
+          0
+        </strong>
+
+        <small>
+          Воскресенье
+        </small>
+
+      </article>
+
+    </section>
+
+
+    <!-- ===================================================
+         TOOLBAR
+    ==================================================== -->
+
+    <section class="inventory-lists-toolbar">
+
+      <label class="inventory-lists-search">
+
+        <span class="inventory-lists-search-icon">
+          ⌕
+        </span>
+
+        <input
+          id="inventory-lists-search"
+          type="search"
+          placeholder="Поиск по названию или IIKO коду..."
+          autocomplete="off"
+        >
+
+      </label>
+
+
+      <button
+        class="inventory-lists-save-button"
+        id="inventory-lists-save-button"
+        type="button"
+        disabled
+      >
+        Сохранить изменения
+      </button>
+
+    </section>
+
+
+    <!-- ===================================================
+         CATEGORIES
+    ==================================================== -->
+
+    <div
+      class="inventory-lists-categories"
+      id="inventory-lists-categories"
+    >
+
+      <button
+        class="inventory-lists-category is-active"
+        type="button"
+        data-inventory-category="all"
+      >
+        Все
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         BULK ACTIONS
+    ==================================================== -->
+
+    <section class="inventory-lists-bulk">
+
+      <label class="inventory-lists-select-all">
+
+        <input
+          id="inventory-lists-select-all"
+          type="checkbox"
+        >
+
+        <span>
+          Выбрать все видимые
+        </span>
+
+      </label>
+
+
+      <div class="inventory-lists-selection-info">
+
+        Выбрано:
+
+        <strong id="inventory-lists-selected-count">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="inventory-lists-bulk-actions">
+
+        <button
+          class="inventory-lists-bulk-button"
+          id="inventory-lists-add-daily"
+          type="button"
+          disabled
+        >
+          + В ежедневную
+        </button>
+
+
+        <button
+          class="inventory-lists-bulk-button"
+          id="inventory-lists-add-weekly"
+          type="button"
+          disabled
+        >
+          + В еженедельную
+        </button>
+
+
+        <button
+          class="
+            inventory-lists-bulk-button
+            is-remove
+          "
+          id="inventory-lists-remove"
+          type="button"
+          disabled
+        >
+          Убрать из списков
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         MESSAGE
+    ==================================================== -->
+
+    <div
+      class="inventory-lists-message"
+      id="inventory-lists-message"
+      hidden
+    ></div>
+
+
+    <!-- ===================================================
+         PRODUCTS CARD
+    ==================================================== -->
+
+    <section class="inventory-lists-card">
+
+
+      <!-- LOADING -->
+
+      <div
+        class="inventory-lists-loading"
+        id="inventory-lists-loading"
+      >
+        Загрузка товаров...
+      </div>
+
+
+      <!-- EMPTY -->
+
+      <div
+        class="inventory-lists-empty"
+        id="inventory-lists-empty"
+        hidden
+      >
+
+        <strong>
+          Товары не найдены
+        </strong>
+
+        <span>
+          Измените поиск или выбранную категорию.
+        </span>
+
+      </div>
+
+
+      <!-- TABLE -->
+
+      <div
+        class="inventory-lists-table-wrap"
+        id="inventory-lists-table-wrap"
+        hidden
+      >
+
+        <table class="inventory-lists-table">
+
+          <thead>
+
+            <tr>
+
+              <th class="inventory-lists-select-column">
+                <span class="inventory-lists-table-checkbox-label">
+                  ✓
+                </span>
+              </th>
+
+
+              <th class="inventory-lists-product-column">
+                Товар
+              </th>
+
+
+              <th class="inventory-lists-unit-column">
+                Ед.
+              </th>
+
+
+              <th class="inventory-lists-list-column">
+
+                <div class="inventory-lists-column-title">
+
+                  <strong>
+                    Ежедневная
+                  </strong>
+
+                  <span>
+                    Пн–Сб
+                  </span>
+
+                </div>
+
+              </th>
+
+
+              <th class="inventory-lists-days-column">
+
+                <div class="inventory-lists-column-title">
+
+                  <strong>
+                    По дням
+                  </strong>
+
+                  <span>
+                    Пн–Сб
+                  </span>
+
+                </div>
+
+              </th>
+
+
+              <th class="inventory-lists-list-column">
+
+                <div class="inventory-lists-column-title">
+
+                  <strong>
+                    Еженедельная
+                  </strong>
+
+                  <span>
+                    Вс
+                  </span>
+
+                </div>
+
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="inventory-lists-table-body">
+
+            <!-- JS -->
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <!-- =====================================================
+          SPECIFIC DAYS MODAL
+      ====================================================== -->
+
+      <div
+        class="inventory-days-modal"
+        id="inventory-days-modal"
+        aria-hidden="true"
+      >
+
+        <div
+          class="inventory-days-modal-backdrop"
+          data-inventory-days-close
+        ></div>
+
+
+        <div
+          class="inventory-days-modal-card"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="inventory-days-modal-title"
+        >
+
+          <div class="inventory-days-modal-header">
+
+            <div>
+
+              <span>
+                Ежедневная инвентаризация
+              </span>
+
+              <h3 id="inventory-days-modal-title">
+                Выбрать дни
+              </h3>
+
+            </div>
+
+
+            <button
+              class="inventory-days-modal-close"
+              type="button"
+              aria-label="Закрыть"
+              data-inventory-days-close
+            >
+              ×
+            </button>
+
+          </div>
+
+
+          <div class="inventory-days-product">
+
+            <span>
+              Товар
+            </span>
+
+            <strong id="inventory-days-product-name">
+              —
+            </strong>
+
+            <small id="inventory-days-product-code">
+              —
+            </small>
+
+          </div>
+
+
+          <p class="inventory-days-description">
+            Выберите дни, в которые товар должен
+            отображаться в ежедневной инвентаризации.
+          </p>
+
+
+          <div class="inventory-days-grid">
+
+            <label>
+
+              <input
+                type="checkbox"
+                value="1"
+                data-inventory-specific-day
+              >
+
+              <span>
+                Пн
+              </span>
+
+            </label>
+
+
+            <label>
+
+              <input
+                type="checkbox"
+                value="2"
+                data-inventory-specific-day
+              >
+
+              <span>
+                Вт
+              </span>
+
+            </label>
+
+
+            <label>
+
+              <input
+                type="checkbox"
+                value="3"
+                data-inventory-specific-day
+              >
+
+              <span>
+                Ср
+              </span>
+
+            </label>
+
+
+            <label>
+
+              <input
+                type="checkbox"
+                value="4"
+                data-inventory-specific-day
+              >
+
+              <span>
+                Чт
+              </span>
+
+            </label>
+
+
+            <label>
+
+              <input
+                type="checkbox"
+                value="5"
+                data-inventory-specific-day
+              >
+
+              <span>
+                Пт
+              </span>
+
+            </label>
+
+
+            <label>
+
+              <input
+                type="checkbox"
+                value="6"
+                data-inventory-specific-day
+              >
+
+              <span>
+                Сб
+              </span>
+
+            </label>
+
+          </div>
+
+
+          <div class="inventory-days-info">
+
+            Если выбраны отдельные дни,
+            режим «Ежедневная Пн–Сб» для этого товара
+            будет отключён автоматически.
+
+          </div>
+
+
+          <div class="inventory-days-modal-actions">
+
+            <button
+              class="inventory-days-secondary-button"
+              type="button"
+              data-inventory-days-clear
+            >
+              Очистить дни
+            </button>
+
+
+            <div>
+
+              <button
+                class="inventory-days-secondary-button"
+                type="button"
+                data-inventory-days-close
+              >
+                Отмена
+              </button>
+
+
+              <button
+                class="inventory-days-primary-button"
+                id="inventory-days-apply"
+                type="button"
+              >
+                Применить
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</section>
