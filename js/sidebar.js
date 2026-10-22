@@ -1,103 +1,148 @@
 /* =====================================================
-   ОБЩИЙ SIDEBAR ДЛЯ ВСЕХ СТРАНИЦ
+   IZAKAZ v0.2.0
+   SIDEBAR
 ===================================================== */
 
 (function () {
+  "use strict";
 
   const sidebarContainer =
     document.getElementById("sidebar-container");
 
-
-  /* =====================================================
-     ПРОВЕРКА SIDEBAR CONTAINER
-  ===================================================== */
-
   if (!sidebarContainer) {
-
     console.error(
       "Не найден элемент #sidebar-container"
     );
-
     return;
   }
 
 
   /* =====================================================
-     СПИСОК МЕНЮ
+     NAVIGATION CONFIG
   ===================================================== */
 
-  const menuItems = [
+  const navigation =
+    window.IZAKAZ_NAVIGATION;
 
-    {
-      route: "home",
-      icon: "⌂",
-      title: "Главная"
-    },
+  if (
+    !navigation ||
+    !Array.isArray(navigation.menu)
+  ) {
+    console.error(
+      "Не найден IZAKAZ_NAVIGATION"
+    );
+    return;
+  }
 
-    {
-      route: "inventory",
-      icon: "▦",
-      title: "Инвентаризация"
-    },
+  const menuItems =
+    navigation.menu;
 
-    {
-      route: "inventory-lists",
-      icon: "≡",
-      title: "Списки инвентаризации"
-    },
-
-    {
-      route: "order",
-      icon: "＋",
-      title: "Еженедельный заказ"
-    },
-
-    {
-      route: "deliveries",
-      icon: "◷",
-      title: "Поставки"
-    },
-
-    {
-      route: "settings",
-      icon: "⚙",
-      title: "Настройки"
-    }
-
-  ];
+  const routes =
+    navigation.routes || {};
 
 
   /* =====================================================
-     СОЗДАЕМ ССЫЛКИ МЕНЮ
+     MENU HTML
   ===================================================== */
 
-  const menuHTML = menuItems
-    .map(function (item) {
+  function createDirectItem(item) {
+    return `
+      <a
+        href="#${item.route}"
+        class="nav-link"
+        data-route="${item.route}"
+      >
+        <span class="nav-icon">
+          ${item.icon || ""}
+        </span>
 
-      return `
-        <a
-          href="#${item.route}"
-          class="nav-link"
-          data-route="${item.route}"
+        <span class="nav-title">
+          ${item.title}
+        </span>
+      </a>
+    `;
+  }
+
+
+  function createSubmenuItem(item) {
+    return `
+      <a
+        href="#${item.route}"
+        class="nav-sublink"
+        data-route="${item.route}"
+      >
+        <span class="nav-submenu-dot"></span>
+
+        <span>
+          ${item.title}
+        </span>
+      </a>
+    `;
+  }
+
+
+  function createGroup(item) {
+    const childrenHTML =
+      item.children
+        .map(createSubmenuItem)
+        .join("");
+
+    return `
+      <div
+        class="nav-group"
+        data-nav-group="${item.id}"
+      >
+
+        <button
+          type="button"
+          class="nav-link nav-parent"
+          data-parent="${item.id}"
+          aria-expanded="false"
         >
 
           <span class="nav-icon">
-            ${item.icon}
+            ${item.icon || ""}
           </span>
 
-          <span>
+          <span class="nav-title">
             ${item.title}
           </span>
 
-        </a>
-      `;
+          <span class="nav-chevron">
+            ›
+          </span>
 
-    })
-    .join("");
+        </button>
+
+
+        <div class="nav-submenu">
+          ${childrenHTML}
+        </div>
+
+      </div>
+    `;
+  }
+
+
+  const menuHTML =
+    menuItems
+      .map(function (item) {
+
+        if (
+          Array.isArray(item.children) &&
+          item.children.length
+        ) {
+          return createGroup(item);
+        }
+
+        return createDirectItem(item);
+
+      })
+      .join("");
 
 
   /* =====================================================
-     ВСТАВЛЯЕМ SIDEBAR
+     SIDEBAR HTML
   ===================================================== */
 
   sidebarContainer.innerHTML = `
@@ -113,23 +158,20 @@
       class="sidebar"
     >
 
-
       <!-- HEADER -->
 
       <div class="sidebar-header">
 
         <a
-          href="dashboard.html"
+          href="#home"
           class="sidebar-logo"
           aria-label="izakaz — Главная"
         >
-
           <img
             src="../assets/images/izakaz-logo.png"
             alt="izakaz"
             class="sidebar-logo-image"
           >
-
         </a>
 
 
@@ -175,9 +217,7 @@
       <!-- NAVIGATION -->
 
       <nav class="sidebar-nav">
-
         ${menuHTML}
-
       </nav>
 
 
@@ -185,8 +225,12 @@
 
       <div class="sidebar-footer">
 
-
-        <div class="user-block">
+        <a
+          href="#settings-profile"
+          class="user-block user-block-link"
+          data-route="settings-profile"
+          title="Открыть профиль"
+        >
 
           <div
             id="sidebar-user-avatar"
@@ -208,7 +252,11 @@
 
           </div>
 
-        </div>
+          <span class="user-block-arrow">
+            ›
+          </span>
+
+        </a>
 
 
         <button
@@ -218,6 +266,7 @@
         >
           Выйти
         </button>
+
 
         <div
           class="sidebar-version"
@@ -229,13 +278,14 @@
     </aside>
   `;
 
+
   window.renderIzakazVersion?.(
     sidebarContainer
   );
 
 
   /* =====================================================
-     ЭЛЕМЕНТЫ SIDEBAR
+     ELEMENTS
   ===================================================== */
 
   const sidebar =
@@ -258,14 +308,15 @@
 
 
   /* =====================================================
-     МОБИЛЬНОЕ МЕНЮ
+     MOBILE SIDEBAR
   ===================================================== */
 
   function openSidebar() {
-
     sidebar.classList.add("open");
 
-    sidebarOverlay.classList.add("show");
+    sidebarOverlay.classList.add(
+      "show"
+    );
 
     document.body.style.overflow =
       "hidden";
@@ -273,19 +324,16 @@
 
 
   function closeSidebar() {
-
     sidebar.classList.remove("open");
 
-    sidebarOverlay.classList.remove("show");
+    sidebarOverlay.classList.remove(
+      "show"
+    );
 
     document.body.style.overflow =
       "";
   }
 
-
-  /* =====================================================
-     ОТКРЫТИЕ SIDEBAR
-  ===================================================== */
 
   document.addEventListener(
     "click",
@@ -305,10 +353,6 @@
   );
 
 
-  /* =====================================================
-     ЗАКРЫТИЕ SIDEBAR
-  ===================================================== */
-
   sidebarCloseButton.addEventListener(
     "click",
     closeSidebar
@@ -321,10 +365,6 @@
   );
 
 
-  /* =====================================================
-     ESC ДЛЯ ЗАКРЫТИЯ SIDEBAR
-  ===================================================== */
-
   document.addEventListener(
     "keydown",
     function (event) {
@@ -333,7 +373,6 @@
         event.key === "Escape" &&
         sidebar.classList.contains("open")
       ) {
-
         closeSidebar();
       }
 
@@ -342,27 +381,264 @@
 
 
   /* =====================================================
-     ЗАКРЫТИЕ ПОСЛЕ ВЫБОРА ПУНКТА
-     ТОЛЬКО НА МОБИЛЬНОЙ ВЕРСИИ
+     SUBMENU
+  ===================================================== */
+
+  function closeAllSubmenus(
+    exceptGroup = null
+  ) {
+
+    sidebar
+      .querySelectorAll(".nav-group")
+      .forEach(function (group) {
+
+        if (group === exceptGroup) {
+          return;
+        }
+
+        group.classList.remove(
+          "is-open"
+        );
+
+        const button =
+          group.querySelector(
+            ".nav-parent"
+          );
+
+        if (button) {
+          button.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+        }
+
+      });
+  }
+
+
+  function openSubmenu(group) {
+    if (!group) {
+      return;
+    }
+
+    closeAllSubmenus(group);
+
+    group.classList.add(
+      "is-open"
+    );
+
+    const button =
+      group.querySelector(
+        ".nav-parent"
+      );
+
+    if (button) {
+      button.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    }
+  }
+
+
+  function toggleSubmenu(group) {
+    if (!group) {
+      return;
+    }
+
+    const isOpen =
+      group.classList.contains(
+        "is-open"
+      );
+
+    if (isOpen) {
+
+      group.classList.remove(
+        "is-open"
+      );
+
+      const button =
+        group.querySelector(
+          ".nav-parent"
+        );
+
+      button?.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      return;
+    }
+
+    openSubmenu(group);
+  }
+
+
+  /* =====================================================
+     CURRENT ROUTE
+  ===================================================== */
+
+  function getCurrentRoute() {
+    const rawHash =
+      window.location.hash
+        .replace(/^#/, "")
+        .trim();
+
+    if (!rawHash) {
+      return "home";
+    }
+
+    return (
+      rawHash
+        .split("/")
+        .filter(Boolean)[0] ||
+      "home"
+    );
+  }
+
+
+  function findParentByRoute(route) {
+    const routeConfig =
+      routes[route];
+
+    if (routeConfig?.parent) {
+      return routeConfig.parent;
+    }
+
+    for (const item of menuItems) {
+
+      if (!Array.isArray(item.children)) {
+        continue;
+      }
+
+      const child =
+        item.children.find(
+          function (childItem) {
+            return (
+              childItem.route === route
+            );
+          }
+        );
+
+      if (child) {
+        return item.id;
+      }
+    }
+
+    return null;
+  }
+
+
+  /* =====================================================
+     ACTIVE NAVIGATION
+  ===================================================== */
+
+  function updateActiveNavigation() {
+    const route =
+      getCurrentRoute();
+
+    const parentId =
+      findParentByRoute(route);
+
+
+    /* Обычные ссылки */
+
+    sidebar
+      .querySelectorAll(
+        "[data-route]"
+      )
+      .forEach(function (link) {
+
+        link.classList.toggle(
+          "active",
+          link.dataset.route === route
+        );
+
+      });
+
+
+    /* Parent */
+
+    sidebar
+      .querySelectorAll(
+        ".nav-parent"
+      )
+      .forEach(function (button) {
+
+        const isParentActive =
+          button.dataset.parent ===
+          parentId;
+
+        button.classList.toggle(
+          "has-active-child",
+          isParentActive
+        );
+
+      });
+
+
+    /* Автоматически открываем parent */
+
+    if (parentId) {
+
+      const group =
+        sidebar.querySelector(
+          `[data-nav-group="${parentId}"]`
+        );
+
+      openSubmenu(group);
+
+    } else {
+
+      closeAllSubmenus();
+
+    }
+  }
+
+
+  /* =====================================================
+     SIDEBAR CLICK
   ===================================================== */
 
   sidebar.addEventListener(
     "click",
     function (event) {
 
-      const navLink =
+      /* Parent submenu */
+
+      const parentButton =
         event.target.closest(
-          ".nav-link"
+          ".nav-parent"
         );
 
-      if (!navLink) {
+      if (parentButton) {
+
+        const group =
+          parentButton.closest(
+            ".nav-group"
+          );
+
+        toggleSubmenu(group);
+
         return;
       }
+
+
+      /* Route */
+
+      const routeLink =
+        event.target.closest(
+          "[data-route]"
+        );
+
+      if (!routeLink) {
+        return;
+      }
+
 
       if (
         window.innerWidth <= 820
       ) {
-
         closeSidebar();
       }
 
@@ -371,22 +647,14 @@
 
 
   /* =====================================================
-     НАЗВАНИЕ РОЛИ
+     ROLE NAME
   ===================================================== */
 
   function getRoleName(role) {
-
     const roleNames = {
-
-      admin:
-        "Администратор",
-
-      manager:
-        "Менеджер",
-
-      viewer:
-        "Наблюдатель"
-
+      admin: "Администратор",
+      manager: "Менеджер",
+      viewer: "Наблюдатель"
     };
 
     return (
@@ -397,11 +665,10 @@
 
 
   /* =====================================================
-     ИНИЦИАЛЫ
+     INITIALS
   ===================================================== */
 
   function getInitials(fullName) {
-
     if (!fullName) {
       return "U";
     }
@@ -412,49 +679,41 @@
       .filter(Boolean)
       .slice(0, 2)
       .map(function (word) {
-
         return word
           .charAt(0)
           .toUpperCase();
-
       })
       .join("");
   }
 
 
   /* =====================================================
-     ФОРМАТ КОДА РЕСТОРАНА
+     RESTAURANT CODE
   ===================================================== */
 
   function formatRestaurantCode(code) {
-
     if (!code) {
       return "Код не указан";
     }
-
 
     const cleanCode =
       String(code)
         .replace(/\D/g, "");
 
-
     if (cleanCode.length === 5) {
-
       return (
         cleanCode.slice(0, 2) +
         "-" +
         cleanCode.slice(2)
       );
-
     }
-
 
     return String(code);
   }
 
 
   /* =====================================================
-     БЕЗОПАСНОЕ ИЗМЕНЕНИЕ TEXTCONTENT
+     TEXT
   ===================================================== */
 
   function setText(
@@ -477,11 +736,10 @@
 
 
   /* =====================================================
-     ЗАГРУЗКА ДАННЫХ SIDEBAR
+     LOAD SIDEBAR DATA
   ===================================================== */
 
   async function loadSidebarData() {
-
     try {
 
       const {
@@ -492,8 +750,6 @@
           .auth
           .getUser();
 
-
-      /* Проверяем пользователя */
 
       if (
         userError ||
@@ -511,16 +767,12 @@
         userData.user;
 
 
-      /* Загружаем профиль */
-
       const {
         data: profile,
         error: profileError
       } =
         await supabaseClient
-
           .from("profiles")
-
           .select(`
             full_name,
             role,
@@ -530,102 +782,70 @@
               code
             )
           `)
-
           .eq(
             "id",
             user.id
           )
-
           .single();
 
 
       if (profileError) {
-
         console.error(
           "Ошибка загрузки sidebar:",
           profileError
         );
-
       }
 
 
-      /* =====================================================
-         ДАННЫЕ
-      ===================================================== */
-
       const fullName =
-
         profile?.full_name ||
-
         user.user_metadata
           ?.full_name ||
-
         user.email ||
-
         "Пользователь";
 
 
       const restaurantName =
-
-        profile
-          ?.restaurant
-          ?.name ||
-
+        profile?.restaurant?.name ||
         user.user_metadata
           ?.restaurant_name ||
-
         "Ресторан";
 
 
       const restaurantCode =
         formatRestaurantCode(
-
-          profile
-            ?.restaurant
-            ?.code ||
-
+          profile?.restaurant?.code ||
           user.user_metadata
             ?.restaurant_code
-
         );
 
 
       const role =
         getRoleName(
-
           profile?.role ||
           "admin"
-
         );
 
-
-      /* =====================================================
-         ВЫВОД ДАННЫХ
-      ===================================================== */
 
       setText(
         "sidebar-user-name",
         fullName
       );
 
-
       setText(
         "sidebar-user-role",
         role
       );
-
 
       setText(
         "sidebar-user-avatar",
         getInitials(fullName)
       );
 
-
       setText(
         "sidebar-restaurant-name",
         restaurantName
       );
-
 
       setText(
         "sidebar-restaurant-code",
@@ -659,7 +879,7 @@
 
 
   /* =====================================================
-     ВЫХОД
+     LOGOUT
   ===================================================== */
 
   logoutButton.addEventListener(
@@ -710,8 +930,20 @@
 
 
   /* =====================================================
-     ЗАПУСК
+     ROUTE WATCH
   ===================================================== */
+
+  window.addEventListener(
+    "hashchange",
+    updateActiveNavigation
+  );
+
+
+  /* =====================================================
+     START
+  ===================================================== */
+
+  updateActiveNavigation();
 
   loadSidebarData();
 

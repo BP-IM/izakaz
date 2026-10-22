@@ -1,0 +1,437 @@
+
+<!-- ==========================================
+     IZAKAZ v0.2.0
+     DELIVERIES — ABL
+
+     Delivery group: general
+
+     - Delivery list
+     - Summary
+     - Status filters
+     - Date filters
+     - Delivery details
+     - Print / PDF placeholder
+========================================== -->
+
+<header class="page-topbar deliveries-abl-topbar">
+  <div class="page-topbar-left">
+
+    <button
+      id="sidebar-open"
+      class="menu-button"
+      type="button"
+      aria-label="Открыть меню"
+    >
+      ☰
+    </button>
+
+    <div>
+      <p class="page-label">
+        ПОСТАВКИ / ABL
+      </p>
+
+      <h1>Поставки ABL</h1>
+    </div>
+
+  </div>
+</header>
+
+
+<section
+  id="deliveries-abl-page"
+  class="deliveries-abl-page ui-page"
+  data-delivery-group="general"
+>
+
+  <!-- ======================================
+       SUMMARY
+  ======================================= -->
+
+  <section class="dabl-summary">
+
+    <div class="dabl-summary-card">
+      <span>Ближайшая поставка</span>
+
+      <strong id="dabl-next-date">
+        —
+      </strong>
+
+      <small id="dabl-next-description">
+        Загрузка...
+      </small>
+    </div>
+
+    <div class="dabl-summary-card">
+      <span>Ожидается</span>
+
+      <strong id="dabl-expected-count">
+        0
+      </strong>
+
+      <small>
+        активных поставок
+      </small>
+    </div>
+
+    <div class="dabl-summary-card">
+      <span>Получено</span>
+
+      <strong id="dabl-received-count">
+        0
+      </strong>
+
+      <small>
+        завершённых поставок
+      </small>
+    </div>
+
+    <div class="dabl-summary-card">
+      <span>Всего поставок</span>
+
+      <strong id="dabl-total-count">
+        0
+      </strong>
+
+      <small>
+        по выбранным датам
+      </small>
+    </div>
+
+  </section>
+
+
+  <!-- ======================================
+       MAIN LIST
+  ======================================= -->
+
+  <section class="dabl-panel">
+
+    <header class="dabl-panel-header">
+
+      <div>
+        <span class="dabl-section-label">
+          УЧЁТ ПОСТАВОК
+        </span>
+
+        <h2>Список поставок</h2>
+
+        <p>
+          Автоматические поставки из заказов ABL
+          и поставки, добавленные вручную.
+        </p>
+      </div>
+
+      <button
+        id="dabl-refresh"
+        class="dabl-button dabl-button-secondary"
+        type="button"
+      >
+        Обновить
+      </button>
+
+    </header>
+
+
+    <!-- STATUS FILTER -->
+
+    <nav
+      id="dabl-status-filters"
+      class="dabl-status-filters"
+      aria-label="Фильтр статуса поставок"
+    >
+
+      <button
+        type="button"
+        class="dabl-filter is-active"
+        data-dabl-filter="all"
+      >
+        Все
+      </button>
+
+      <button
+        type="button"
+        class="dabl-filter"
+        data-dabl-filter="expected"
+      >
+        Ожидаются
+      </button>
+
+      <button
+        type="button"
+        class="dabl-filter"
+        data-dabl-filter="received"
+      >
+        Получены
+      </button>
+
+    </nav>
+
+
+    <!-- DATE FILTERS -->
+
+    <div class="dabl-date-filters">
+
+      <div class="dabl-date-presets" aria-label="Готовые периоды">
+        <button
+          type="button"
+          class="dabl-filter"
+          data-dabl-date-preset="previous-week"
+        >
+          Прошлая неделя
+        </button>
+
+        <button
+          type="button"
+          class="dabl-filter"
+          data-dabl-date-preset="current-week"
+        >
+          Текущая неделя
+        </button>
+
+        <button
+          type="button"
+          class="dabl-filter"
+          data-dabl-date-preset="current-month"
+        >
+          Текущий месяц
+        </button>
+      </div>
+
+      <label class="dabl-date-field">
+        <span>Дата от</span>
+
+        <input
+          id="dabl-date-from"
+          type="date"
+        >
+      </label>
+
+      <label class="dabl-date-field">
+        <span>Дата до</span>
+
+        <input
+          id="dabl-date-to"
+          type="date"
+        >
+      </label>
+
+      <button
+        id="dabl-date-reset"
+        class="dabl-button dabl-button-secondary"
+        type="button"
+      >
+        Сбросить
+      </button>
+
+    </div>
+
+
+    <!-- LIST INFORMATION -->
+
+    <div class="dabl-list-toolbar">
+
+      <div
+        id="dabl-list-count"
+        class="dabl-list-count"
+      >
+        Загрузка поставок...
+      </div>
+
+      <div
+        id="dabl-list-status"
+        class="dabl-list-status"
+        aria-live="polite"
+      ></div>
+
+    </div>
+
+
+    <!-- DELIVERY CARDS -->
+
+    <div
+      id="dabl-deliveries-list"
+      class="dabl-deliveries-list"
+    >
+
+      <div class="dabl-empty">
+        Загрузка поставок из Supabase...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ======================================
+       DELIVERY DETAIL MODAL
+  ======================================= -->
+
+  <div
+    id="dabl-detail-modal"
+    class="dabl-modal"
+    aria-hidden="true"
+    hidden
+  >
+
+    <div
+      class="dabl-modal-backdrop"
+      data-dabl-close
+    ></div>
+
+    <section
+      class="dabl-modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dabl-detail-title"
+    >
+
+      <!-- MODAL HEADER -->
+
+      <header class="dabl-modal-header">
+
+        <div>
+          <span class="dabl-section-label">
+            СОСТАВ ПОСТАВКИ
+          </span>
+
+          <h2 id="dabl-detail-title">
+            Поставка ABL
+          </h2>
+
+          <div
+            id="dabl-detail-meta"
+            class="dabl-detail-meta"
+          ></div>
+        </div>
+
+        <button
+          type="button"
+          class="dabl-modal-close"
+          data-dabl-close
+          aria-label="Закрыть"
+        >
+          ×
+        </button>
+
+      </header>
+
+
+      <!-- MODAL SUMMARY -->
+
+      <div class="dabl-detail-summary">
+
+        <div>
+          <span>Позиций</span>
+
+          <strong id="dabl-detail-positions">
+            0
+          </strong>
+        </div>
+
+        <div>
+          <span>Всего CASE</span>
+
+          <strong id="dabl-detail-cases">
+            0
+          </strong>
+        </div>
+
+        <div>
+          <span>Источник</span>
+
+          <strong id="dabl-detail-source">
+            —
+          </strong>
+        </div>
+
+      </div>
+
+
+      <!-- SEARCH -->
+
+      <div class="dabl-detail-toolbar">
+
+        <input
+          id="dabl-product-search"
+          type="search"
+          placeholder="Поиск товара или кода IIKO..."
+          aria-label="Поиск товара"
+        >
+
+        <div
+          id="dabl-detail-status"
+          class="dabl-detail-status"
+          aria-live="polite"
+        ></div>
+
+      </div>
+
+
+      <!-- PRODUCT TABLE -->
+
+      <div class="dabl-table-wrap">
+
+        <table class="dabl-table">
+
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Наименование</th>
+              <th>CASE</th>
+              <th>SLV</th>
+              <th>Ед.</th>
+              <th>Итого</th>
+            </tr>
+          </thead>
+
+          <tbody id="dabl-detail-items">
+            <tr>
+              <td colspan="6">
+                Загрузка товаров...
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- MODAL FOOTER -->
+
+      <footer class="dabl-modal-footer">
+
+        <div class="dabl-modal-footer-note">
+          Количество товаров указано
+          согласно сохранённой поставке.
+        </div>
+
+        <div class="dabl-modal-actions">
+
+          
+        <button
+          id="dabl-print"
+          type="button"
+          class="dabl-button dabl-button-secondary"
+        >
+          Печать / PDF
+        </button>
+
+
+          <button
+            type="button"
+            class="dabl-button dabl-button-primary"
+            data-dabl-close
+          >
+            Закрыть
+          </button>
+
+        </div>
+
+      </footer>
+
+    </section>
+
+  </div>
+
+</section>

@@ -1,0 +1,297 @@
+
+<!-- IZAKAZ v0.2.0 — DELIVERIES / COLA -->
+
+<section id="deliveries-cola-page" class="dcola-page ui-page">
+
+  <header class="dcola-topbar">
+    <div>
+      <p class="dcola-eyebrow">ПОСТАВКИ / COLA</p>
+      <h1>Поставки Cola</h1>
+      <p class="dcola-subtitle">
+        Учёт заказанных и полученных поставок Cola
+      </p>
+    </div>
+
+    <button
+      id="dcola-refresh"
+      class="dcola-btn dcola-btn-outline"
+      type="button"
+    >
+      Обновить
+    </button>
+  </header>
+
+  <!-- STATISTICS -->
+
+  <div class="dcola-summary">
+    <article class="dcola-stat">
+      <span>Ближайшая поставка</span>
+      <strong id="dcola-next-date">—</strong>
+      <small id="dcola-next-description">
+        Загрузка...
+      </small>
+    </article>
+
+    <article class="dcola-stat">
+      <span>Ожидается</span>
+      <strong id="dcola-expected-count">0</strong>
+      <small>активных поставок</small>
+    </article>
+
+    <article class="dcola-stat">
+      <span>Получено</span>
+      <strong id="dcola-received-count">0</strong>
+      <small>завершённых поставок</small>
+    </article>
+
+    <article class="dcola-stat">
+      <span>Всего поставок</span>
+      <strong id="dcola-total-count">0</strong>
+      <small>по выбранным датам</small>
+    </article>
+  </div>
+
+  <!-- MAIN PANEL -->
+
+  <section class="dcola-panel">
+    <div class="dcola-panel-heading">
+      <div>
+        <p class="dcola-eyebrow">УЧЁТ ПОСТАВОК</p>
+        <h2>Список поставок Cola</h2>
+        <p class="dcola-subtitle">
+          Автоматические поставки из заказов Cola
+          и записи, добавленные вручную.
+        </p>
+      </div>
+    </div>
+
+    <!-- STATUS FILTER -->
+
+    <div
+      class="dcola-filters"
+      aria-label="Фильтр поставок"
+    >
+      <button
+        type="button"
+        class="dcola-filter is-active"
+        data-dcola-filter="all"
+        aria-pressed="true"
+      >
+        Все
+      </button>
+
+      <button
+        type="button"
+        class="dcola-filter"
+        data-dcola-filter="expected"
+        aria-pressed="false"
+      >
+        Ожидаются
+      </button>
+
+      <button
+        type="button"
+        class="dcola-filter"
+        data-dcola-filter="received"
+        aria-pressed="false"
+      >
+        Получены
+      </button>
+    </div>
+
+    <!-- DATE FILTER -->
+
+    <div class="dcola-datebar">
+      <div class="dcola-date-presets" aria-label="Готовые периоды">
+        <button
+          type="button"
+          class="dcola-filter"
+          data-dcola-date-preset="previous-week"
+        >
+          Прошлая неделя
+        </button>
+
+        <button
+          type="button"
+          class="dcola-filter"
+          data-dcola-date-preset="current-week"
+        >
+          Текущая неделя
+        </button>
+
+        <button
+          type="button"
+          class="dcola-filter"
+          data-dcola-date-preset="current-month"
+        >
+          Текущий месяц
+        </button>
+      </div>
+
+      <label class="dcola-field">
+        <span>Дата от</span>
+        <input id="dcola-date-from" type="date">
+      </label>
+
+      <label class="dcola-field">
+        <span>Дата до</span>
+        <input id="dcola-date-to" type="date">
+      </label>
+
+      <button
+        id="dcola-date-reset"
+        class="dcola-btn dcola-btn-outline"
+        type="button"
+        disabled
+      >
+        Сбросить
+      </button>
+    </div>
+
+    <div class="dcola-list-heading">
+      <span id="dcola-list-count">
+        Загрузка поставок...
+      </span>
+      <span
+        id="dcola-list-status"
+        aria-live="polite"
+      ></span>
+    </div>
+
+    <!-- DELIVERIES LIST -->
+
+    <div
+      id="dcola-deliveries-list"
+      class="dcola-list"
+    >
+      <div class="dcola-empty">
+        Загрузка поставок Cola...
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERY DETAIL MODAL -->
+
+  <div
+    id="dcola-detail-modal"
+    class="dcola-modal"
+    hidden
+    aria-hidden="true"
+  >
+    <div
+      class="dcola-modal-backdrop"
+      data-dcola-close
+    ></div>
+
+    <section
+      class="dcola-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dcola-detail-title"
+    >
+      <header class="dcola-dialog-header">
+        <div>
+          <p class="dcola-eyebrow">
+            СОСТАВ ПОСТАВКИ
+          </p>
+
+          <h2 id="dcola-detail-title">
+            Поставка Cola
+          </h2>
+
+          <div
+            id="dcola-detail-meta"
+            class="dcola-detail-meta"
+          ></div>
+        </div>
+
+        <button
+          type="button"
+          class="dcola-close"
+          data-dcola-close
+          aria-label="Закрыть"
+        >
+          ×
+        </button>
+      </header>
+
+      <div class="dcola-detail-summary">
+        <article>
+          <span>Позиций</span>
+          <strong id="dcola-detail-positions">0</strong>
+        </article>
+
+        <article>
+          <span>Всего CASE</span>
+          <strong id="dcola-detail-cases">0</strong>
+        </article>
+
+        <article>
+          <span>Источник</span>
+          <strong id="dcola-detail-source">—</strong>
+        </article>
+      </div>
+
+      <div class="dcola-detail-tools">
+        <input
+          id="dcola-product-search"
+          type="search"
+          placeholder="Поиск товара или кода IIKO..."
+        >
+
+        <span
+          id="dcola-detail-status"
+          aria-live="polite"
+        ></span>
+      </div>
+
+      <div class="dcola-table-scroll">
+        <table class="dcola-table">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Наименование</th>
+              <th>CASE</th>
+              <th>SLV</th>
+              <th>Ед.</th>
+              <th>Итого</th>
+            </tr>
+          </thead>
+
+          <tbody id="dcola-detail-items">
+            <tr>
+              <td colspan="6">
+                Загрузка товаров...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="dcola-dialog-footer">
+        <p>
+          Количество указано согласно
+          сохранённой поставке.
+        </p>
+
+        <div class="dcola-dialog-actions">
+          <button
+          id="dcola-print"
+          type="button"
+          class="dcola-btn dcola-btn-outline"
+        >
+          Печать / PDF
+        </button>
+
+          <button
+            class="dcola-btn dcola-btn-primary"
+            type="button"
+            data-dcola-close
+          >
+            Закрыть
+          </button>
+        </div>
+      </footer>
+    </section>
+  </div>
+</section>

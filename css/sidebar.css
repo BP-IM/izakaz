@@ -1,61 +1,7 @@
-:root {
-  --sidebar-width: 270px;
-
-  --dark: #17181a;
-  --dark-soft: #232427;
-
-  --accent: #ffc400;
-  --accent-hover: #eeb600;
-
-  --text: #18191b;
-  --muted: #747880;
-
-  --line: #e3e5e8;
-  --background: #f4f5f7;
-  --surface: #ffffff;
-}
-
-
 /* =====================================================
-   RESET
+   IZAKAZ v0.2.0
+   SIDEBAR
 ===================================================== */
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  min-height: 100%;
-}
-
-body {
-  min-height: 100vh;
-  margin: 0;
-
-  font-family: "Inter", Arial, sans-serif;
-
-  color: var(--text);
-  background: var(--background);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-}
-
-
-/* =====================================================
-   APP LAYOUT
-===================================================== */
-
-.app-layout {
-  min-height: 100vh;
-}
 
 
 /* =====================================================
@@ -72,46 +18,29 @@ button {
 
   display: flex;
 
-  width: var(--sidebar-width);
+  width: var(--sidebar-width, 270px);
 
   flex-direction: column;
 
-  overflow-y: auto;
+  overflow: hidden;
 
   padding: 24px 18px;
 
   color: #ffffff;
-  background: var(--dark);
+  background: var(--dark, #17181a);
 }
 
 
 /* =====================================================
-   SIDEBAR SCROLL
-===================================================== */
-
-.sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.15);
-}
-
-
-/* =====================================================
-   SIDEBAR HEADER
+   HEADER
 ===================================================== */
 
 .sidebar-header {
   display: flex;
 
   min-height: 50px;
+
+  flex: 0 0 auto;
 
   align-items: center;
   justify-content: space-between;
@@ -138,6 +67,7 @@ button {
   text-decoration: none;
 }
 
+
 .sidebar-logo-image {
   display: block;
 
@@ -152,15 +82,17 @@ button {
     opacity 0.2s ease;
 }
 
-.sidebar-logo:hover .sidebar-logo-image {
-  transform: scale(1.02);
 
+.sidebar-logo:hover
+.sidebar-logo-image {
   opacity: 0.95;
+
+  transform: scale(1.02);
 }
 
 
 /* =====================================================
-   SIDEBAR CLOSE
+   CLOSE BUTTON
 ===================================================== */
 
 .sidebar-close {
@@ -173,11 +105,12 @@ button {
   border-radius: 10px;
 
   color: #ffffff;
-  background: var(--dark-soft);
+  background: var(--dark-soft, #232427);
 
   font-size: 24px;
   line-height: 1;
 }
+
 
 .sidebar-close:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -191,11 +124,13 @@ button {
 .restaurant-card {
   display: flex;
 
+  flex: 0 0 auto;
+
   align-items: center;
 
   gap: 12px;
 
-  margin: 26px 0 22px;
+  margin: 26px 0 20px;
   padding: 14px;
 
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -203,6 +138,7 @@ button {
 
   background: rgba(255, 255, 255, 0.04);
 }
+
 
 .restaurant-icon {
   display: grid;
@@ -217,15 +153,17 @@ button {
   border-radius: 12px;
 
   color: #151515;
-  background: var(--accent);
+  background: var(--accent, #ffc400);
 
   font-size: 15px;
   font-weight: 800;
 }
 
+
 .restaurant-info {
   min-width: 0;
 }
+
 
 .restaurant-info strong,
 .restaurant-info span {
@@ -237,11 +175,13 @@ button {
   white-space: nowrap;
 }
 
+
 .restaurant-info strong {
   margin-bottom: 4px;
 
   font-size: 13px;
 }
+
 
 .restaurant-info span {
   color: rgba(255, 255, 255, 0.52);
@@ -255,15 +195,54 @@ button {
 ===================================================== */
 
 .sidebar-nav {
-  display: grid;
+  display: flex;
+
+  min-height: 0;
+
+  flex: 1 1 auto;
+  flex-direction: column;
 
   gap: 6px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  padding-right: 3px;
 }
+
+
+/* =====================================================
+   NAVIGATION SCROLL
+===================================================== */
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.12);
+}
+
+
+/* =====================================================
+   NAV LINK
+===================================================== */
 
 .nav-link {
   display: flex;
 
-  min-height: 48px;
+  width: 100%;
+  min-height: 46px;
+
+  flex: 0 0 auto;
 
   align-items: center;
 
@@ -271,18 +250,23 @@ button {
 
   padding: 0 14px;
 
+  border: 0;
   border-radius: 12px;
 
   color: rgba(255, 255, 255, 0.68);
+  background: transparent;
 
   font-size: 13px;
   font-weight: 600;
+
+  text-align: left;
 
   transition:
     color 0.2s ease,
     background 0.2s ease,
     transform 0.2s ease;
 }
+
 
 .nav-link:hover {
   color: #ffffff;
@@ -291,15 +275,22 @@ button {
   transform: translateX(2px);
 }
 
+
 .nav-link.active {
   color: #171717;
-  background: var(--accent);
+  background: var(--accent, #ffc400);
 }
+
 
 .nav-link.active:hover {
   color: #171717;
-  background: var(--accent-hover);
+  background: var(--accent-hover, #eeb600);
 }
+
+
+/* =====================================================
+   NAV ICON
+===================================================== */
 
 .nav-icon {
   display: grid;
@@ -317,16 +308,223 @@ button {
 
 
 /* =====================================================
-   SIDEBAR FOOTER
+   NAV TITLE
+===================================================== */
+
+.nav-title {
+  min-width: 0;
+
+  flex: 1;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   NAV GROUP
+===================================================== */
+
+.nav-group {
+  width: 100%;
+
+  flex: 0 0 auto;
+}
+
+
+/* =====================================================
+   NAV PARENT
+===================================================== */
+
+.nav-parent {
+  cursor: pointer;
+}
+
+
+.nav-parent.has-active-child {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+
+/* =====================================================
+   CHEVRON
+===================================================== */
+
+.nav-chevron {
+  display: grid;
+
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 20px;
+
+  place-items: center;
+
+  color: rgba(255, 255, 255, 0.35);
+
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.nav-parent:hover
+.nav-chevron {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+
+.nav-group.is-open
+.nav-chevron {
+  color: var(--accent, #ffc400);
+
+  transform: rotate(90deg);
+}
+
+
+/* =====================================================
+   SUBMENU
+===================================================== */
+
+.nav-submenu {
+  display: grid;
+
+  max-height: 0;
+
+  gap: 3px;
+
+  overflow: hidden;
+
+  margin: 0;
+
+  padding-left: 36px;
+
+  opacity: 0;
+
+  transition:
+    max-height 0.25s ease,
+    margin 0.2s ease,
+    opacity 0.2s ease;
+}
+
+
+.nav-group.is-open
+.nav-submenu {
+  max-height: 320px;
+
+  margin: 4px 0 7px;
+
+  opacity: 1;
+}
+
+
+/* =====================================================
+   SUBMENU LINK
+===================================================== */
+
+.nav-sublink {
+  display: flex;
+
+  min-height: 37px;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 10px;
+
+  border-radius: 9px;
+
+  color: rgba(255, 255, 255, 0.52);
+
+  font-size: 11.5px;
+  font-weight: 600;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.nav-sublink:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+
+  transform: translateX(2px);
+}
+
+
+/* =====================================================
+   SUBMENU DOT
+===================================================== */
+
+.nav-submenu-dot {
+  width: 5px;
+  height: 5px;
+
+  flex: 0 0 5px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.25);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.nav-sublink:hover
+.nav-submenu-dot {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+
+/* =====================================================
+   SUBMENU ACTIVE
+===================================================== */
+
+.nav-sublink.active {
+  color: var(--accent, #ffc400);
+
+  background: rgba(255, 196, 0, 0.08);
+}
+
+
+.nav-sublink.active
+.nav-submenu-dot {
+  background: var(--accent, #ffc400);
+
+  transform: scale(1.35);
+}
+
+
+/* =====================================================
+   FOOTER
 ===================================================== */
 
 .sidebar-footer {
-  margin-top: auto;
+  flex: 0 0 auto;
 
-  padding-top: 20px;
+  margin-top: 18px;
+
+  padding-top: 15px;
 
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+
+/* =====================================================
+   USER / PROFILE
+===================================================== */
 
 .user-block {
   display: flex;
@@ -335,9 +533,30 @@ button {
 
   gap: 11px;
 
-  margin-bottom: 14px;
-  padding: 0 5px;
+  margin-bottom: 10px;
+  padding: 7px 6px;
 }
+
+
+.user-block-link {
+  color: inherit;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.user-block-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+
+  transform: translateX(2px);
+}
+
 
 .user-avatar {
   display: grid;
@@ -358,9 +577,13 @@ button {
   font-weight: 800;
 }
 
+
 .user-info {
   min-width: 0;
+
+  flex: 1;
 }
+
 
 .user-info strong,
 .user-info span {
@@ -372,11 +595,13 @@ button {
   white-space: nowrap;
 }
 
+
 .user-info strong {
   margin-bottom: 4px;
 
   font-size: 12px;
 }
+
 
 .user-info span {
   color: rgba(255, 255, 255, 0.5);
@@ -384,9 +609,107 @@ button {
   font-size: 10px;
 }
 
+
+.user-block-arrow {
+  display: grid;
+
+  width: 22px;
+  height: 22px;
+
+  flex: 0 0 22px;
+
+  place-items: center;
+
+  color: rgba(255, 255, 255, 0.3);
+
+  font-size: 19px;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.user-block-link:hover
+.user-block-arrow {
+  color: var(--accent, #ffc400);
+
+  transform: translateX(2px);
+}
+
+
+/* =====================================================
+   THEME BUTTON
+===================================================== */
+
+.theme-toggle {
+  display: flex;
+
+  width: 100%;
+  min-height: 40px;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 7px;
+  padding: 0 13px;
+
+  border: 1px solid transparent;
+  border-radius: 11px;
+
+  color: rgba(255, 255, 255, 0.65);
+  background: transparent;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-align: left;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+.theme-toggle:hover {
+  color: #ffffff;
+
+  border-color: rgba(255, 255, 255, 0.08);
+
+  background: rgba(255, 255, 255, 0.05);
+}
+
+
+.theme-toggle-icon {
+  display: grid;
+
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 20px;
+
+  place-items: center;
+
+  font-size: 15px;
+}
+
+
+.theme-toggle-text {
+  min-width: 0;
+
+  flex: 1;
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
 .logout-button {
   width: 100%;
-  min-height: 42px;
+  min-height: 40px;
 
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 11px;
@@ -403,18 +726,40 @@ button {
     border-color 0.2s ease;
 }
 
+
 .logout-button:hover {
   color: #ffffff;
 
-  background: rgba(255, 255, 255, 0.06);
-
   border-color: rgba(255, 255, 255, 0.14);
+
+  background: rgba(255, 255, 255, 0.06);
 }
+
 
 .logout-button:disabled {
   cursor: not-allowed;
 
   opacity: 0.6;
+}
+
+
+/* =====================================================
+   VERSION
+===================================================== */
+
+.sidebar-version {
+  margin-top: 10px;
+
+  color: rgba(255, 255, 255, 0.28);
+
+  font-size: 10px;
+  font-weight: 500;
+
+  text-align: center;
+
+  letter-spacing: 0.2px;
+
+  user-select: none;
 }
 
 
@@ -437,17 +782,6 @@ button {
 
 
 /* =====================================================
-   MAIN CONTENT OFFSET
-===================================================== */
-
-.main-content {
-  min-height: 100vh;
-
-  margin-left: var(--sidebar-width);
-}
-
-
-/* =====================================================
    MOBILE
 ===================================================== */
 
@@ -459,42 +793,62 @@ button {
     transition: transform 0.25s ease;
   }
 
+
   .sidebar.open {
     transform: translateX(0);
   }
+
 
   .sidebar-close {
     display: block;
   }
 
+
   .sidebar-overlay.show {
     display: block;
   }
 
-  .main-content {
-    margin-left: 0;
-  }
 
   .sidebar-logo-image {
     width: 135px;
   }
+
 }
 
+
 /* =====================================================
-   APP VERSION
+   SMALL HEIGHT
 ===================================================== */
 
-.sidebar-version {
-  margin-top: 12px;
+@media (max-height: 720px) {
 
-  color: rgba(255, 255, 255, 0.28);
+  .sidebar {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
 
-  font-size: 10px;
-  font-weight: 500;
 
-  text-align: center;
+  .restaurant-card {
+    margin-top: 16px;
+    margin-bottom: 14px;
 
-  letter-spacing: 0.2px;
+    padding: 11px;
+  }
 
-  user-select: none;
+
+  .nav-link {
+    min-height: 42px;
+  }
+
+
+  .nav-sublink {
+    min-height: 33px;
+  }
+
+
+  .sidebar-footer {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
 }

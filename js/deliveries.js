@@ -3561,6 +3561,17 @@
       0;
 
 
+    const loadingHost = root.querySelector(
+      ".deliveries-content"
+    );
+
+
+    window.IzakazPageLoading?.show(
+      loadingHost,
+      "Загрузка поставок…"
+    );
+
+
     try {
 
       await loadContext();
@@ -3607,6 +3618,11 @@
       }
 
     }
+
+
+    window.IzakazPageLoading?.hide(
+      loadingHost
+    );
 
   }
 

@@ -1,0 +1,245 @@
+
+<!-- ==========================================
+     IZAKAZ v0.2.0
+     ORDER COLA
+========================================== -->
+
+<!-- TOPBAR — SAME AS ABL -->
+
+<header class="page-topbar order-topbar">
+  <div class="page-topbar-left">
+
+    <button
+      id="sidebar-open"
+      class="menu-button"
+      type="button"
+      aria-label="Открыть меню"
+    >
+      ☰
+    </button>
+
+    <div>
+      <p class="page-label">Заказы / Cola</p>
+      <h1>Заказ Cola</h1>
+    </div>
+
+  </div>
+</header>
+
+
+<!-- ORDER PAGE -->
+<section
+  id="cola-order-page"
+  class="order-page cola-order-page ui-page"
+  data-order-type="cola"
+>
+
+  <!-- Дата всегда доступна, независимо от статуса заказа -->
+  <div class="cola-date-bar">
+    <label class="cola-date-picker">
+      <span>Дата заказа</span>
+      <input
+        id="cola-stock-date"
+        type="date"
+        aria-label="Дата заказа"
+      >
+      <small>Заказ: понедельник или четверг</small>
+    </label>
+
+    <div
+      class="cola-date-indicator"
+      id="cola-date-indicator"
+      aria-live="polite"
+    >
+      Загрузка заказа...
+    </div>
+  </div>
+
+  <!-- Подтверждённый заказ: только просмотр -->
+  <section
+    id="cola-confirmed-view"
+    class="cola-confirmed-view"
+    hidden
+  >
+    <div id="cola-confirmed-content">
+      Загрузка списка заказа...
+    </div>
+  </section>
+
+
+  <!-- STEPPER -->
+  <nav
+    class="cola-stepper"
+    aria-label="Этапы заказа Cola"
+  >
+
+    <button
+      class="cola-step is-active"
+      type="button"
+      data-cola-step="1"
+      aria-current="step"
+    >
+      <span class="cola-step-number">1</span>
+
+      <span class="cola-step-info">
+        <strong>Остаток</strong>
+        <small>Фактический подсчёт</small>
+      </span>
+    </button>
+
+    <div class="cola-step-line"></div>
+
+    <button
+      class="cola-step"
+      type="button"
+      data-cola-step="2"
+    >
+      <span class="cola-step-number">2</span>
+
+      <span class="cola-step-info">
+        <strong>Заказ</strong>
+        <small>Расчёт и подтверждение</small>
+      </span>
+    </button>
+
+  </nav>
+
+
+  <!-- =====================================
+       STEP 1 — STOCK
+  ====================================== -->
+  <section
+    id="cola-stock-view"
+    class="cola-step-panel"
+    data-cola-panel="1"
+  >
+
+    <div class="cola-panel-header">
+      <div>
+
+        <p class="cola-panel-kicker">
+          ШАГ 1 ИЗ 2
+        </p>
+
+        <h2>Подсчёт остатков</h2>
+
+        <p>
+          Укажите фактические остатки Cola.
+          Поставка определяется автоматически
+          по графику ресторана.
+        </p>
+
+      </div>
+    </div>
+
+    <div
+      id="cola-stock-content"
+      class="cola-module-content"
+    >
+      <div class="cola-placeholder">
+
+        <div class="cola-placeholder-icon">
+          01
+        </div>
+
+        <h3>Остатки Cola</h3>
+
+        <p>
+          Загрузка товаров и остатков...
+        </p>
+
+      </div>
+    </div>
+
+    <footer class="cola-panel-footer">
+
+      <span class="cola-footer-note">
+        Шаг 1 — Остаток
+      </span>
+
+      <button
+        class="cola-button is-primary"
+        type="button"
+        data-cola-next
+        disabled
+      >
+        Далее →
+      </button>
+
+    </footer>
+
+  </section>
+
+
+  <!-- =====================================
+       STEP 2 — ORDER
+  ====================================== -->
+  <section
+    id="cola-order-view"
+    class="cola-step-panel"
+    data-cola-panel="2"
+    hidden
+  >
+
+    <div class="cola-panel-header">
+      <div>
+
+        <p class="cola-panel-kicker">
+          ШАГ 2 ИЗ 2
+        </p>
+
+        <h2>Расчёт заказа</h2>
+
+        <p>
+          Расчёт по фактическим остаткам,
+          нормативам реализации и графику
+          поставок Cola.
+        </p>
+
+      </div>
+    </div>
+
+    <div
+      id="cola-calculation-summary"
+      class="cola-calculation-summary"
+    ></div>
+
+    <div
+      id="cola-result-content"
+      class="cola-module-content"
+    >
+      <div class="cola-placeholder">
+
+        <div class="cola-placeholder-icon">
+          02
+        </div>
+
+        <h3>Заказ Cola</h3>
+
+        <p>
+          Расчёт заказа будет отображаться
+          здесь после подключения модуля.
+        </p>
+
+      </div>
+    </div>
+
+    <footer class="cola-panel-footer">
+
+      <button
+        class="cola-button is-secondary"
+        type="button"
+        data-cola-back
+      >
+        ← Назад
+      </button>
+
+      <span class="cola-footer-note">
+        Шаг 2 — Заказ
+      </span>
+
+    </footer>
+
+  </section>
+
+</section>

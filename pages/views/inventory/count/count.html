@@ -1,0 +1,656 @@
+<section
+  class="inventory-count-page ui-page"
+  id="inventory-count-page"
+>
+
+  <!-- ==================================================
+       SESSION HEADER
+  =================================================== -->
+
+  <section class="inventory-session-card">
+
+    <div class="inventory-session-main">
+
+      <div class="inventory-session-icon">
+        ▦
+      </div>
+
+      <div>
+
+        <p class="inventory-count-kicker">
+          Текущая инвентаризация
+        </p>
+
+        <h2 id="inventory-session-date">
+          —
+        </h2>
+
+        <div class="inventory-session-meta">
+
+          <span id="inventory-session-weekday">
+            —
+          </span>
+
+          <span class="inventory-meta-dot">
+            •
+          </span>
+
+          <span id="inventory-session-type">
+            —
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="inventory-session-actions">
+
+      <div
+        class="inventory-status-badge"
+        id="inventory-session-status"
+      >
+        —
+      </div>
+
+      <button
+        class="inventory-date-change-button"
+        id="inventory-date-change-button"
+        type="button"
+      >
+        🔒 Изменить дату
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       STATS
+  =================================================== -->
+
+  <section class="inventory-count-stats">
+
+    <article class="inventory-count-stat">
+
+      <span>
+        Товаров
+      </span>
+
+      <strong id="inventory-products-count">
+        0
+      </strong>
+
+    </article>
+
+
+    <article class="inventory-count-stat">
+
+      <span>
+        Посчитано
+      </span>
+
+      <strong id="inventory-counted-count">
+        0
+      </strong>
+
+    </article>
+
+
+    <article class="inventory-count-stat">
+
+      <span>
+        Осталось
+      </span>
+
+      <strong id="inventory-remaining-count">
+        0
+      </strong>
+
+    </article>
+
+
+    <article class="inventory-count-stat inventory-count-progress-stat">
+
+      <div>
+
+        <span>
+          Прогресс
+        </span>
+
+        <strong id="inventory-progress-text">
+          0 / 0
+        </strong>
+
+      </div>
+
+      <div class="inventory-progress-track">
+
+        <div
+          class="inventory-progress-bar"
+          id="inventory-progress-bar"
+        ></div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ==================================================
+       TOOLBAR
+  =================================================== -->
+
+  <section class="inventory-count-toolbar">
+
+    <div class="inventory-count-search">
+
+      <span>
+        ⌕
+      </span>
+
+      <input
+        id="inventory-count-search"
+        type="search"
+        placeholder="Поиск по названию или IIKO коду..."
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <div
+      class="inventory-count-categories"
+      id="inventory-count-categories"
+    ></div>
+
+  </section>
+
+
+  <!-- ==================================================
+       PRODUCTS
+  =================================================== -->
+
+  <section class="inventory-products-section">
+
+    <div class="inventory-products-header">
+
+      <div>
+
+        <p class="inventory-count-kicker">
+          Список товаров
+        </p>
+
+        <h3>
+          Товары для подсчёта
+        </h3>
+
+      </div>
+
+      <span id="inventory-visible-products-count">
+        0 товаров
+      </span>
+
+    </div>
+
+
+    <div
+      class="inventory-products-loading"
+      id="inventory-products-loading"
+    >
+      Загрузка товаров...
+    </div>
+
+
+    <div
+      class="inventory-products-empty"
+      id="inventory-products-empty"
+      hidden
+    >
+      Товары для этой инвентаризации не найдены.
+    </div>
+
+
+    <div
+      class="inventory-products-list"
+      id="inventory-products-list"
+      hidden
+    ></div>
+
+  </section>
+
+
+  <!-- ==================================================
+       FOOTER ACTION
+  =================================================== -->
+
+  <section class="inventory-count-footer">
+
+    <div>
+
+      <strong id="inventory-footer-progress">
+        Посчитано 0 из 0
+      </strong>
+
+      <span>
+        После завершения инвентаризации изменения будут зафиксированы.
+      </span>
+
+    </div>
+
+    <button
+      class="inventory-print-button"
+      id="inventory-print-button"
+      type="button"
+      disabled
+    >
+      Печать / PDF
+    </button>
+
+
+    <button
+      class="inventory-complete-button"
+      id="inventory-complete-button"
+      type="button"
+      disabled
+    >
+      Завершить инвентаризацию
+    </button>
+
+    <!-- =====================================================
+        COUNT PRODUCT MODAL
+    ====================================================== -->
+
+    <div
+      class="inventory-count-modal"
+      id="inventory-count-modal"
+      aria-hidden="true"
+    >
+
+      <div
+        class="inventory-count-modal-backdrop"
+        data-count-modal-close
+      ></div>
+
+
+      <div
+        class="inventory-count-modal-card"
+        role="dialog"
+        aria-modal="true"
+      >
+
+        <div class="inventory-count-modal-header">
+
+          <div>
+
+            <p class="inventory-count-kicker">
+              Подсчёт товара
+            </p>
+
+            <h3 id="count-modal-product-name">
+              —
+            </h3>
+
+            <span id="count-modal-product-code">
+              —
+            </span>
+
+          </div>
+
+
+          <button
+            class="inventory-count-modal-close"
+            type="button"
+            data-count-modal-close
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <!-- ИТОГ -->
+
+        <section class="count-modal-total-section">
+
+          <span class="count-modal-label">
+            Итого посчитано
+          </span>
+
+          <div
+            class="count-modal-totals"
+            id="count-modal-totals"
+          >
+            Пока ничего не посчитано
+          </div>
+
+        </section>
+
+
+        <!-- INPUTS -->
+
+        <section>
+
+          <span class="count-modal-label">
+            Добавить количество
+          </span>
+
+          <div
+            class="count-modal-inputs"
+            id="count-modal-inputs"
+          ></div>
+
+        </section>
+
+
+        <!-- HISTORY -->
+
+        <section class="count-modal-history-section">
+
+          <div class="count-modal-history-header">
+
+            <span class="count-modal-label">
+              Последние подсчёты
+            </span>
+
+            <span id="count-modal-entry-count">
+              0 записей
+            </span>
+
+          </div>
+
+
+          <div
+            class="count-modal-history"
+            id="count-modal-history"
+          >
+
+            Нет записей
+
+          </div>
+
+        </section>
+
+
+        <div class="count-modal-footer">
+
+          <button
+            class="count-modal-zero-button"
+            id="count-modal-zero-button"
+            type="button"
+          >
+            Нет остатка
+          </button>
+
+
+          <button
+            class="count-modal-done-button"
+            type="button"
+            data-count-modal-close
+          >
+            Готово
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div
+  class="inventory-date-modal"
+  id="inventory-date-modal"
+  aria-hidden="true"
+>
+
+  <div
+    class="inventory-date-modal-backdrop"
+    data-date-modal-close
+  ></div>
+
+
+  <div
+    class="inventory-date-modal-card"
+    role="dialog"
+    aria-modal="true"
+  >
+
+    <div class="inventory-date-modal-header">
+
+      <div>
+        <p class="inventory-count-kicker">
+          Изменение даты
+        </p>
+
+        <h3>
+          Изменить дату инвентаризации
+        </h3>
+      </div>
+
+
+      <button
+        class="inventory-date-modal-close"
+        type="button"
+        data-date-modal-close
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="inventory-date-current">
+
+      <span>
+        Текущая дата
+      </span>
+
+      <strong id="date-modal-current-date">
+        —
+      </strong>
+
+    </div>
+
+
+    <label class="inventory-date-field">
+
+      <span>
+        Новая дата
+      </span>
+
+      <input
+        id="date-modal-new-date"
+        type="date"
+      >
+
+    </label>
+
+
+    <label class="inventory-date-field">
+
+      <span>
+        Код доступа
+      </span>
+
+      <input
+        id="date-modal-pin"
+        class="inventory-pin-input"
+        type="text"
+        name="inventory-access-code"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        data-lpignore="true"
+        data-1p-ignore="true"
+        placeholder="Введите код"
+      >
+
+    </label>
+
+
+    <div
+      class="inventory-date-message"
+      id="date-modal-message"
+      hidden
+    ></div>
+
+
+    <div class="inventory-date-modal-footer">
+
+      <button
+        class="inventory-date-cancel"
+        type="button"
+        data-date-modal-close
+      >
+        Отмена
+      </button>
+
+
+      <button
+        class="inventory-date-confirm"
+        id="date-modal-confirm"
+        type="button"
+      >
+        Подтвердить
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =====================================================
+     COMPLETE INVENTORY MODAL
+===================================================== -->
+
+<div
+  class="inventory-complete-modal"
+  id="inventory-complete-modal"
+  aria-hidden="true"
+>
+
+  <div
+    class="inventory-complete-modal-backdrop"
+    data-complete-modal-close
+  ></div>
+
+
+  <div
+    class="inventory-complete-modal-card"
+    role="dialog"
+    aria-modal="true"
+  >
+
+    <div class="inventory-complete-modal-header">
+
+      <div>
+
+        <p class="inventory-count-kicker">
+          Завершение
+        </p>
+
+        <h3>
+          Завершить инвентаризацию?
+        </h3>
+
+      </div>
+
+
+      <button
+        class="inventory-complete-modal-close"
+        type="button"
+        data-complete-modal-close
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="inventory-complete-modal-info">
+
+      <div class="inventory-complete-modal-row">
+
+        <span>
+          Дата
+        </span>
+
+        <strong
+          id="complete-modal-date"
+        >
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="inventory-complete-modal-row">
+
+        <span>
+          Посчитано
+        </span>
+
+        <strong
+          id="complete-modal-progress"
+        >
+          —
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="inventory-complete-modal-note">
+
+      После завершения инвентаризация
+      сохранится за выбранную дату.
+
+      При необходимости её можно будет
+      открыть снова через «Изменить дату».
+
+    </div>
+
+
+    <div
+      class="inventory-complete-modal-message"
+      id="complete-modal-message"
+      hidden
+    ></div>
+
+
+    <div class="inventory-complete-modal-footer">
+
+      <button
+        class="inventory-complete-modal-cancel"
+        type="button"
+        data-complete-modal-close
+      >
+        Отмена
+      </button>
+
+
+      <button
+        class="inventory-complete-modal-confirm"
+        id="complete-modal-confirm"
+        type="button"
+      >
+        Завершить
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+  </section>
+
+</section>

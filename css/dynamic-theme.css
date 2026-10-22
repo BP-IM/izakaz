@@ -1,0 +1,302 @@
+/* =====================================================
+   DYNAMIC PAGE THEME
+   Module loaders append this sheet after a page stylesheet,
+   so dark-theme rules reliably remain the last cascade layer.
+===================================================== */
+
+html[data-theme="dark"] :is(
+  .inventory-lists-page,
+  .settings-page,
+  .order-products-settings,
+  .profile-settings,
+  .sales-settings
+) {
+  color: var(--ui-text);
+}
+
+html[data-theme="dark"] .ui-page {
+  color: var(--ui-text);
+  background: var(--ui-page);
+}
+
+html[data-theme="dark"] :is(
+  .inventory-lists-header-card,
+  .inventory-lists-stat,
+  .inventory-lists-search,
+  .inventory-lists-category,
+  .inventory-lists-bulk,
+  .inventory-lists-card,
+  .inventory-lists-table-wrap,
+  .inventory-days-modal-card,
+  .delivery-settings,
+  .delivery-summary-card,
+  .order-products-card,
+  .order-products-table-wrap,
+  .order-products-modal-card,
+  .order-products-delete-card,
+  .profile-card,
+  .profile-info-item,
+  .sales-review-item,
+  .sales-card,
+  .sales-table-wrap
+) {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+
+html[data-theme="dark"] :is(
+  .inventory-lists-header-card h2,
+  .inventory-lists-stat strong,
+  .inventory-lists-product strong,
+  .inventory-days-modal-header h3,
+  .delivery-settings-header h2,
+  .delivery-summary-card strong,
+  .order-products-header h2,
+  .order-products-modal-header h3,
+  .order-products-delete-card h3,
+  .profile-card-header h2,
+  .sales-header h2,
+  .sales-review-item strong
+) {
+  color: var(--ui-text);
+}
+
+html[data-theme="dark"] :is(
+  .inventory-lists-page-label,
+  .inventory-lists-kicker,
+  .inventory-lists-header-card p,
+  .inventory-lists-stat span,
+  .inventory-lists-stat small,
+  .inventory-lists-product-meta,
+  .inventory-lists-product-code,
+  .inventory-days-modal-header span,
+  .delivery-settings-header p,
+  .order-products-header p,
+  .profile-card-header p,
+  .profile-field > span,
+  .profile-field small,
+  .sales-header p,
+  .sales-review-item span
+) {
+  color: var(--ui-muted);
+}
+
+html[data-theme="dark"] :is(
+  .inventory-lists-schedule-item,
+  .inventory-lists-table thead,
+  .inventory-lists-table tbody tr:hover,
+  .inventory-lists-table tbody tr.is-dirty,
+  .inventory-days-button,
+  .delivery-settings-header,
+  .order-products-table thead,
+  .order-products-table tbody tr:hover,
+  .order-products-table tbody tr.is-inactive,
+  .sales-table thead,
+  .sales-table tbody tr:hover,
+  .sales-table tbody tr.is-dirty
+) {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface-soft);
+}
+
+html[data-theme="dark"] :is(
+  .inventory-lists-search input,
+  .order-products-field input,
+  .order-products-field select,
+  .profile-field input,
+  .sales-day-input
+) {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: #171b21;
+}
+
+html[data-theme="dark"] :is(
+  .inventory-lists-category:hover,
+  .inventory-days-button:hover,
+  .order-products-action-button:hover,
+  .profile-button:not(.profile-button-primary):hover
+) {
+  border-color: #667085;
+  background: var(--ui-surface-soft);
+}
+
+html[data-theme="dark"] :is(
+  .inventory-days-secondary-button,
+  .order-products-secondary-button,
+  .profile-button:not(.profile-button-primary)
+) {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+
+html[data-theme="dark"] :is(
+  .inventory-lists-table th,
+  .inventory-lists-table td,
+  .order-products-table th,
+  .order-products-table td,
+  .sales-table th,
+  .sales-table td
+) {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+}
+
+/* Dynamic settings modules contain legacy light colours. Keep every visible
+   surface, field and label within the dark token contract. */
+html[data-theme="dark"] .delivery-settings,
+html[data-theme="dark"] .delivery-group-section,
+html[data-theme="dark"] .delivery-summary,
+html[data-theme="dark"] .delivery-order-days,
+html[data-theme="dark"] .delivery-group-tab,
+html[data-theme="dark"] .delivery-summary-card,
+html[data-theme="dark"] .settings-tabs,
+html[data-theme="dark"] .order-products-header,
+html[data-theme="dark"] .order-products-stat,
+html[data-theme="dark"] .order-products-search input,
+html[data-theme="dark"] .order-products-status-filter,
+html[data-theme="dark"] .order-products-category,
+html[data-theme="dark"] .order-products-card,
+html[data-theme="dark"] .order-products-table th,
+html[data-theme="dark"] .order-products-table tbody tr:hover,
+html[data-theme="dark"] .order-products-table tbody tr.is-inactive,
+html[data-theme="dark"] .profile-card,
+html[data-theme="dark"] .profile-info-item,
+html[data-theme="dark"] .profile-field input,
+html[data-theme="dark"] .profile-password-toggle {
+  border-color: var(--ui-line) !important;
+  color: var(--ui-text) !important;
+  background: var(--ui-surface) !important;
+}
+
+html[data-theme="dark"] :is(
+  .delivery-group-section,
+  .delivery-summary,
+  .order-products-table th,
+  .order-products-table tbody tr:hover,
+  .order-products-table tbody tr.is-inactive,
+  .profile-info-item
+) {
+  background: var(--ui-surface-soft) !important;
+}
+
+html[data-theme="dark"] :is(
+  .delivery-settings-header,
+  .delivery-group-section,
+  .delivery-day,
+  .delivery-summary,
+  .delivery-footer,
+  .order-products-table th,
+  .order-products-table td
+) {
+  border-color: var(--ui-line) !important;
+}
+
+html[data-theme="dark"] :is(
+  .delivery-settings-header h2,
+  .delivery-group-copy > strong,
+  .delivery-day-name strong,
+  .delivery-summary-title strong,
+  .delivery-summary-card strong,
+  .order-products-header h2,
+  .order-products-stat strong,
+  .order-products-product-name,
+  .order-products-empty strong,
+  .profile-card-header h2,
+  .profile-field > span,
+  .profile-info-value
+) {
+  color: var(--ui-text) !important;
+}
+
+html[data-theme="dark"] :is(
+  .delivery-settings-header p,
+  .delivery-order-days > span,
+  .delivery-group-copy > span,
+  .delivery-group-copy > small,
+  .delivery-group-tab small,
+  .delivery-day-name span,
+  .delivery-source span,
+  .delivery-summary-title span,
+  .delivery-summary-title small,
+  .delivery-summary-card span,
+  .delivery-save-status,
+  .order-products-header p,
+  .order-products-stat span,
+  .order-products-table th,
+  .order-products-product-code,
+  .profile-card-header p,
+  .profile-field small,
+  .profile-info-label
+) {
+  color: var(--ui-muted) !important;
+}
+
+html[data-theme="dark"] :is(
+  .delivery-source select,
+  .order-products-search input,
+  .order-products-status-filter,
+  .order-products-field input,
+  .order-products-field select,
+  .profile-field input
+) {
+  border-color: var(--ui-line) !important;
+  color: var(--ui-text) !important;
+  background: #171b21 !important;
+}
+
+html[data-theme="dark"] :is(
+  .delivery-source select,
+  .order-products-status-filter,
+  .order-products-field select
+) option {
+  color: var(--ui-text);
+  background: #171b21;
+}
+
+html[data-theme="dark"] :is(
+  .delivery-group-tab.is-active,
+  .settings-tab.is-active
+) {
+  border-color: var(--ui-accent) !important;
+  color: var(--ui-text) !important;
+  background: var(--ui-surface-soft) !important;
+}
+
+html[data-theme="dark"] .delivery-switch-ui {
+  background: #4a515d !important;
+}
+
+html[data-theme="dark"] .delivery-switch input:checked + .delivery-switch-ui {
+  background: var(--ui-accent) !important;
+}
+
+html[data-theme="dark"] .order-products-search input::placeholder,
+html[data-theme="dark"] .profile-field input::placeholder {
+  color: var(--ui-muted) !important;
+  opacity: 1;
+}
+
+/* Order flows share the same legible two-step navigation in dark mode. */
+html[data-theme="dark"] :is(#cola-order-page .cola-step, #abl-order-page .order-step) {
+  border-color: var(--ui-line) !important;
+  color: var(--ui-text) !important;
+  background: var(--ui-surface) !important;
+}
+
+html[data-theme="dark"] :is(#cola-order-page .cola-step.is-active, #abl-order-page .order-step.is-active) {
+  border-color: var(--ui-accent) !important;
+  background: #352d11 !important;
+  box-shadow: 0 0 0 1px var(--ui-accent) !important;
+}
+
+html[data-theme="dark"] :is(#cola-order-page .cola-step-info small, #abl-order-page .order-step-text small) {
+  color: var(--ui-muted) !important;
+}
+
+html[data-theme="dark"] :is(#cola-order-page .cola-step-line, #abl-order-page .order-step-line) {
+  background: var(--ui-line) !important;
+}

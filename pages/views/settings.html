@@ -12,13 +12,18 @@
     </button>
 
     <div>
-      <p class="page-label">
+
+      <p
+        class="page-label"
+        id="settings-page-label"
+      >
         Конфигурация ресторана
       </p>
 
-      <h1>
+      <h1 id="settings-page-title">
         Настройки
       </h1>
+
     </div>
 
   </div>
@@ -32,37 +37,14 @@
 >
 
   <div
-    class="settings-tabs"
-    role="tablist"
-  >
-
-    <button
-      class="settings-tab is-active"
-      type="button"
-      data-settings-tab="delivery"
-    >
-      График поставок
-    </button>
-
-
-    <button
-      class="settings-tab"
-      type="button"
-      data-settings-tab="products"
-    >
-      Товары заказа
-    </button>
-
-  </div>
-
-
-  <div
     class="settings-tab-container"
     id="settings-tab-container"
   >
 
-    <div class="settings-loading">
-      Загрузка настроек...
+    <div class="settings-loading" role="status" aria-live="polite">
+      <span class="app-module-loader" aria-hidden="true"></span>
+      <strong class="app-module-loading-title">Загрузка настроек…</strong>
+      <span class="app-module-loading-note">Подготавливаем раздел</span>
     </div>
 
   </div>

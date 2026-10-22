@@ -1,10 +1,15 @@
 /* =====================================================
-   ДИНАМИЧЕСКАЯ ЗАГРУЗКА СТРАНИЦ
+   IZAKAZ v0.2.0
+   SPA PAGE LOADER
 ===================================================== */
 
 (function () {
   "use strict";
 
+
+  /* =====================================================
+     PAGE CONTAINER
+  ===================================================== */
 
   const pageContainer =
     document.getElementById(
@@ -13,79 +18,103 @@
 
 
   if (!pageContainer) {
-
     console.error(
       "Не найден элемент #page-container"
     );
 
     return;
-
   }
 
 
   /* =====================================================
-     СПИСОК СТРАНИЦ
+     NAVIGATION CONFIG
   ===================================================== */
 
-  const routes = {
+  const navigation =
+    window.IZAKAZ_NAVIGATION;
 
-    home: {
-      file: "views/home.html",
-      title: "Главная"
-    },
 
-    inventory: {
-      file: "views/inventory.html",
-      title: "Инвентаризация"
-    },
+  if (
+    !navigation ||
+    !navigation.routes
+  ) {
+    console.error(
+      "Не найден IZAKAZ_NAVIGATION.routes"
+    );
 
-    "inventory-lists": {
-      file: "views/inventory-lists.html",
-      title: "Списки инвентаризации"
-    },
+    return;
+  }
 
-    order: {
-      file: "views/order.html",
-      title: "Еженедельный заказ"
-    },
 
-    deliveries: {
-      file: "views/deliveries.html",
-      title: "Поставки"
-    },
+  const routes =
+    navigation.routes;
 
-    "delivery-sheet": {
-      file: "views/delivery-sheet.html",
-      title: "Лист поставки"
-    },
 
-    settings: {
-      file: "views/settings.html",
-      title: "Настройки"
-    }
+  /* =====================================================
+     LEGACY ROUTES
+     
+     Старые ссылки временно продолжают работать.
+     Позже, когда весь проект перейдет на новые route,
+     этот блок можно удалить.
+  ===================================================== */
 
+  const legacyRoutes = {
+    inventory:
+      "inventory-daily",
+
+    "inventory-lists":
+      "inventory-weekly",
+
+    order:
+      "order-cola",
+
+    deliveries:
+      "deliveries-cola",
+
+    settings:
+      "settings-delivery"
   };
 
 
   /* =====================================================
-     ТЕКУЩИЙ ROUTE + PARAMS
+     RESOLVE ROUTE
+  ===================================================== */
+
+  function resolveRoute(route) {
+    if (routes[route]) {
+      return route;
+    }
+
+
+    if (
+      legacyRoutes[route] &&
+      routes[legacyRoutes[route]]
+    ) {
+      return legacyRoutes[route];
+    }
+
+
+    return "home";
+  }
+
+
+  /* =====================================================
+     CURRENT ROUTE + PARAMS
   ===================================================== */
 
   function getRouteState() {
-
     const rawHash =
       window.location.hash
-        .replace("#", "")
+        .replace(/^#/, "")
         .trim();
 
 
     if (!rawHash) {
-
       return {
         route: "home",
+        originalRoute: "home",
         params: []
       };
-
     }
 
 
@@ -95,65 +124,26 @@
         .filter(Boolean);
 
 
+    const originalRoute =
+      parts[0] ||
+      "home";
+
+
     const route =
-      parts[0];
+      resolveRoute(
+        originalRoute
+      );
 
 
     const params =
       parts.slice(1);
 
 
-    if (!routes[route]) {
-
-      return {
-        route: "home",
-        params: []
-      };
-
-    }
-
-
     return {
       route,
+      originalRoute,
       params
     };
-
-  }
-
-
-  /* =====================================================
-     SIDEBAR ACTIVE
-  ===================================================== */
-
-  function updateActiveMenu(route) {
-
-    /*
-      Лист поставки является
-      дочерней страницей Поставок.
-    */
-
-    const sidebarRoute =
-      route === "delivery-sheet"
-        ? "deliveries"
-        : route;
-
-
-    document
-      .querySelectorAll(
-        ".nav-link"
-      )
-      .forEach(
-        function (link) {
-
-          link.classList.toggle(
-            "active",
-            link.dataset.route ===
-              sidebarRoute
-          );
-
-        }
-      );
-
   }
 
 
@@ -161,60 +151,220 @@
      DOCUMENT TITLE
   ===================================================== */
 
-  function updateDocumentTitle(route) {
-
+  function updateDocumentTitle(
+    page
+  ) {
     const pageTitle =
-      routes[route]?.title ||
-      "I’M | Заказ";
+      page?.title ||
+      "Главная";
 
 
     document.title =
       `I’M | Заказ — ${pageTitle}`;
-
   }
 
 
   /* =====================================================
-     LOAD PAGE
+     LOADING
   ===================================================== */
 
-  async function loadPage() {
-
-    const state =
-      getRouteState();
-
-
-    const route =
-      state.route;
-
-
-    const params =
-      state.params;
+  function showLoading() {
+    pageContainer.innerHTML = `
+      <div class="page-loading" role="status" aria-live="polite">
+        <span class="app-module-loader" aria-hidden="true"></span>
+        <strong class="app-module-loading-title">Загрузка страницы…</strong>
+        <span class="app-module-loading-note">Подготавливаем раздел</span>
+      </div>
+    `;
+  }
 
 
-    const page =
-      routes[route];
+  /* =====================================================
+     PAGE DATA OVERLAY
+
+     Routed fragments render their header first, then keep this overlay over
+     the content area until their asynchronous data has arrived.
+  ===================================================== */
+
+  function hideDataLoading(host) {
+    if (!host) return;
+    host.querySelector(":scope > .app-page-data-loading")?.remove();
+    host.removeAttribute("aria-busy");
+  }
+
+  function showDataLoading(host, message) {
+    if (!host) return;
+
+    hideDataLoading(host);
+
+    host.classList.add("app-page-loading-host");
+    host.setAttribute("aria-busy", "true");
+
+    const overlay = document.createElement("div");
+    overlay.className = "app-page-data-loading";
+    overlay.setAttribute("role", "status");
+    overlay.setAttribute("aria-live", "polite");
+    overlay.innerHTML = `
+      <span class="app-module-loader" aria-hidden="true"></span>
+      <strong class="app-module-loading-title">${message || "Загрузка…"}</strong>
+      <span class="app-module-loading-note">Подготавливаем данные</span>
+    `;
+
+    host.appendChild(overlay);
+  }
 
 
-    updateActiveMenu(
-      route
-    );
+  /* =====================================================
+     COMING SOON
+  ===================================================== */
+
+  function showComingSoon(
+    page
+  ) {
+    pageContainer.innerHTML = `
+      <div class="temporary-content">
+
+        <section class="temporary-card">
+
+          <div>
+
+            <div class="temporary-icon">
+              +
+            </div>
+
+            <h2>
+              ${page.title}
+            </h2>
+
+            <p>
+              Раздел подготовлен в структуре
+              izakaz v0.2.0.
+              Функционал будет добавлен позже.
+            </p>
+
+            <span class="temporary-status">
+              В разработке
+            </span>
+
+          </div>
+
+        </section>
+
+      </div>
+    `;
+  }
 
 
-    updateDocumentTitle(
-      route
+  /* =====================================================
+     ERROR
+  ===================================================== */
+
+  function showError(
+    page,
+    error
+  ) {
+    console.error(
+      "Ошибка загрузки страницы:",
+      error
     );
 
 
     pageContainer.innerHTML = `
-      <div class="page-loading">
-        Загрузка страницы...
+      <div class="temporary-content">
+
+        <section class="temporary-card">
+
+          <div>
+
+            <div class="temporary-icon">
+              !
+            </div>
+
+            <h2>
+              Не удалось открыть страницу
+            </h2>
+
+            <p>
+              Проверьте наличие файла:
+              <strong>
+                ${page?.file || "не указан"}
+              </strong>
+            </p>
+
+            <span class="temporary-status">
+              Ошибка загрузки
+            </span>
+
+          </div>
+
+        </section>
+
       </div>
     `;
+  }
+
+
+  /* =====================================================
+     PAGE STATE
+     
+     Другие модули смогут узнать:
+     - текущий route
+     - params
+     - config страницы
+     
+     Например settings.js позже использует settingsTab.
+  ===================================================== */
+
+  function setCurrentPageState(
+    route,
+    params,
+    page
+  ) {
+    window.IZAKAZ_CURRENT_PAGE = {
+      route,
+      params,
+      config: page
+    };
+  }
+
+
+  /* =====================================================
+     PAGE LOADED EVENT
+  ===================================================== */
+
+  function dispatchPageLoaded(
+    route,
+    params,
+    page
+  ) {
+    document.dispatchEvent(
+      new CustomEvent(
+        "app:page-loaded",
+        {
+          detail: {
+            route,
+            params,
+            page
+          }
+        }
+      )
+    );
+  }
+
+
+  /* =====================================================
+     LOAD HTML PAGE
+  ===================================================== */
+
+  async function loadHtmlPage(
+    route,
+    params,
+    page
+  ) {
+    showLoading();
 
 
     try {
-
       const response =
         await fetch(
           page.file,
@@ -225,11 +375,9 @@
 
 
       if (!response.ok) {
-
         throw new Error(
-          `Ошибка загрузки: ${response.status}`
+          `HTTP ${response.status}`
         );
-
       }
 
 
@@ -247,62 +395,86 @@
       });
 
 
-      document.dispatchEvent(
-        new CustomEvent(
-          "app:page-loaded",
-          {
-            detail: {
-              route,
-              params
-            }
-          }
-        )
+      dispatchPageLoaded(
+        route,
+        params,
+        page
       );
 
 
     } catch (error) {
-
-      console.error(
-        "Ошибка загрузки страницы:",
+      showError(
+        page,
         error
+      );
+    }
+  }
+
+
+  /* =====================================================
+     LOAD PAGE
+  ===================================================== */
+
+  async function loadPage() {
+    const state =
+      getRouteState();
+
+
+    const route =
+      state.route;
+
+
+    const params =
+      state.params;
+
+
+    const page =
+      routes[route] ||
+      routes.home;
+
+
+    setCurrentPageState(
+      route,
+      params,
+      page
+    );
+
+
+    updateDocumentTitle(
+      page
+    );
+
+
+    /*
+      Пока функция не реализована,
+      не пытаемся fetch(null).
+    */
+
+    if (
+      page.implemented === false ||
+      !page.file
+    ) {
+      showComingSoon(
+        page
       );
 
 
-      pageContainer.innerHTML = `
-        <div class="temporary-content">
+      dispatchPageLoaded(
+        route,
+        params,
+        page
+      );
 
-          <section class="temporary-card">
 
-            <div>
-
-              <div class="temporary-icon">
-                !
-              </div>
-
-              <h2>
-                Не удалось открыть страницу
-              </h2>
-
-              <p>
-                Проверьте наличие файла:
-                <strong>
-                  ${page.file}
-                </strong>
-              </p>
-
-              <span class="temporary-status">
-                Ошибка загрузки
-              </span>
-
-            </div>
-
-          </section>
-
-        </div>
-      `;
-
+      return;
     }
 
+
+    await loadHtmlPage(
+      route,
+      params,
+      page
+    );
   }
 
 
@@ -317,18 +489,35 @@
 
 
   /* =====================================================
+     PUBLIC API
+  ===================================================== */
+
+  window.IzakazRouter = {
+    loadPage,
+
+    getCurrentPage() {
+      return (
+        window.IZAKAZ_CURRENT_PAGE ||
+        null
+      );
+    }
+  };
+
+  window.IzakazPageLoading = {
+    show: showDataLoading,
+    hide: hideDataLoading
+  };
+
+
+  /* =====================================================
      START
   ===================================================== */
 
   if (!window.location.hash) {
-
     window.location.hash =
       "home";
-
   } else {
-
     loadPage();
-
   }
 
 })();

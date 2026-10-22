@@ -1,5 +1,6 @@
 /* =====================================================
-   СТРАНИЦА ИНВЕНТАРИЗАЦИИ
+   IZAKAZ v0.2.0
+   INVENTORY MODULE LOADER
 ===================================================== */
 
 (function () {
@@ -7,1153 +8,558 @@
 
 
   /* =====================================================
-     ДНИ НЕДЕЛИ В ФОРМАТЕ БАЗЫ
-
-     1 — Понедельник
-     2 — Вторник
-     3 — Среда
-     4 — Четверг
-     5 — Пятница
-     6 — Суббота
-     7 — Воскресенье
+     MODULES
   ===================================================== */
 
-  const WEEKDAYS = {
-    1: "Понедельник",
-    2: "Вторник",
-    3: "Среда",
-    4: "Четверг",
-    5: "Пятница",
-    6: "Суббота",
-    7: "Воскресенье"
-  };
+  const INVENTORY_MODULES = {
+
+    count: {
+
+      title:
+        "Проведение инвентаризации",
+
+      html:
+        "./views/inventory/count/count.html",
+
+      css:
+        "./views/inventory/count/count.css",
+
+      js:
+        "./views/inventory/count/count.js",
+
+      module:
+        "InventoryCount"
+
+    },
 
 
-  const MONTHS = [
-    "января",
-    "февраля",
-    "марта",
-    "апреля",
-    "мая",
-    "июня",
-    "июля",
-    "августа",
-    "сентября",
-    "октября",
-    "ноября",
-    "декабря"
-  ];
+    lists: {
 
+      title:
+        "Списки инвентаризации",
 
-  const state = {
-    userId: null,
-    restaurantId: null,
+      html:
+        "./views/inventory/lists/lists.html",
 
-    restaurantName: "Ресторан",
-    restaurantCode: "—",
+      css:
+        "./views/inventory/lists/lists.css",
 
-    selectedWeekday: null,
+      js:
+        "./views/inventory/lists/lists.js",
 
-    categories: [],
-    products: [],
-    dayItems: [],
+      module:
+        "InventoryLists"
 
-    requestVersion: 0
+    }
+
   };
 
 
   /* =====================================================
-     ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+     LOADED RESOURCES
   ===================================================== */
 
-  function getElement(id) {
-    return document.getElementById(id);
-  }
+  const loadedScripts =
+    new Set();
 
 
-  function escapeHTML(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
+  const loadedStyles =
+    new Set();
 
 
-  function setText(
-    elementIds,
-    value
-  ) {
-    elementIds.forEach(
-      function (elementId) {
-        const element =
-          getElement(elementId);
+  /* =====================================================
+     CURRENT MODULE
+  ===================================================== */
 
-        if (element) {
-          element.textContent =
-            value;
-        }
-      }
+  function getCurrentModule() {
+
+    return (
+      window
+        .IZAKAZ_CURRENT_PAGE
+        ?.config
+        ?.inventoryTab
+      ||
+      "count"
     );
+
   }
 
 
   /* =====================================================
-     ЛОКАЛЬНАЯ ДАТА YYYY-MM-DD
+     LOAD CSS
   ===================================================== */
 
-  function getLocalISODate(
-    date = new Date()
-  ) {
-    const year =
-      date.getFullYear();
-
-    const month =
-      String(
-        date.getMonth() + 1
-      ).padStart(2, "0");
-
-    const day =
-      String(
-        date.getDate()
-      ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  }
-
-
-  /* =====================================================
-     ПАРСИНГ ДАТЫ БЕЗ СДВИГА ЧАСОВОГО ПОЯСА
-  ===================================================== */
-
-  function parseDate(dateString) {
-    if (!dateString) {
-      return null;
-    }
-
-    const parts =
-      dateString
-        .split("-")
-        .map(Number);
-
-    if (parts.length !== 3) {
-      return null;
-    }
-
-    const [
-      year,
-      month,
-      day
-    ] = parts;
-
-    const date =
-      new Date(
-        year,
-        month - 1,
-        day
-      );
+  function loadStyle(path) {
 
     if (
-      Number.isNaN(
-        date.getTime()
+      loadedStyles.has(path)
+    ) {
+      return;
+    }
+
+
+    const link =
+      document.createElement(
+        "link"
+      );
+
+
+    link.rel =
+      "stylesheet";
+
+
+    link.href =
+      path;
+
+
+    document.head.appendChild(
+      link
+    );
+
+
+    loadedStyles.add(
+      path
+    );
+
+  }
+
+
+  function refreshThemeOverrides() {
+
+    document
+      .getElementById(
+        "dynamic-theme-overrides"
       )
-    ) {
-      return null;
-    }
+      ?.remove();
 
-    return date;
+
+    const link =
+      document.createElement(
+        "link"
+      );
+
+
+    link.id =
+      "dynamic-theme-overrides";
+
+    link.rel =
+      "stylesheet";
+
+    link.href =
+      "../css/dynamic-theme.css";
+
+    document.head.appendChild(
+      link
+    );
+
   }
 
 
   /* =====================================================
-     ПЕРЕВОД ДНЯ JAVASCRIPT В ДЕНЬ БАЗЫ
-
-     JavaScript:
-     0 — воскресенье
-     1 — понедельник
-     ...
-     6 — суббота
-
-     База:
-     1 — понедельник
-     ...
-     7 — воскресенье
+     LOAD JS
   ===================================================== */
 
-  function getDatabaseWeekday(date) {
-    const jsWeekday =
-      date.getDay();
+  function loadScript(path) {
 
-    return jsWeekday === 0
-      ? 7
-      : jsWeekday;
-  }
+    return new Promise(
+      function (
+        resolve,
+        reject
+      ) {
 
+        /*
+          JS уже загружен
+        */
 
-  /* =====================================================
-     ФОРМАТИРОВАНИЕ ДАТЫ
-  ===================================================== */
-
-  function formatDate(date) {
-    if (!date) {
-      return "Дата не выбрана";
-    }
-
-    const day =
-      String(
-        date.getDate()
-      ).padStart(2, "0");
-
-    const month =
-      MONTHS[
-        date.getMonth()
-      ];
-
-    const year =
-      date.getFullYear();
-
-    return `${day} ${month} ${year} г.`;
-  }
-
-
-  /* =====================================================
-     ФОРМАТ КОДА РЕСТОРАНА
-  ===================================================== */
-
-  function formatRestaurantCode(code) {
-    if (!code) {
-      return "—";
-    }
-
-    const cleanCode =
-      String(code)
-        .replace(/\D/g, "");
-
-    if (
-      cleanCode.length === 5
-    ) {
-      return (
-        cleanCode.slice(0, 2) +
-        "-" +
-        cleanCode.slice(2)
-      );
-    }
-
-    return String(code);
-  }
-
-
-  /* =====================================================
-     ЗАГРУЗКА ПРОФИЛЯ И РЕСТОРАНА
-  ===================================================== */
-
-  async function loadCurrentContext() {
-    const {
-      data: userData,
-      error: userError
-    } =
-      await supabaseClient
-        .auth
-        .getUser();
-
-    if (
-      userError ||
-      !userData.user
-    ) {
-      throw new Error(
-        "Пользователь не авторизован."
-      );
-    }
-
-    const user =
-      userData.user;
-
-    state.userId =
-      user.id;
-
-
-    const {
-      data: profile,
-      error: profileError
-    } =
-      await supabaseClient
-        .from("profiles")
-        .select(`
-          restaurant_id,
-          restaurant:restaurants (
-            id,
-            name,
-            code
-          )
-        `)
-        .eq(
-          "id",
-          user.id
-        )
-        .single();
-
-
-    if (profileError) {
-      throw profileError;
-    }
-
-
-    if (!profile?.restaurant_id) {
-      throw new Error(
-        "Ресторан пользователя не найден."
-      );
-    }
-
-
-    state.restaurantId =
-      profile.restaurant_id;
-
-
-    state.restaurantName =
-      profile.restaurant?.name ||
-      user.user_metadata
-        ?.restaurant_name ||
-      "Ресторан";
-
-
-    state.restaurantCode =
-      formatRestaurantCode(
-        profile.restaurant?.code ||
-        user.user_metadata
-          ?.restaurant_code
-      );
-  }
-
-
-  /* =====================================================
-     ЗАГРУЗКА КАТЕГОРИЙ
-  ===================================================== */
-
-  async function loadCategories() {
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from(
-          "inventory_categories"
-        )
-        .select(`
-          id,
-          name,
-          sort_order,
-          is_active
-        `)
-        .eq(
-          "restaurant_id",
-          state.restaurantId
-        )
-        .eq(
-          "is_active",
-          true
-        )
-        .order(
-          "sort_order",
-          {
-            ascending: true
-          }
-        )
-        .order(
-          "name",
-          {
-            ascending: true
-          }
-        );
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    state.categories =
-      Array.isArray(data)
-        ? data
-        : [];
-  }
-
-
-  /* =====================================================
-     ЗАГРУЗКА ТОВАРОВ
-  ===================================================== */
-
-  async function loadProducts() {
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from(
-          "inventory_products"
-        )
-        .select(`
-          id,
-          category_id,
-          code,
-          name,
-          is_active
-        `)
-        .eq(
-          "restaurant_id",
-          state.restaurantId
-        )
-        .eq(
-          "is_active",
-          true
-        );
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    state.products =
-      Array.isArray(data)
-        ? data
-        : [];
-  }
-
-
-  /* =====================================================
-     ЗАГРУЗКА ПОЗИЦИЙ ВЫБРАННОГО ДНЯ
-  ===================================================== */
-
-  async function loadDayItems(
-    weekday
-  ) {
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from(
-          "inventory_day_items"
-        )
-        .select(`
-          id,
-          product_id,
-          weekday,
-          sort_order,
-          is_active
-        `)
-        .eq(
-          "restaurant_id",
-          state.restaurantId
-        )
-        .eq(
-          "weekday",
-          weekday
-        )
-        .eq(
-          "is_active",
-          true
-        )
-        .order(
-          "sort_order",
-          {
-            ascending: true
-          }
-        );
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    state.dayItems =
-      Array.isArray(data)
-        ? data
-        : [];
-  }
-
-
-  /* =====================================================
-     ОБЪЕДИНЕНИЕ ДАННЫХ
-  ===================================================== */
-
-  function getSelectedProducts() {
-    const productsMap =
-      new Map(
-        state.products.map(
-          function (product) {
-            return [
-              product.id,
-              product
-            ];
-          }
-        )
-      );
-
-
-    const categoriesMap =
-      new Map(
-        state.categories.map(
-          function (category) {
-            return [
-              category.id,
-              category
-            ];
-          }
-        )
-      );
-
-
-    return state.dayItems
-      .map(
-        function (dayItem) {
-          const product =
-            productsMap.get(
-              dayItem.product_id
-            );
-
-          if (!product) {
-            return null;
-          }
-
-          const category =
-            categoriesMap.get(
-              product.category_id
-            );
-
-          if (!category) {
-            return null;
-          }
-
-          return {
-            id:
-              product.id,
-
-            code:
-              product.code,
-
-            name:
-              product.name,
-
-            categoryId:
-              category.id,
-
-            categoryName:
-              category.name,
-
-            categorySortOrder:
-              Number(
-                category.sort_order
-              ) || 0,
-
-            itemSortOrder:
-              Number(
-                dayItem.sort_order
-              ) || 0
-          };
-        }
-      )
-      .filter(Boolean)
-      .sort(
-        function (a, b) {
-          if (
-            a.categorySortOrder !==
-            b.categorySortOrder
-          ) {
-            return (
-              a.categorySortOrder -
-              b.categorySortOrder
-            );
-          }
-
-          return (
-            a.itemSortOrder -
-            b.itemSortOrder
-          );
-        }
-      );
-  }
-
-
-  /* =====================================================
-     СОСТОЯНИЕ ЗАГРУЗКИ
-  ===================================================== */
-
-  function renderLoadingState() {
-    const tableBody =
-      getElement(
-        "inventory-table-body"
-      );
-
-    const countElement =
-      getElement(
-        "inventory-items-count"
-      );
-
-    if (countElement) {
-      countElement.textContent =
-        "—";
-    }
-
-    if (!tableBody) {
-      return;
-    }
-
-    tableBody.innerHTML = `
-      <tr class="inventory-empty-row">
-        <td colspan="5">
-
-          <div class="inventory-empty-state">
-            <div>
-
-              <strong>
-                Загрузка списка...
-              </strong>
-
-              <span>
-                Получаем позиции для выбранного дня.
-              </span>
-
-            </div>
-          </div>
-
-        </td>
-      </tr>
-    `;
-  }
-
-
-  /* =====================================================
-     СОСТОЯНИЕ ОШИБКИ
-  ===================================================== */
-
-  function renderErrorState(
-    message
-  ) {
-    const tableBody =
-      getElement(
-        "inventory-table-body"
-      );
-
-    const countElement =
-      getElement(
-        "inventory-items-count"
-      );
-
-    if (countElement) {
-      countElement.textContent =
-        "0";
-    }
-
-    if (!tableBody) {
-      return;
-    }
-
-    tableBody.innerHTML = `
-      <tr class="inventory-empty-row">
-        <td colspan="5">
-
-          <div class="inventory-empty-state">
-            <div>
-
-              <strong>
-                Не удалось загрузить список
-              </strong>
-
-              <span>
-                ${escapeHTML(
-                  message ||
-                  "Попробуйте обновить страницу."
-                )}
-              </span>
-
-            </div>
-          </div>
-
-        </td>
-      </tr>
-    `;
-  }
-
-
-  /* =====================================================
-     ПУСТОЙ СПИСОК
-  ===================================================== */
-
-  function renderEmptyState() {
-    const tableBody =
-      getElement(
-        "inventory-table-body"
-      );
-
-    const countElement =
-      getElement(
-        "inventory-items-count"
-      );
-
-    if (countElement) {
-      countElement.textContent =
-        "0";
-    }
-
-    if (!tableBody) {
-      return;
-    }
-
-    tableBody.innerHTML = `
-      <tr class="inventory-empty-row">
-        <td colspan="5">
-
-          <div class="inventory-empty-state">
-            <div>
-
-              <strong>
-                На выбранный день список пуст
-              </strong>
-
-              <span>
-                Добавьте позиции в разделе
-                «Списки инвентаризации».
-              </span>
-
-            </div>
-          </div>
-
-        </td>
-      </tr>
-    `;
-  }
-
-
-  /* =====================================================
-     ОТОБРАЖЕНИЕ СПИСКА
-  ===================================================== */
-
-  function renderInventoryItems() {
-    const tableBody =
-      getElement(
-        "inventory-table-body"
-      );
-
-    const countElement =
-      getElement(
-        "inventory-items-count"
-      );
-
-    if (
-      !tableBody ||
-      !countElement
-    ) {
-      return;
-    }
-
-
-    const items =
-      getSelectedProducts();
-
-
-    countElement.textContent =
-      String(items.length);
-
-
-    if (
-      items.length === 0
-    ) {
-      renderEmptyState();
-      return;
-    }
-
-
-    let currentCategoryId =
-      null;
-
-    let visibleRowIndex =
-      0;
-
-    const rows =
-      [];
-
-
-    items.forEach(
-      function (item) {
         if (
-          item.categoryId !==
-          currentCategoryId
+          loadedScripts.has(path)
         ) {
-          currentCategoryId =
-            item.categoryId;
 
-          rows.push(`
-            <tr class="inventory-category-row">
-              <td colspan="5">
-                ${escapeHTML(
-                  item.categoryName
-                )}
-              </td>
-            </tr>
-          `);
+          resolve();
+
+          return;
+
         }
 
 
-        visibleRowIndex += 1;
+        const script =
+          document.createElement(
+            "script"
+          );
 
 
-        const rowClass =
-          visibleRowIndex % 2 === 1
-            ? "inventory-row-blue"
-            : "inventory-row-white";
+        script.src =
+          path;
 
 
-        const number =
-          item.itemSortOrder > 0
-            ? item.itemSortOrder
-            : visibleRowIndex;
+        script.onload =
+          function () {
+
+            loadedScripts.add(
+              path
+            );
 
 
-        const productTitle =
-          item.code
-            ? (
-                escapeHTML(item.code) +
-                "." +
-                escapeHTML(item.name)
+            resolve();
+
+          };
+
+
+        script.onerror =
+          function () {
+
+            reject(
+              new Error(
+                `Не удалось загрузить ${path}`
               )
-            : escapeHTML(item.name);
+            );
+
+          };
 
 
-        rows.push(`
-          <tr
-            class="inventory-product-row ${rowClass}"
-          >
+        document.body.appendChild(
+          script
+        );
 
-            <td class="inventory-number-cell">
-              ${escapeHTML(number)}
-            </td>
-
-            <td class="inventory-name-cell">
-              ${productTitle}
-            </td>
-
-            <td class="inventory-value-cell"></td>
-
-            <td class="inventory-value-cell"></td>
-
-            <td class="inventory-value-cell"></td>
-
-          </tr>
-        `);
       }
     );
 
-
-    tableBody.innerHTML =
-      rows.join("");
   }
 
 
   /* =====================================================
-     ОТОБРАЖЕНИЕ ДАННЫХ РЕСТОРАНА
+     LOAD INVENTORY MODULE
   ===================================================== */
 
-  function renderRestaurantData() {
-    setText(
-      [
-        "inventory-info-restaurant",
-        "inventory-sheet-restaurant"
-      ],
-      state.restaurantName
-    );
+  async function loadInventoryModule() {
 
-
-    setText(
-      [
-        "inventory-info-code",
-        "inventory-sheet-code"
-      ],
-      state.restaurantCode
-    );
-  }
-
-
-  /* =====================================================
-     ОБНОВЛЕНИЕ ВЫБРАННОЙ ДАТЫ
-  ===================================================== */
-
-  async function updateInventoryDate() {
-    const dateInput =
-      getElement(
-        "inventory-date"
+    const container =
+      document.getElementById(
+        "inventory-module-container"
       );
 
 
-    if (!dateInput) {
+    /*
+      Сейчас мы не на странице
+      inventory.html
+    */
+
+    if (!container) {
       return;
     }
 
 
-    const selectedDate =
-      parseDate(
-        dateInput.value
+    const key =
+      getCurrentModule();
+
+
+    const config =
+      INVENTORY_MODULES[key];
+
+
+    /*
+      Неизвестный inventoryTab
+    */
+
+    if (!config) {
+
+      console.error(
+        "Inventory module not found:",
+        key
       );
 
 
-    if (!selectedDate) {
-      renderEmptyState();
+      container.innerHTML = `
+        <div class="inventory-loader-error">
+          Модуль инвентаризации
+          «${key}» не найден.
+        </div>
+      `;
+
+
       return;
+
     }
 
 
-    const weekday =
-      getDatabaseWeekday(
-        selectedDate
-      );
+    const loadingHost =
+      container.closest("#inventory-page") ||
+      container;
 
 
-    const weekdayName =
-      WEEKDAYS[weekday];
-
-
-    const formattedDate =
-      formatDate(
-        selectedDate
-      );
-
-
-    state.selectedWeekday =
-      weekday;
-
-
-    setText(
-      [
-        "inventory-weekday",
-        "topbar-weekday",
-        "inventory-info-list-day",
-        "inventory-sheet-weekday"
-      ],
-      weekdayName
+    window.IzakazPageLoading?.show(
+      loadingHost,
+      "Загрузка инвентаризации…"
     );
 
 
-    setText(
-      [
-        "inventory-date-formatted",
-        "inventory-sheet-date"
-      ],
-      formattedDate
-    );
+    container.innerHTML = `
+      <div class="inventory-loading" role="status" aria-live="polite">
+        <span class="app-module-loader" aria-hidden="true"></span>
+        <strong class="app-module-loading-title">Загрузка инвентаризации…</strong>
+        <span class="app-module-loading-note">Подготавливаем раздел</span>
+      </div>
+    `;
 
 
-    renderLoadingState();
+    /*
+      Заголовок shell
+    */
+
+    const title =
+      document.getElementById(
+        "inventory-page-title"
+      );
 
 
-    const currentRequestVersion =
-      ++state.requestVersion;
+    if (title) {
+
+      title.textContent =
+        config.title;
+
+    }
 
 
     try {
-      await Promise.all([
-        loadCategories(),
-        loadProducts(),
-        loadDayItems(weekday)
-      ]);
+
+      /*
+        CSS
+      */
+
+      loadStyle(
+        config.css
+      );
+
+
+      refreshThemeOverrides();
 
 
       /*
-        Если пользователь успел выбрать
-        другую дату до завершения запроса.
+        HTML
       */
 
-      if (
-        currentRequestVersion !==
-        state.requestVersion
-      ) {
-        return;
-      }
+      const response =
+        await fetch(
+          config.html
+        );
 
 
-      renderInventoryItems();
+      if (!response.ok) {
 
-    } catch (error) {
-      console.error(
-        "Ошибка загрузки инвентаризации:",
-        error
-      );
-
-
-      if (
-        currentRequestVersion !==
-        state.requestVersion
-      ) {
-        return;
-      }
-
-
-      renderErrorState(
-        error.message
-      );
-    }
-  }
-
-
-  /* =====================================================
-     ИНИЦИАЛИЗАЦИЯ СТРАНИЦЫ
-  ===================================================== */
-
-  async function initInventoryPage(
-    routeParams = []
-  ) {
-    const page =
-      document.querySelector(
-        '[data-page="inventory"]'
-      );
-
-
-    if (!page) {
-      return;
-    }
-
-
-    if (
-      page.dataset.initialized ===
-      "true"
-    ) {
-      return;
-    }
-
-
-    page.dataset.initialized =
-      "true";
-
-
-    const dateInput =
-      getElement(
-        "inventory-date"
-      );
-
-
-    const printButton =
-      getElement(
-        "inventory-print-button"
-      );
-
-
-    const requestedDate =
-      Array.isArray(routeParams)
-        ? routeParams[0]
-        : null;
-
-
-    const shouldAutoPrint =
-      Array.isArray(routeParams) &&
-      routeParams[1] ===
-        "print";
-
-
-    if (!dateInput) {
-      console.error(
-        "Не найден элемент #inventory-date"
-      );
-
-      return;
-    }
-
-
-    dateInput.value =
-      parseDate(requestedDate)
-        ? requestedDate
-        : getLocalISODate();
-
-
-    dateInput.addEventListener(
-      "change",
-      updateInventoryDate
-    );
-
-
-    if (printButton) {
-      printButton.addEventListener(
-        "click",
-        function () {
-          window.print();
-        }
-      );
-    }
-
-
-    renderLoadingState();
-
-
-    try {
-      await loadCurrentContext();
-
-      renderRestaurantData();
-
-      await updateInventoryDate();
-
-
-      if (shouldAutoPrint) {
-
-        window.setTimeout(
-          function () {
-
-            if (
-              document.querySelector(
-                '[data-page="inventory"]'
-              )
-            ) {
-
-              window.print();
-
-            }
-
-          },
-          150
+        throw new Error(
+          `HTTP ${response.status}: ${config.html}`
         );
 
       }
 
+
+      const html =
+        await response.text();
+
+
+      /*
+        Проверяем, что пользователь
+        всё ещё находится на том же
+        inventory module.
+
+        Это защищает от ситуации,
+        когда пользователь быстро
+        переключил страницу.
+      */
+
+      if (
+        getCurrentModule() !==
+        key
+      ) {
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        html;
+
+
+      /*
+        JS
+      */
+
+      await loadScript(
+        config.js
+      );
+
+
+      /*
+        Получаем модуль:
+        InventoryCount
+        или InventoryLists
+      */
+
+      const module =
+        window[
+          config.module
+        ];
+
+
+      if (
+        !module ||
+        typeof module.init !==
+          "function"
+      ) {
+
+        throw new Error(
+          `Модуль ${config.module} не найден.`
+        );
+
+      }
+
+
+      /*
+        Проверяем route ещё раз
+        перед init.
+      */
+
+      if (
+        getCurrentModule() !==
+        key
+      ) {
+
+        return;
+
+      }
+
+
+      /*
+        INIT
+      */
+
+      await module.init(
+        container
+      );
+
+
+      window.IzakazPageLoading?.hide(
+        loadingHost
+      );
+
+
+      console.log(
+        `[Inventory] ${key} loaded`
+      );
+
+
     } catch (error) {
+
+      window.IzakazPageLoading?.hide(
+        loadingHost
+      );
+
       console.error(
-        "Ошибка запуска страницы инвентаризации:",
+        "Inventory loader:",
         error
       );
 
-      renderErrorState(
-        error.message
-      );
+
+      /*
+        Ошибку выводим только если
+        пользователь всё ещё находится
+        в этом модуле.
+      */
+
+      if (
+        getCurrentModule() !==
+        key
+      ) {
+
+        return;
+
+      }
+
+
+      container.innerHTML = `
+        <div class="inventory-loader-error">
+
+          <strong>
+            Ошибка загрузки
+          </strong>
+
+          <br><br>
+
+          ${String(
+            error.message ||
+            error
+          )}
+
+        </div>
+      `;
+
     }
+
   }
 
 
   /* =====================================================
-     ДИНАМИЧЕСКАЯ ЗАГРУЗКА
+     PAGE LOADED EVENT
   ===================================================== */
 
   document.addEventListener(
     "app:page-loaded",
     function (event) {
+
+      const route =
+        event.detail
+          ?.route
+        ||
+        "";
+
+
       if (
-        event.detail?.route ===
-        "inventory"
+        !route.startsWith(
+          "inventory-"
+        )
       ) {
 
-        initInventoryPage(
-          event.detail?.params || []
-        );
+        return;
 
       }
+
+
+      window.setTimeout(
+        loadInventoryModule,
+        0
+      );
+
     }
   );
 
 
-  /*
-    Резервный запуск на случай,
-    если страница уже вставлена.
-  */
+  /* =====================================================
+     INITIAL LOAD
+  ===================================================== */
 
   window.setTimeout(
-    initInventoryPage,
+    function () {
+
+      const route =
+        window
+          .IZAKAZ_CURRENT_PAGE
+          ?.route
+        ||
+        "";
+
+
+      if (
+        route.startsWith(
+          "inventory-"
+        )
+      ) {
+
+        loadInventoryModule();
+
+      }
+
+    },
     0
   );
 

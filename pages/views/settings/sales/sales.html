@@ -1,0 +1,214 @@
+<section
+  class="sales-settings ui-page"
+  id="sales-settings"
+>
+
+  <!-- HEADER -->
+  <div class="sales-header">
+
+    <div class="sales-header-main">
+
+      <span class="sales-kicker">
+        Настройки
+      </span>
+
+      <h2>
+        Реализация
+      </h2>
+
+      <p>
+        Укажите средний расход каждого товара
+        по дням недели. Эти значения будут
+        использоваться при расчёте заказа.
+      </p>
+
+    </div>
+
+
+    <div class="sales-review">
+
+      <div class="sales-review-item">
+
+        <span>
+          Последняя проверка
+        </span>
+
+        <strong id="sales-last-review">
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="sales-review-item">
+
+        <span>
+          Следующая проверка
+        </span>
+
+        <strong id="sales-next-review">
+          —
+        </strong>
+
+      </div>
+
+
+      <div
+        class="sales-review-status"
+        id="sales-review-status"
+      >
+        Загрузка...
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- TOOLBAR -->
+  <div class="sales-toolbar">
+
+    <div class="sales-search">
+
+      <span>
+        ⌕
+      </span>
+
+      <input
+        id="sales-search"
+        type="search"
+        placeholder="Поиск по названию или IIKO коду..."
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <button
+      class="sales-save-button"
+      id="sales-save-button"
+      type="button"
+      disabled
+    >
+      Сохранить изменения
+    </button>
+
+  </div>
+
+  <!-- ==================================================
+        CATEGORIES
+    =================================================== -->
+
+    <div
+    class="sales-categories"
+    id="sales-categories"
+    >
+
+    <button
+        class="sales-category is-active"
+        type="button"
+        data-sales-category="all"
+    >
+        Все
+    </button>
+
+    </div>
+  <!-- MESSAGE -->
+  <div
+    class="sales-message"
+    id="sales-message"
+    hidden
+  ></div>
+
+
+  <!-- TABLE -->
+  <div class="sales-card">
+
+    <div
+      class="sales-loading"
+      id="sales-loading"
+    >
+      Загрузка реализации...
+    </div>
+
+
+    <div
+      class="sales-empty"
+      id="sales-empty"
+      hidden
+    >
+      Товары не найдены.
+    </div>
+
+
+    <div
+      class="sales-table-wrap"
+      id="sales-table-wrap"
+      hidden
+    >
+
+      <table class="sales-table">
+
+        <thead>
+
+          <tr>
+
+            <th class="sales-product-column">
+              Товар
+            </th>
+
+            <th>
+              Ед.
+            </th>
+
+            <th>
+              ПН
+            </th>
+
+            <th>
+              ВТ
+            </th>
+
+            <th>
+              СР
+            </th>
+
+            <th>
+              ЧТ
+            </th>
+
+            <th>
+              ПТ
+            </th>
+
+            <th>
+              СБ
+            </th>
+
+            <th>
+              ВС
+            </th>
+
+            <th>
+              Среднее
+            </th>
+
+            <th>
+              Проверено
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="sales-table-body">
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
